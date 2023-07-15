@@ -1,0 +1,354 @@
+<div class="">
+  <div class="container-fluid py-4">
+    <div class="row">
+      <div class="mb-3">
+        <span class="icon-position"><i class="fa fa-search"></i></span>
+        <input type="text" style="width:30%" (input)="search($event.target.value)" class="searchTerm form-control"
+          placeholder="Type here...">
+      </div>
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table" matSort matSortActive="userName" matSortDirection="asc" matSortDisableClear="true"
+                (matSortChange)="sortingList($event)">
+                <thead>
+                  <tr>
+                    <th class="theme-color w-10">Action</th>
+                    <!-- <th class="theme-color w-5">No.</th> -->
+                    <th class="theme-color w-40" mat-sort-header="userName">Employee Name</th>
+                    <th class="theme-color w-50">Product Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    *ngFor="let assignProductData of assignProductList |  paginate: { itemsPerPage: l, currentPage: p };let supplierMasterIndex = index">
+                    <td class="text-color">
+                      <ul class="d-flex align-items-center action-list p-0">
+                        <li class="action-list-item me-3" *ngIf="this.isCreated == true">
+                          <button class="btn bg-gradient-dark mb-0 add-btn add-assets-btn" title="Add Assign Product"
+                            (click)="addSupplierMaster(assignProductData.employeeId)"><i class="fas fa-plus"
+                              aria-hidden="true"></i></button>
+                        </li>
+                      </ul>
+                    </td>
+                    <!-- <td class="text-color">
+                      {{ l * (p - 1) + supplierMasterIndex +1 }}
+                    </td> -->
+                    <td class="text-color">
+                      {{ assignProductData.userName | titlecase }}
+                    </td>
+                    <td class="text-color">
+                      <ul class="m-0 p-0">
+                        <li *ngFor="let productData of assignProductData.ProductData | filter: searchTerm">
+                          <div class="d-flex">
+                            <div class="min-w-200 assign-product-table-fix-width"
+                              [ngClass]="todayDate < productData.warrantyEndDate ? 'color-green' : 'color-red'">
+                              {{productData.productNo}} ( <b>{{productData.categoryName |
+                                titlecase}}</b> )
+                            </div>
+                            <button class="btn bg-gradient-dark mb-0 add-btn add-assets-btn " style="margin-right: 8px;"
+                              *ngIf="this.isDeleted == true" (click)="GotoViewProduct(productData._id)">
+                              <i class="fa fa-info"></i>
+                            </button>
+                            <button class="btn  mb-0  add-assets-btn remove-btn-bg-transparent"
+                              *ngIf="this.isDeleted == true"
+                              (click)="openRemoveAssignedProduct(productData._id,assignProductData.employeeId)">
+                              <i class="fa fa-times"></i>
+                            </button>
+                          </div>
+                        </li>
+                      </ul>
+                    </td>
+
+                  </tr>
+                  <tr *ngIf="noData">
+                    <td colspan="6">
+                      <h2 class="text-center mb-0">Data Not Found</h2>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="footer-pagination" *ngIf="assignProductList?.length > l">
+                <pagination-controls (pageChange)="p = $event"></pagination-controls>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- //Assign Product Details Popup start -->
+<div class="modal quick-edit-modal fade" tabindex="-1" id="add-supplier-modal" role="dialog">
+  <div class="modal-dialog model-setting-menu-width" role="document">
+    <div class="card modal-content">
+      <div class="modal-header">
+        <h4 class="text-center mb-2 w-100">Assign Product</h4>
+        <button class="btn bg-gradient-dark cancel-btn popup-close-btn" (click)="cancelSupplierMaster()">
+          <i class="fa fa-times" style="font-size: 10px;"></i>
+        </button>
+      </div>
+      <div class="card-body model-scroll">
+        <form role="form" class="add-employee-form" [formGroup]="assignProjectMasterForm" autocomplete="off">
+          <div class="p-3 basic-information-form">
+            <div class="row">
+              <div class="col-lg-6">
+                <label for="role" class="required">Category</label>
+                <div class="mb-3">
+                  <ng-select [items]="categoryMasterList" (change)="getProductListbyCategoryId($event)"
+                    formControlName="categoryID" bindLabel="categoryName" bindValue="_id" placeholder="Select Category">
+                  </ng-select>
+                  <div *ngIf="submittedAssignProductMasterData && fAssignProductData.categoryID.errors">
+                    <div *ngIf="fAssignProductData.categoryID.errors.required">
+                      <span class="error_msg">Category is Required.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <label for="role" class="required">Product</label>
+                <div class="mb-3">
+                  <ng-select [items]="productMasterList" formControlName="assetProductId" bindLabel="productNamee"
+                    bindValue="_id" placeholder="Select Product">
+                  </ng-select>
+                  <div *ngIf="submittedAssignProductMasterData && fAssignProductData.assetProductId.errors">
+                    <div *ngIf="fAssignProductData.assetProductId.errors.required">
+                      <span class="error_msg">Product is Required.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+
+      </div>
+      <div class="modal-footer">
+        <div class="w-100">
+          <div class="text-center">
+            <button type="button" (click)="assignProductToEmployee()" class="btn bg-gradient-dark my-2">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- //Remove assigned Product Popup start -->
+<div class="modal quick-edit-modal fade" tabindex="-1" id="remove-product-modal" role="dialog">
+  <div class="modal-dialog model-setting-menu-width" role="document">
+    <div class="card modal-content model-scroll">
+      <div class="card-header card-header-icon">
+      </div>
+      <div class="card-body">
+        <button class="btn bg-gradient-dark cancel-btn" (click)="closeRemoveAssignedProduct()"
+          style="float: right;margin-right: 0;border-radius: 50%;padding: 6px 12px;">
+          <i class="fa fa-times" style="font-size: 10px;"></i>
+        </button>
+        <h4 class="text-align-center mb-4">Remove Assigned Product</h4>
+
+        <form role="form" class="add-employee-form" [formGroup]="removeAssignedProductForm" autocomplete="off">
+          <input type="hidden" formControlName="assetProductId">
+          <input type="hidden" formControlName="assigned">
+          <div class="p-3 basic-information-form">
+            <div class="row">
+              <div class="col-lg-12">
+                <label for="role" class="required">Reason</label>
+                <div class="mb-3">
+                  <textarea rows="5" maxlength="200"
+                    placeholder="Please Enter The Reason for Remove This Assigned Product" class="form-control ps-2"
+                    formControlName="reason"></textarea>
+                  <div *ngIf="submittedRemoveAssignProductMasterData && fRemoveAssignProductData.reason.errors">
+                    <div *ngIf="fRemoveAssignProductData.reason.errors.required">
+                      <span class="error_msg">Reason is Required.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+        <div class="d-flex justify-content-between">
+          <div class="text-center">
+            <button type="button" (click)="removeAssignProductToEmployee()"
+              class="btn bg-gradient-dark my-4">Submit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- view assign product through get data  -->
+<div class="modal quick-edit-modal fade" tabindex="-1" id="view-product-modal" role="dialog">
+  <div class="modal-dialog model-setting-product-width" role="document">
+    <div class="card modal-content">
+      <div class="modal-header">
+        <h4 class="text-center mb-2 w-100">View Product Details</h4>
+        <button class="btn bg-gradient-dark cancel-btn popup-close-btn" (click)="cancelProduct()">
+          <i class="fa fa-times" style="font-size: 10px;"></i>
+        </button>
+      </div>
+      <div class="card-body model-scroll">
+        <form role="form" class="add-employee-form" [formGroup]="productForm" autocomplete="off">
+          <div class="p-3 basic-information-form">
+            <div class="row">
+              <div class="col-lg-4">
+                <label class="required">Supplier</label>
+                <div class="mb-3">
+                  <!-- <span class="icon-position"><i class="fa fa-fa-heading"></i></span> -->
+                  <ng-select [items]="supplierMasterList" class="" bindLabel="companyName" bindValue="_id"
+                    placeholder=" Select Company Name" formControlName="supplierId">
+                  </ng-select>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <label class="required">Category</label>
+                <div class="mb-3">
+                  <ng-select [items]="categoryMasterList" class="" bindLabel="categoryName" bindValue="_id"
+                    placeholder="Select Category Name" formControlName="categoryId">
+                  </ng-select>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <label>Product No</label>
+                <div class="mb-3">
+                  <input type="text" placeholder="Enter Product No." class="text-feild form-control ps-2"
+                    formControlName="productNo">
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <label>Purchase Date</label>
+                <div class="mb-3 position-relative mat-date-picker" (click)="purchasedDate.open()">
+                  <span class="icon-position cursor-pointer"><i class="fa fa-calendar"></i></span>
+                  <input matInput class="form-control" placeholder="Please Select Date" [matDatepicker]="purchasedDate"
+                    formControlName="purchasedDate">
+                  <div class="mat-dat-picker-icon">
+                    <div class="calendar-icon"><i class="bx bxs-calendar"></i></div>
+                    <mat-datepicker-toggle matSuffix [for]="purchasedDate">
+                    </mat-datepicker-toggle>
+                    <mat-datepicker #purchasedDate></mat-datepicker>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <label class="required">Product Name</label>
+                <div class="mb-3">
+                  <input type="text" class="form-control ps-2" formControlName="productName" placeholder="Product Name">
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <label>Barcode No</label>
+                <div class="mb-3">
+                  <input type="text" class="form-control ps-2" formControlName="barcodeNo" placeholder="Barcode No"
+                    appNumbersOnly>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <label>Amount</label>
+                <div class="mb-3">
+                  <input type="text" class="form-control ps-2" formControlName="amount" placeholder="Amount">
+                </div>
+
+              </div>
+              <div class="col-lg-4">
+                <label>Invoice No</label>
+                <div class="mb-3">
+                  <input type="text" class="form-control ps-2" formControlName="supplierInNo"
+                    placeholder="SupplierInNo">
+                </div>
+
+              </div>
+              <div class="col-lg-4">
+                <label>Product Description</label>
+                <div class="mb-3">
+                  <textarea type="textarea" maxlength="200" class="form-control ps-2"
+                    formControlName="productDescription" placeholder="Product Description" aria-label="Password"
+                    aria-describedby="password-addon"></textarea>
+
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <label>Bill Image</label>
+                <div class="d-flex">
+                  <div class="" style="width: 120px;">
+                    <input #file type="file" accept='*' class="category-upload cursor-pointer mt-2" width="100px"
+                      disabled />
+                    <button class="btn bg-gradient-dark mt-2 cursor-pointer mr-20" disabled>Upload</button>
+                  </div>
+                  <div *ngIf="imgURL">
+                    <div class="position-relative">
+                      <div class="mt-2">
+                        <div class="recipe-image">
+                          <a target="_blank" [href]="this.commonService.rootData.uploadsUrl + 'photos/' + imgURL">
+                            <img src="../../../../assets/img/file1.png" height="70px" width="auto"
+                              onerror="this.src ='assets/img/no-image-available.jpg'" style="border-radius: 5px;">
+                          </a>
+                        </div>
+                      </div>
+                      <div class="recipe-image-control">
+                        <button class="border-0 float-right btn btn-delete-icon" (click)="removeuploadFile()">
+                          <i class="fa fa-times"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <label>Warranty StartDate</label>
+                <div class="mb-3 position-relative mat-date-picker" (click)="warrantyStartDate.open()">
+                  <span class="icon-position cursor-pointer"><i class="fa fa-calendar"></i></span>
+                  <input matInput class="form-control" placeholder="Please Select Date"
+                    [matDatepicker]="warrantyStartDate" formControlName="warrantyStartDate">
+                  <div class="mat-dat-picker-icon">
+                    <div class="calendar-icon"><i class="bx bxs-calendar"></i></div>
+                    <mat-datepicker-toggle matSuffix [for]="warrantyStartDate">
+                    </mat-datepicker-toggle>
+                    <mat-datepicker #warrantyStartDate></mat-datepicker>
+                  </div>
+                  <!-- <div class="mb-3">
+                                  <span class="icon-position cursor-pointer" (click)="warrantyStartDate.toggle()"><i
+                                          class="fa fa-calendar"></i></span>
+                                  <input class="form-control" formControlName="warrantyStartDate"
+                                      (dateSelect)="onWarrentyStartChange($event)"
+                                      (input)="onWarrentyStartChange($event)" (click)="warrantyStartDate.toggle()"
+                                      placeholder="yyyy-mm-dd" name="JD" #warrantyStartDate="ngbDatepicker"
+                                      ngbDatepicker> -->
+
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <label>Warranty EndDate</label>
+                <div class="mb-3 position-relative mat-date-picker" (click)="warrantyEndDate.open()">
+                  <span class="icon-position cursor-pointer"><i class="fa fa-calendar"></i></span>
+                  <input matInput class="form-control" placeholder="Please Select Date"
+                    [matDatepicker]="warrantyEndDate" formControlName="warrantyEndDate">
+                  <div class="mat-dat-picker-icon">
+                    <div class="calendar-icon"><i class="bx bxs-calendar"></i></div>
+                    <mat-datepicker-toggle matSuffix [for]="warrantyEndDate">
+                    </mat-datepicker-toggle>
+                    <mat-datepicker #warrantyEndDate></mat-datepicker>
+                  </div>
+                  <!-- <div class="mb-3">
+                                  <span class="icon-position cursor-pointer" (click)="warrantyEndDate.toggle()"><i
+                                          class="fa fa-calendar"></i></span>
+                                  <input class="form-control" [minDate]="minWarrentyDate"
+                                      (dateSelect)="onWarrentyEndChange($event)" (input)="onWarrentyEndChange($event)"
+                                      formControlName="warrantyEndDate" (click)="warrantyEndDate.toggle()"
+                                      placeholder="yyyy-mm-dd" name="JD" #warrantyEndDate="ngbDatepicker"
+                                      ngbDatepicker>
+                                  <div *ngIf="showInvalidEndDate === true">
+                                      <span class="error_msg">Please Select Valid Warrenty End Date.</span>
+                                  </div> -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

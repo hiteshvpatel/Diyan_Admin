@@ -1,0 +1,112 @@
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="mb-4 d-flex justify-content-between">
+            <span class="icon-position"><i class="fa fa-search"></i></span>
+            <input type="text" class="searchTerm form-control w-30" [(ngModel)]="searchTerm" placeholder="Type here...">
+            <div class="right-container" *ngIf="this.isCreated == true">
+                <button class="btn bg-gradient-dark mb-0 add-btn right-container-button" (click)="addProjectMaster()">
+                    <span class="long-text">Add Project</span><i id="icon-chat" class="fas fa-plus"
+                        aria-hidden="true"></i></button>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-xxl-3 col-xl-6 col-lg-6 col-md-12 col-sm-12"
+                *ngFor="let projectmasterDate of projectmasterList | filter: searchTerm | paginate: { itemsPerPage: l, currentPage: p };let projectMasterIndex = index">
+                <div class="card mb-4">
+                    <div class="card-body pt-5">
+                        <div class="table-responsive p-0">
+                            <div class="">
+                                <div *ngIf="this.isDeleted == true">
+                                    <button class="employe-list-edit dtl-btn btn bg-gradient-dark"
+                                        *ngIf="projectmasterDate.status == 2"
+                                        (confirm-click)="statusProjectMaster({id :projectmasterDate._id,index:projectMasterIndex,status:1})"
+                                        appConfirm [confirmTitle]="'Active'"
+                                        [confirmContent]="'Are you sure to active this project?'"><i class="fa fa-plus"
+                                            aria-hidden="true"></i></button>
+                                    <button class="employe-list-edit dtl-btn btn bg-gradient-dark"
+                                        *ngIf="projectmasterDate.status == 1"
+                                        (confirm-click)="statusProjectMaster({id :projectmasterDate._id,index:projectMasterIndex,status:2})"
+                                        appConfirm [confirmTitle]="'Deactive'"
+                                        [confirmContent]="'Are you sure to Deactive this project?'"><i
+                                            class="fa fa-trash" aria-hidden="true"></i></button>
+                                </div>
+                                <div *ngIf="this.isUpdated == true">
+                                    <button class="employe-list-dlt btn bg-gradient-dark emp-edit-btn"
+                                        routerLink="/admin/project-management/edit-project/{{projectmasterDate._id}}">
+                                        <i class="fa fa-edit"></i>
+                                    </button>
+                                </div>
+
+
+                                <!-- <div class="mb-0 user-card-name project-div">
+                                    <p class="">Project Name:</p>
+                                    <span class=""> {{projectmasterDate.projectName |
+                                        titlecase}}</span>
+                                </div>
+                                <div class="mb-0 user-card-name" style="display:flex;">
+                                    <span style="width:135px !important; text-align: left;">
+                                        <span class="" style="font-weight:bold;">Technology: </span>
+                                    </span>
+                                    <div style="display:grid;">
+                                        <span *ngFor="let tech of projectmasterDate?.technologyData; let i = index">
+                                            {{tech.technologyName }}{{ (i+1== projectmasterDate?.technologyData?.length) ? '' : ',
+                                            '}}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="mb-0 user-card-name project-div">
+                                    <p class="">Client: </p>
+                                    <span>{{projectmasterDate.clientName |
+                                        titlecase}}</span>
+                                </div> -->
+
+
+
+                                <table class="w-100">
+                                    <tr>
+                                        <td class="w-40">
+                                            <p class="m-0 fw-bold">Project Name:</p>
+                                        </td>
+                                        <td class="w-60 project-master-project-list-ellips">
+                                            {{projectmasterDate.projectName |
+                                            titlecase}}
+                                        </td>
+                                    </tr>
+                                    <tr class="align-baseline">
+                                        <td class="w-40">
+                                            <span class="fw-bold">Technology: </span>
+                                        </td>
+                                        <td class="w-60">
+                                            <span *ngFor="let tech of projectmasterDate?.technologyData; let i = index">
+                                                {{tech.technologyName }}{{ (i+1==
+                                                projectmasterDate?.technologyData?.length)
+                                                ? '' : ',
+                                                '}}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="w-40">
+                                            <p class="m-0 fw-bold">Client: </p>
+                                        </td>
+                                        <td class="w-60 project-master-project-list-ellips">
+                                            {{projectmasterDate.clientName |
+                                            titlecase}}
+                                        </td>
+                                    </tr>
+                                </table>
+
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer-pagination" *ngIf="projectmasterList?.length > l">
+        <pagination-controls (pageChange)="p = $event"></pagination-controls>
+    </div>
+    <div *ngIf="noData">No Data Found</div>

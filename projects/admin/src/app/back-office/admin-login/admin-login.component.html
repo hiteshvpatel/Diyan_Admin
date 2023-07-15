@@ -1,0 +1,58 @@
+<section class="login-bg-img overflow-hidden position-relative bg-cover">
+  <div class="mask bg-gradient-dark-2"></div>
+  <div class="page-header min-vh-75">
+    <div class="container">
+      <div class="row">
+        <div class="col-xl-4 col-lg-5 col-md-6 d-flex flex-column mx-auto position-relative">
+          <div class="card mt-8 log-in-card-bg-img">
+            <div class="card-header pb-0 text-left">
+              <div class="login-logo">
+                <img src="../../../assets/img/Asset 2.png" alt="logo"
+                  width="60%">
+              </div>
+            </div>
+            <div class="card-body">
+              <form role="form" [formGroup]="loginForm">
+                <label>Email</label>
+                <div class="mb-3">
+                  <span class="icon-position"><i class="fa fa-user"></i></span>
+                  <input type="email" class="form-control" formControlName="email" placeholder="Email"
+                    aria-label="Email" aria-describedby="email-addon">
+                  <div *ngIf="submittedLoginData && fLoginData.email.errors" class="text-right">
+                    <div *ngIf="fLoginData.email.errors.required">
+                      <span class="error_msg">Email ID is Required.</span>
+                    </div>
+                    <div *ngIf="!fLoginData.email.errors.valid && !fLoginData.email.errors.required">
+                      <span class="error_msg">Please Enter Valid Email ID.</span>
+                    </div>
+                  </div>
+                </div>
+                <label>Password</label>
+                <div class="mb-3 position-relative">
+                  <a (click)="hide1 = !hide1" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide1">
+                    <span class="icon-eye cursor-pointer">
+                      <span class="material-icons">{{hide1 ? 'visibility' : 'visibility_off'}}</span>
+                    </span>
+                  </a>
+                  <span class="icon-position"><i class="fa fa-lock"></i></span>
+                  <input [type]="hide1 ? 'text' : 'password'" (keyup.enter)="handleKeyUp($event)" class="form-control"
+                    formControlName="pwd" placeholder="Password" aria-label="Password"
+                    aria-describedby="password-addon">
+
+                  <div *ngIf="submittedLoginData && fLoginData.pwd.errors" class="text-right">
+                    <div *ngIf="fLoginData.pwd.errors.required">
+                      <span class="error_msg">Password is Required.</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="text-center">
+                  <button type="button" class="btn bg-gradient-dark w-100 mt-4 mb-0" (click)="login()">Sign in</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

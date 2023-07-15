@@ -1,0 +1,164 @@
+<div class="">
+    <div class="container-fluid py-4">
+        <!--<div class="row">
+            <div class="mb-3 d-flex" style="justify-content: space-between;">
+                <span class="icon-position"><i class="fa fa-search"></i></span>
+                <input type="text" style="width:30%" (input)="search($event.target.value)"
+                    class="searchTerm form-control" [(ngModel)]="searchTerm" placeholder="Type here...">
+                <div class="right-container">
+                    <button class="btn bg-gradient-dark mb-0 add-btn right-container-button"
+                        (click)="addAccountEntryMaster()">
+                        <span class="long-text">Add New</span>
+                        <i class="fas fa-plus" aria-hidden="true"></i></button>
+                </div>
+            </div>
+        </div>-->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div>
+                            <h4 class="card-title-color">Account Entry</h4>
+                        </div>
+                        <form role="form" class="add-employee-form" [formGroup]="accountEntryMasterForm"
+                            autocomplete="off">
+                            <div class="">
+                                <div class="row">
+                                    <!-- <div class="col-lg-4">
+                                        <label for="group" class="required">Transaction Date</label>
+                                        <div class="mb-3">
+                                            <input class="form-control ps-2" [startDate]="{year: 1700, month: 7}"
+                                                formControlName="transactionDate"
+                                                (input)="onTransactionDateChange($event)"
+                                                (click)="d.toggle();d.navigateTo(maxDate)" placeholder="yyyy-mm-dd"
+                                                name="dp" #d="ngbDatepicker" ngbDatepicker>
+                                            <div
+                                                *ngIf="submittedAccountEntryMaster && fAccountEntryMasterData.transactionDate.errors">
+                                                <div *ngIf="fAccountEntryMasterData.transactionDate.errors.required">
+                                                    <span class="error_msg">Transaction Date is Required.</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div> -->
+                                    <div class="col-lg-4">
+                                        <label for="group" class="required">Transaction Date</label>
+                                        <div class="mb-3 position-relative mat-date-picker"
+                                            (click)="transactionDate.open()">
+                                            <span class="icon-position cursor-pointer"><i
+                                                    class="fa fa-calendar"></i></span>
+                                            <input matInput class="form-control" placeholder="Please Select Date"
+                                                [matDatepicker]="transactionDate" formControlName="transactionDate">
+                                            <div class="mat-dat-picker-icon">
+                                                <div class="calendar-icon"><i class="bx bxs-calendar"></i></div>
+                                                <mat-datepicker-toggle matSuffix [for]="transactionDate">
+                                                </mat-datepicker-toggle>
+                                                <mat-datepicker #transactionDate></mat-datepicker>
+                                            </div>
+
+                                            <!-- <div class="mb-3">
+                                            <input class="form-control ps-2" [startDate]="{year: 1700, month: 7}"
+                                                formControlName="transactionDate" (input)="onTransactionDateChange($event)"
+                                                (click)="d.toggle();d.navigateTo(maxDate)" placeholder="yyyy-mm-dd"
+                                                name="dp" #d="ngbDatepicker" ngbDatepicker> -->
+                                            <div
+                                                *ngIf="submittedAccountEntryMaster && fAccountEntryMasterData.transactionDate.errors">
+                                                <div *ngIf="fAccountEntryMasterData.transactionDate.errors.required">
+                                                    <span class="error_msg">Transaction Date is Required.</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 mt-sm-2">
+                                        <label for="group" class="required me-3">Is Credit ?</label>
+                                        <div class="mb-3">
+                                            <input type="radio" name="isCredit" class="keep-originals" value="true"
+                                                formControlName="iscredit">
+                                            Credit
+                                            <input type="radio" name="isCredit" class="keep-originals ms-4"
+                                                value="false" formControlName="iscredit">
+                                            Debit
+                                            <div
+                                                *ngIf="submittedAccountEntryMaster && fAccountEntryMasterData.iscredit.errors">
+                                                <div *ngIf="fAccountEntryMasterData.iscredit.errors.required">
+                                                    <span class="error_msg">Is Credit is Required.</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <label for="group" class="required">Value</label>
+                                        <div class="mb-3">
+                                            <!-- <span class="icon-position"><i class="fa fa-tasks"></i></span> -->
+                                            <input type="text" class="form-control ps-2" formControlName="value"
+                                                placeholder="Value">
+                                            <div
+                                                *ngIf="submittedAccountEntryMaster && fAccountEntryMasterData.value.errors">
+                                                <div *ngIf="fAccountEntryMasterData.value.errors.required">
+                                                    <span class="error_msg">Value is Required.</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <label for="group" class="required">Description</label>
+                                        <div class="mb-3">
+                                            <!-- <span class="icon-position"><i class="fa fa-tasks"></i></span> -->
+                                            <textarea rows="2" maxlength="200" class="form-control ps-2"
+                                                formControlName="description" placeholder="Description"></textarea>
+                                            <!-- <input type="text" class="form-control ps-2" formControlName="desciption" placeholder="desciption"> -->
+                                            <div
+                                                *ngIf="submittedAccountEntryMaster && fAccountEntryMasterData.description.errors">
+                                                <div *ngIf="fAccountEntryMasterData.description.errors.required">
+                                                    <span class="error_msg">Description is Required.</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <label for="group" class="required">Group</label>
+                                        <div class="mb-3">
+                                            <!-- <span class="icon-position"><i class="fa fa-tasks"></i></span> -->
+                                            <ng-select [items]="activeGroupMasterList" formControlName="groupId"
+                                                bindLabel="groupName" bindValue="_id" placeholder="Select Group"
+                                                (change)="onGroupChange($event)">
+                                            </ng-select>
+                                            <div
+                                                *ngIf="submittedAccountEntryMaster && fAccountEntryMasterData.groupId.errors">
+                                                <div *ngIf="fAccountEntryMasterData.groupId.errors.required">
+                                                    <span class="error_msg">Group is Required.</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <label for="group" class="required">Ledger</label>
+                                        <div class="mb-3">
+                                            <!-- <span class="icon-position"><i class="fa fa-tasks"></i></span> -->
+                                            <ng-select [items]="ledgerMasterListByGroupId" formControlName="ledgerId"
+                                                bindLabel="ledger" bindValue="_id" placeholder="Select Ledger">
+                                            </ng-select>
+                                            <div
+                                                *ngIf="submittedAccountEntryMaster && fAccountEntryMasterData.ledgerId.errors">
+                                                <div *ngIf="fAccountEntryMasterData.ledgerId.errors.required">
+                                                    <span class="error_msg">Ledger is Required.</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-end" *ngIf="this.isCreated == true">
+                                <div class="text-center">
+                                    <button type="button" (click)="saveAccountEntryMaster()"
+                                        class="btn bg-gradient-dark my-2">
+                                        Save
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,101 @@
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="mb-4 d-flex justify-content-between">
+            <span class="icon-position"><i class="fa fa-search"></i></span>
+            <input type="text" style="width:30%" class="searchTerm form-control" [(ngModel)]="searchTerm"
+                placeholder="Type here...">
+            <div class="right-container d-flex" *ngIf="this.isCreated == true">
+                <button class="btn bg-gradient-dark mb-0 add-btn" style="width: 166px;"
+                    (confirm-click)="generateLedger()" appConfirm [confirmTitle]="'Generate Ledger'"
+                    [confirmContent]="'Are you sure want to generate ledger ?'">
+                    <span class="long-text">
+                        Generate Ledger
+                    </span>
+                    <!-- <i id="icon-chat" class="fas fa-plus" aria-hidden="true"></i> -->
+                </button>
+                <button class="btn bg-gradient-dark mb-0 ms-2 add-btn right-container-button" (click)="addClient()">
+                    <span class="long-text">Add Client</span>
+                    <i class="fas fa-plus" aria-hidden="true"></i></button>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-4 col-md-6 col-sm-12"
+            *ngFor="let clientMasterData of clientmasterList | filter: searchTerm | paginate: { itemsPerPage: l, currentPage: p };let clientMasterIndex = index">
+            <div class="card mb-4">
+                <div class="card-body pt-5">
+                    <div class="table-responsive p-0">
+                        <div class="">
+                            <div *ngIf="this.isDeleted == true">
+                                <button class="employe-list-edit dtl-btn btn bg-gradient-dark"
+                                    *ngIf="clientMasterData.status == 2"
+                                    (confirm-click)="statusClient({id :clientMasterData._id,index:clientMasterIndex,status:1})"
+                                    appConfirm [confirmTitle]="'Active'"
+                                    [confirmContent]="'Are you sure to active this client?'"><i class="fa fa-plus"
+                                        aria-hidden="true"></i></button>
+                                <button class="employe-list-edit dtl-btn btn bg-gradient-dark"
+                                    *ngIf="clientMasterData.status == 1"
+                                    (confirm-click)="statusClient({id :clientMasterData._id,index:clientMasterIndex,status:2})"
+                                    appConfirm [confirmTitle]="'Deactive'"
+                                    [confirmContent]="'Are you sure to Deactive this Client?'"><i class="fa fa-trash"
+                                        aria-hidden="true"></i></button>
+                            </div>
+                            <div *ngIf="this.isUpdated == true">
+                                <button class="employe-list-dlt btn bg-gradient-dark emp-edit-btn"
+                                    routerLink="/admin/project-management/edit-client/{{clientMasterData._id}}">
+                                    <i class="fa fa-edit"></i>
+                                </button>
+                            </div>
+                            <div class="mb-0 user-card-name client-div">
+                                <p style="margin-bottom:5px;">
+                                    Client Name:
+                                </p>
+                                <span class="font-weight-bolder">{{clientMasterData.clientName |
+                                    titlecase}}</span>
+                            </div>
+                            <div class="mb-0 user-card-name client-div">
+                                <p style="margin-bottom:5px;">
+                                    Company Name:
+                                </p>
+                                <span class="font-weight-bolder">{{clientMasterData.companyName |
+                                    titlecase}}</span>
+                            </div>
+                            <div class="mb-0 user-card-name client-div">
+                                <p style="margin-bottom:5px;">
+                                    Address:
+                                </p>
+                                <span class="font-weight-bolder">{{clientMasterData.address |
+                                    titlecase}}</span>
+                            </div>
+                            <div class="mb-0 user-card-name client-div">
+                                <p style="margin-bottom:5px;">
+                                    Country:
+                                </p>
+                                <span class="font-weight-bolder">{{clientMasterData.country |
+                                    titlecase}}</span>
+                            </div>
+                            <div class="mb-0 user-card-name client-div">
+                                <p style="margin-bottom:5px;">
+                                    State:
+                                </p>
+                                <span class="font-weight-bolder">{{clientMasterData.state |
+                                    titlecase}}</span>
+                            </div>
+                            <div class="mb-0 user-card-name client-div">
+                                <p style="margin-bottom:5px;">
+                                    City:
+                                </p>
+                                <span class="font-weight-bolder">{{clientMasterData.city |
+                                    titlecase}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="footer-pagination" *ngIf="clientmasterList?.length > l">
+    <pagination-controls (pageChange)="p = $event"></pagination-controls>
+</div>
+<div *ngIf="noData">No Data Found</div>

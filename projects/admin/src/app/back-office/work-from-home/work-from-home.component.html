@@ -1,0 +1,165 @@
+<div class="">
+    <div class="container-fluid py-4">
+        <div class="row mb-3">
+            <div class="col-lg-3">
+                <span class="icon-position"><i class="fa fa-search"></i></span>
+                <input type="text" (input)="search($event.target.value,wfhTypeStatus)" [(ngModel)]="searchTerm"
+                    style="width:100%" class="searchTerm form-control" placeholder="Type here...">
+            </div>
+            <div class="col-lg-3">
+                <ng-select [(ngModel)]="month" [items]="monthArray" class="" bindLabel="month" bindValue="value"
+                    placeholder="Select Month" (change)="getWorkFromHomeList()" [searchable]="false"
+                    [clearable]="false">
+                </ng-select>
+            </div>
+            <div class="col-lg-3">
+                <ng-select [(ngModel)]="year" [items]="yearArray" class="" bindLabel="yearArray" [clearable]="false"
+                    bindValue="yearArray" placeholder="Select Year" [searchable]="false"
+                    (change)="getWorkFromHomeList()">
+                </ng-select>
+            </div>
+            <div class="col-lg-3">
+                <ng-select [(ngModel)]="wfhTypeStatus" [items]="wfhStatusType" class="" bindLabel="name"
+                    [clearable]="false" bindValue="value" [searchable]="false" placeholder="Select Work From Home Type"
+                    (change)="getWorkFromHomeList()">
+                </ng-select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table" matSort matSortActive="userName" matSortDirection="asc"
+                                matSortDisableClear="true" (matSortChange)="sortingList($event)">
+                                <thead>
+                                    <tr>
+                                        <th class="theme-color w-5">No.</th>
+                                        <th class="theme-color w-10" mat-sort-header="userName">Username</th>
+                                        <th class="theme-color w-7">From Date</th>
+                                        <th class="theme-color w-7">To Date</th>
+                                        <th class="theme-color w-30">Reason</th>
+                                        <th class="theme-color w-20">Remark</th>
+                                        <th class="theme-color w-7">
+                                            Status</th>
+                                        <th class="theme-color w-4">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr
+                                        *ngFor="let workFromHomeData of workFromHomeList | paginate: { itemsPerPage: l, currentPage: p };let workFromHomeIndex = index">
+                                        <td class="text-color w-5">
+                                            {{ l * (p - 1) + workFromHomeIndex +1 }}
+                                        </td>
+                                        <td class="text-color w-10 ellips-line">
+                                            {{workFromHomeData.userName}}
+                                        </td>
+                                        <td class="text-color w-7">
+                                            {{workFromHomeData.fromDate}}
+                                        </td>
+                                        <td class="text-color w-7">
+                                            {{workFromHomeData.toDate}}
+                                        </td>
+                                        <td class="text-color w-25 white-space-normal"
+                                            [innerHTML]="workFromHomeData.reason">
+                                        </td>
+                                        <td class="text-color w-25 white-space-normal">
+                                            {{workFromHomeData.remark ? workFromHomeData.remark : '-'}}
+                                        </td>
+                                        <td class="text-color w-7">
+                                            <span class="badge" [ngClass]="{'bg-gradient-success' : workFromHomeData.workFromHomeStatus == 2,
+                                        'bg-gradient-danger' : workFromHomeData.workFromHomeStatus == 3 || workFromHomeData.workFromHomeStatus == 4,
+                                        'bg-gradient-warning' : workFromHomeData.workFromHomeStatus == 1
+                                }">
+                                                {{workFromHomeData.workFromHomeStatus == 1 ? 'Pending'
+                                                :workFromHomeData.workFromHomeStatus == 2 ? 'Approved'
+                                                :workFromHomeData.workFromHomeStatus == 4 ? 'Cancle'
+                                                :workFromHomeData.workFromHomeStatus == 3 ? 'Reject' : '' }}
+                                            </span>
+                                        </td>
+                                        <td class="text-color w-4">
+                                            <div class="d-flex">
+                                                <div (confirm-click)="approveWorkFromHome(workFromHomeData._id)"
+                                                    appConfirm [confirmTitle]="'Approve'"
+                                                    [confirmContent]="'Are you sure to Approve this user work From Home?'"
+                                                    title="Approve Work From Home"
+                                                    *ngIf="this.isUpdated == true && (workFromHomeData.workFromHomeStatus == 1)"
+                                                    class="icon icon-shape icon-sm shadow border-radius-md bg-gradient-dark text-center me-2 d-flex align-items-center cursor-pointer justify-content-center">
+                                                    <i class="fa fa-check"></i>
+                                                </div>
+                                                <div (confirm-click)="rejectWFHRemarkModalOpen(workFromHomeData._id)"
+                                                    appConfirm [confirmTitle]="'Reject'"
+                                                    [confirmContent]="'Are you sure to Reject this user work From Home?'"
+                                                    title="Reject Work From Home"
+                                                    *ngIf="this.isUpdated == true && (workFromHomeData.workFromHomeStatus == 1 || workFromHomeData.workFromHomeStatus == 2)"
+                                                    class="icon icon-shape icon-sm shadow border-radius-md bg-gradient-dark text-center me-2 d-flex align-items-center cursor-pointer justify-content-center">
+                                                    <i class="fa fa-remove"></i>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr *ngIf="noData">
+                                        <td colspan="7">
+                                            <h2 class="text-center mb-0">Data Not Found</h2>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="footer-pagination" *ngIf="workFromHomeList?.length > l">
+                                <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal quick-edit-modal fade" tabindex="-1" id="reject-WFH-modal" role="dialog">
+    <div class="modal-dialog model-setting-menu-width" role="document">
+        <div class="card modal-content">
+            <div class="modal-header">
+                <h4 class="text-center mb-2 w-100">Reject Work From Home</h4>
+                <button class="btn bg-gradient-dark cancel-btn popup-close-btn" (click)="rejectWFHRemarkModal()">
+                    <i class="fa fa-times" style="font-size: 10px;"></i>
+                </button>
+            </div>
+            <div class="card-body model-scroll">
+                <div class="row">
+                    <!-- <div class="col-lg-6">
+                        <label for="role" class="required">Rejected By</label>
+                        <div class="mb-3">
+                            <input type="text" class="form-control ps-2" placeholder="Rejected By Name"
+                                [(ngModel)]="approveRejectedByName">
+                            <div *ngIf="submittedWFHRemark && !approveRejectedByName">
+                                <span class="error_msg">Enter Rejected By Name is required.</span>
+                            </div>
+                        </div>
+                    </div> -->
+                    <div class="col-lg-12">
+                        <label for="role" class="required">Remark</label>
+                        <div class="mb-3">
+                            <textarea name="" class="form-control ps-2" id="" [(ngModel)]="remark" placeholder="Remark"
+                                rows="3"></textarea>
+                            <div *ngIf="submittedWFHRemark && !remark">
+                                <span class="error_msg">Enter Remark</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="w-100">
+                    <div class="text-center">
+                        <button type="button" (click)="rejectWorkFromHome()" class="btn bg-gradient-dark my-2">Reject
+                            Work From
+                            Home</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

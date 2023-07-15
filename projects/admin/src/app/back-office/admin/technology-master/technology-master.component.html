@@ -1,0 +1,134 @@
+<div class="">
+    <div class="container-fluid py-4">
+        <div class="row">
+            <div class="mb-3 d-flex" style="justify-content: space-between;">
+                <span class="icon-position"><i class="fa fa-search"></i></span>
+                <input type="text" style="width:30%" (input)="search($event.target.value)"
+                    class="searchTerm form-control" [(ngModel)]="searchTerm" placeholder="Type here...">
+                <div class="right-container" *ngIf="this.isCreated == true">
+                    <button class="btn bg-gradient-dark mb-0 add-btn right-container-button"
+                        (click)="addTechnologyMaster()">
+                        <span class="long-text">Add New</span>
+                        <i class="fas fa-plus" aria-hidden="true"></i></button>
+                </div>
+            </div>
+            <div class="col-lg-8"></div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table" matSort matSortActive="technologyName" matSortDirection="asc"
+                                matSortDisableClear="true" (matSortChange)="sortingList($event)">
+                                <thead>
+                                    <tr>
+                                        <th class="theme-color w-5">No.</th>
+                                        <th class="theme-color w-65" mat-sort-header="technologyName">Technology</th>
+                                        <th class="theme-color w-15">Status</th>
+                                        <th class="theme-color w-15">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr
+                                        *ngFor="let technologyMasterData of technologymasterList | filter : searchTerm | paginate: { itemsPerPage: l, currentPage: p };let technologyIndex = index">
+                                        <td class="text-color">
+                                            {{ l * (p - 1) + technologyIndex +1 }}
+                                        </td>
+                                        <td class="text-color table-fixed-width-maxwidth">
+                                            {{ technologyMasterData.technologyName }}
+                                        </td>
+                                        <td class="text-color">
+                                            <span *ngIf="technologyMasterData.status == 1"
+                                                class="badge bg-gradient-success">Active</span>
+                                            <span *ngIf="technologyMasterData.status == 2"
+                                                class="badge bg-gradient-danger">Deactive</span>
+                                        </td>
+                                        <td class="text-color">
+                                            <ul class="d-flex action-list p-0">
+                                                <li class="action-list-item me-3" *ngIf="this.isUpdated == true">
+                                                    <button class="font-20 btn bg-gradient-dark emp-edit-btn"
+                                                        title="Edit Project"
+                                                        (click)="editTechnologymaster({id :technologyMasterData._id,index:documenttypeIndex})">
+                                                        <i class="fa fa-edit"></i></button>
+                                                </li>
+                                                <li class="action-list-item" *ngIf="this.isDeleted == true">
+                                                    <button *ngIf="technologyMasterData.status == 2"
+                                                        class="dtl-btn btn bg-gradient-dark" title="Active Project"
+                                                        (confirm-click)="statusTechnologymaster({id :technologyMasterData._id,index:documenttypeIndex, status:1})"
+                                                        appConfirm [confirmTitle]="'Active'"
+                                                        [confirmContent]="'Are you sure to Active this Technlogy?'">
+                                                        <i class="fa fa-plus"></i></button>
+                                                    <button *ngIf="technologyMasterData.status == 1"
+                                                        class="dtl-btn btn bg-gradient-dark" title="Deactive Project"
+                                                        (confirm-click)="statusTechnologymaster({id :technologyMasterData._id,index:documenttypeIndex, status:2})"
+                                                        appConfirm [confirmTitle]="'Deactive'"
+                                                        [confirmContent]="'Are you sure to Deactive this Technlogy?'">
+                                                        <i class="fa fa-trash"></i></button>
+                                                </li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                    <tr *ngIf="noData">
+                                        <td colspan="4">
+                                            <h2 class="text-center mb-0">Data Not Found</h2>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="footer-pagination" *ngIf="technologymasterList?.length > l">
+                                <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal quick-edit-modal fade" tabindex="-1" id="add-documenttype-modal" role="dialog">
+    <div class="modal-dialog model-setting-menu-width" role="document">
+        <div class="card modal-content">
+            <div class="modal-header">
+                <h4 class="text-center mb-2 w-100" *ngIf="ISeditTechnologymaster === false">Add New Technology</h4>
+                <h4 class="text-center mb-2 w-100" *ngIf="ISeditTechnologymaster === true">Edit Technology</h4>
+                <button class="btn bg-gradient-dark cancel-btn popup-close-btn" (click)="cancelTechnologymaster()">
+                    <i class="fa fa-times" style="font-size: 10px;"></i>
+                </button>
+            </div>
+            <div class="card-body model-scroll">
+                <form role="form" class="add-employee-form" [formGroup]="technologymasterForm" autocomplete="off">
+                    <div class="p-3 basic-information-form">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <label for="role" class="required">Technology</label>
+                                <div class="mb-3">
+                                    <span class="icon-position"><i class="fa fa-desktop"></i></span>
+                                    <input type="text" class="form-control" formControlName="technologyName"
+                                        placeholder="Technology">
+                                    <div
+                                        *ngIf="submittedTechnologyMasterData && fTechnologynameData.technologyName.errors">
+                                        <div *ngIf="fTechnologynameData.technologyName.errors.required">
+                                            <span class="error_msg">Technology is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="w-100">
+                    <div class="text-center">
+                        <button type="button" *ngIf="ISeditTechnologymaster === false" (click)="saveTechnologymaster()"
+                            class="btn bg-gradient-dark my-2">Save</button>
+                        <button type="button" *ngIf="ISeditTechnologymaster === true" (click)="updateTechnologymaster()"
+                            class="btn bg-gradient-dark my-2">Update</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

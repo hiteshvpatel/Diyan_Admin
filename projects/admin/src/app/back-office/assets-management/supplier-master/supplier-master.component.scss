@@ -1,0 +1,26 @@
+.basic-information-form {
+  border: 1px solid #dedede;
+}
+.text-align-center {
+  text-align: center;
+}
+
+.justify-content-between {
+  justify-content: center !important;
+}
+.model-scroll {
+  max-height: 680px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  margin-top: 0 !important;
+}
+// ::-webkit-scrollbar {
+//   display: none;
+// }
+table td:nth-child(2),
+table td:nth-child(3) {
+  white-space: nowrap;
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

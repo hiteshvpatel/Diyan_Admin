@@ -1,0 +1,13 @@
+.right-container .right-container-button:hover {
+  width: 150px !important;
+}
+.white-space-normal {
+  max-width: 0px;
+  white-space: normal;
+}
+.ellips-line {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 150px;
+}

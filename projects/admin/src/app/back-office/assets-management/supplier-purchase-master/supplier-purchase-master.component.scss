@@ -1,0 +1,29 @@
+.basic-information-form {
+  border: 1px solid #dedede;
+}
+.text-align-center {
+  text-align: center;
+}
+
+.justify-content-between {
+  justify-content: center !important;
+}
+.category-upload {
+  z-index: 1;
+  opacity: 0;
+  position: absolute;
+  width: 100px;
+  height: 40px;
+}
+.btn.btn-delete-icon {
+  background: linear-gradient(310deg, #4a4b4d, #05334d);
+  color: #fff;
+  padding: 0.2rem 0.5rem;
+  border-radius: 6.5rem;
+}
+.recipe-image-control {
+  position: absolute;
+  top: -12px;
+  right: -12px;
+  opacity: 100%;
+}

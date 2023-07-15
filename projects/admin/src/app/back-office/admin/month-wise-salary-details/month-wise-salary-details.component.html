@@ -1,0 +1,149 @@
+<div class="">
+    <div class="container-fluid py-4">
+        <div class="row">
+            <form [formGroup]="searchForm">
+                <div class="d-flex align-items-start mb-3">
+                    <div class="col-lg-3">
+                        <div class="form-group mb-0 mr-20">
+                            <span class="icon-position"><i class="fa fa-user"></i></span>
+                            <input formControlName="name" type="text" class="text-feild form-control"
+                                placeholder="Employee Name" (input)="search($event.target.value)"
+                                [(ngModel)]="searchTerm">
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group mb-0 mr-20">
+                            <ng-select formControlName="month" [items]="monthArray" class="" bindLabel="month"
+                                bindValue="value" placeholder="Select Month" (change)="getMonthlySalaryDetails()">
+                            </ng-select>
+                            <div *ngIf="searchData && fSearchData.month.errors">
+                                <div *ngIf="fSearchData.month.errors.required">
+                                    <span class="error_msg">Please select month for search.</span>
+                                </div>
+                            </div>
+                            <div *ngIf="invalidMonth === true">
+                                <span class="error_msg">Please select valid month for search.</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group mb-0 mr-20">
+                            <ng-select formControlName="year" [items]="yearArray" class="" bindLabel="yearArray"
+                                bindValue="yearArray" placeholder="Select Year" (change)="getMonthlySalaryDetails()">
+                            </ng-select>
+                            <div *ngIf="searchData && fSearchData.year.errors">
+                                <div *ngIf="fSearchData.year.errors.required">
+                                    <span class="error_msg">Please select year for search.</span>
+                                </div>
+                            </div>
+                            <div *ngIf="invalidYear === true">
+                                <span class="error_msg">Please select valid year for search.</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3" *ngIf="selectedSalaryIds.length > 0">
+                        <div class="">
+                            <a class="btn bg-gradient-dark mb-0 add-btn" (click)='downloadMonthlySalarySlip()'>Download
+                                Salary Slip</a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive mb-2">
+                            <table class="table align-items-center mb-0">
+                                <thead>
+                                    <tr>
+                                        <th class="theme-color">
+                                            <div class="form-check">
+                                                <input class="form-check-input" [(ngModel)]="monthlySalarySelectedId"
+                                                    (change)="onClickSelectAllApplicationID()" type="checkbox">
+                                            </div>
+                                        </th>
+                                        <th class="theme-color">
+                                            Employee Name</th>
+                                        <th class="theme-color">
+                                            Total Salary</th>
+
+                                        <th class="theme-color">
+                                            Basic Salary</th>
+                                        <th class="theme-color">
+                                            HRA</th>
+                                        <th class="theme-color" tabindex="0" data-bs-toggle="tooltip"
+                                            title="Professional Tax">
+                                            PT</th>
+                                        <th class="theme-color" tabindex="0" data-bs-toggle="tooltip"
+                                            title="Transport Allowance">
+                                            TA</th>
+                                        <th class="theme-color">
+                                            PF</th>
+                                        <th class="theme-color" tabindex="0" data-bs-toggle="tooltip"
+                                            title="PF Employer">
+                                            PF Emp</th>
+                                        <th class="theme-color" tabindex="0" data-bs-toggle="tooltip"
+                                            title="Miscellaneous Allowance">
+                                            MA</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr
+                                        *ngFor="let monthlySalaryDetailsListData of  monthlySalaryDetailsList| paginate: { itemsPerPage: l, currentPage: p };let salaryIndex=index;">
+                                        <td class=" employe-doc-table-ellips">
+                                            <div class="form-check">
+                                                <input class="form-check-input"
+                                                    [(ngModel)]="monthlySalaryDetailsListData.isSelected"
+                                                    (change)="onClickChange($event,salaryIndex,monthlySalaryDetailsListData._id)"
+                                                    type="checkbox">
+                                            </div>
+                                        </td>
+                                        <td class=" employe-doc-table-ellips">
+                                            {{monthlySalaryDetailsListData?.userName}}
+                                        </td>
+                                        <td class="employe-doc-table-ellips">
+                                            {{monthlySalaryDetailsListData?.finalAmount}}
+                                        </td>
+                                        <td class="employe-doc-table-ellips">
+                                            {{monthlySalaryDetailsListData?.basicSalary}}
+                                        </td>
+                                        <td class="employe-doc-table-ellips">
+                                            {{monthlySalaryDetailsListData?.HRA}}
+                                        </td>
+                                        <td class="employe-doc-table-ellips">
+                                            {{monthlySalaryDetailsListData?.professionalText}}
+                                        </td>
+                                        <td class="employe-doc-table-ellips">
+                                            {{monthlySalaryDetailsListData?.transportAllowance}}
+                                        </td>
+                                        <td class="employe-doc-table-ellips">
+                                            {{monthlySalaryDetailsListData?.PF}}
+                                        </td>
+                                        <td class="employe-doc-table-ellips">
+                                            {{monthlySalaryDetailsListData?.PFEmployer}}
+                                        </td>
+                                        <td class="employe-doc-table-ellips">
+                                            {{monthlySalaryDetailsListData?.miscellaneousAllowances}}
+                                        </td>
+
+                                    </tr>
+                                    <tr *ngIf="noData">
+                                        <td colspan="10">
+                                            <h2 class="text-center mb-0">Data Not Found</h2>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+                        <div class="footer-pagination" *ngIf="monthlySalaryDetailsList?.length > l">
+                            <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

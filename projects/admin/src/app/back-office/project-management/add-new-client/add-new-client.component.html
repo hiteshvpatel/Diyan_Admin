@@ -1,0 +1,582 @@
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-lg-12 m-auto">
+            <!-- basic information Card -->
+            <div class="card mb-4" *ngIf="ISeditClient === false">
+                <div class="card-header pb-0">
+                    <div>
+                        <h2 class="card-title-color">Client Information</h2>
+                    </div>
+                    <form role="form" [formGroup]="clientMasterForm" autocomplete="off">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <label class="required">Client Name</label>
+                                <div class="mb-3">
+                                    <span class="icon-position"><i class="fa fa-building-user"></i></span>
+                                    <input type="text" class="form-control ps-2" formControlName="clientName"
+                                        placeholder="Company Name">
+                                    <div *ngIf="submittedClientData && fClientData.clientName.errors">
+                                        <div *ngIf="fClientData.clientName.errors.required">
+                                            <span class="error_msg">Client Name is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <label class="required">Company</label>
+                                <div class="mb-3">
+                                    <!-- <ng-select [items]="companyActiveDataList" class="" bindLabel="companyName"
+                                        bindValue="_id" placeholder="Select Company" formControlName="companyId">
+                                    </ng-select> -->
+                                    <input type="text" class="form-control ps-2" formControlName="companyName"
+                                        placeholder="Client Name">
+                                    <div *ngIf="submittedClientData && fClientData.companyName.errors">
+                                        <div *ngIf="fClientData.companyName.errors.required">
+                                            <span class="error_msg">Company Name is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <label class="required">Country Name</label>
+                                <div class="mb-3">
+                                    <span class="icon-position"><i class="fa fa-flag"></i></span>
+                                    <!-- <input type="text" class="form-control" formControlName="country"
+                                        placeholder="Country Name"> -->
+                                    <ng-select [items]="countryList" formControlName="country"
+                                        (change)="onCountryChange()" class="" bindLabel="name" bindValue="shortName"
+                                        placeholder="Select Country">
+                                    </ng-select>
+                                    <div *ngIf="submittedClientData && fClientData.country.errors">
+                                        <div *ngIf="fClientData.country.errors.required">
+                                            <span class="error_msg">Country Name is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <label>State</label>
+                                <div class="mb-3">
+                                    <span class="icon-position"><i class="fa fa-city"></i></span>
+                                    <!-- <input type="text" class="form-control" formControlName="state" placeholder="State"> -->
+                                    <ng-select [items]="stateList" formControlName="state" (change)="onStateChange()"
+                                        bindLabel="stateList" bindValue="stateList" placeholder="Select State">
+                                    </ng-select>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <label>City</label>
+                                <div class="mb-3 position-relative">
+                                    <span class="icon-position"><i class="fa fa-city"></i></span>
+                                    <!-- <input type="text" class="form-control" formControlName="city" placeholder="City"> -->
+                                    <ng-select [items]="cityList" formControlName="city" bindLabel="cityList"
+                                        bindValue="cityList" placeholder="Select City">
+                                    </ng-select>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <label>GST IN No.</label>
+                                <div class="mb-3">
+                                    <span class="icon-position"><i class="fa fa-building-user"></i></span>
+                                    <input type="text" class="form-control ps-2" style="text-transform: uppercase"
+                                        formControlName="GSTIN" placeholder="GST No.">
+                                    <div *ngIf="submittedClientData && fClientData.GSTIN.errors">
+                                        <div *ngIf="fClientData.GSTIN.errors.required">
+                                            <span class="error_msg">GST No. is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <label>Pancard</label>
+                                <div class="mb-3">
+                                    <span class="icon-position"><i class="fa fa-building-user"></i></span>
+                                    <input type="text" class="form-control ps-2" style="text-transform: uppercase"
+                                        formControlName="pancard" placeholder="Pancard">
+                                    <div *ngIf="submittedClientData && fClientData.pancard.errors">
+                                        <div *ngIf="fClientData.pancard.errors.required">
+                                            <span class="error_msg">Pancard is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <label>Address</label>
+                                <div class="mb-3 position-relative">
+                                    <span class="icon-position"><i class="fa fa-address-book"></i></span>
+                                    <textarea type="textarea" maxlength="200" class="form-control textarea-height"
+                                        formControlName="address" placeholder="Address"></textarea>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-end">
+                            <div class="text-center">
+                                <button type="button" (click)="SaveClient('save')" *ngIf="ISeditClient === false"
+                                    class="btn bg-gradient-dark my-4">Save</button>
+                                <button type="button" (click)="SaveClient('continue')" *ngIf="ISeditClient === false"
+                                    class="btn bg-gradient-dark my-4">Save & Continue</button>
+                                <button type="button" (click)="UpdateUser()" class="btn bg-gradient-dark my-4"
+                                    *ngIf="ISeditClient === true || profileDetails === true">Update</button>
+                            </div>
+                            <div class="text-center">
+                                <button type="button" (click)="cancelClient()"
+                                    class="btn bg-gradient-danger my-4">Cancel</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- basic information new Card -->
+            <div class="card mb-4" *ngIf="ISeditClient === true">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="d-flex mb-2" style="justify-content:space-between;">
+                                <h4 class="card-title-color">Client Information</h4>
+                                <button class="btn bg-gradient-dark mb-0 height-40 edit-small-btn" style="float: right;"
+                                    (click)="openBasicInfoModel()">
+                                    <i class="fas fa-edit" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <!-- <div class="d-flex"> -->
+                            <div class="for-label w-100">
+                                <div class="d-flex">
+                                    <label class="w-33">Client Name :</label>
+                                    <label class="color-gray client-info-add-fix">
+                                        {{clientDetails?.clientName}} </label>
+                                </div>
+
+                                <div class="d-flex">
+                                    <label class="w-33">Company Name :</label>
+                                    <label class="color-gray client-info-add-fix">
+                                        {{clientDetails?.companyName}} </label>
+                                </div>
+
+                                <div class="d-flex">
+                                    <label class="w-33" style="vertical-align: top;">Country :</label>
+                                    <label class="color-gray client-info-add-fix">
+                                        {{clientDetails?.country}} </label>
+                                </div>
+
+                                <div class="d-flex">
+                                    <label class="w-33" for="">State :</label>
+                                    <label class="color-gray client-info-add-fix">
+                                        {{clientDetails?.state}} </label>
+                                </div>
+
+                                <div class="d-flex">
+                                    <label class="w-33" style="vertical-align: top;">City :</label>
+                                    <label class="color-gray client-info-add-fix">
+                                        {{clientDetails?.city}} </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <!-- <div class="d-flex"> -->
+                            <div class="for-label w-100">
+                                <div class="d-flex">
+                                    <label class="w-33" style="vertical-align: top;">GST No. :</label>
+                                    <label class="color-gray client-info-add-fix">
+                                        {{clientDetails?.GSTIN}} </label>
+                                </div>
+                                <div class="d-flex">
+                                    <label class="w-33" style="vertical-align: top;">Pancard No. :</label>
+                                    <label class="color-gray client-info-add-fix">
+                                        {{clientDetails?.pancard}} </label>
+                                </div>
+                                <div class="d-flex">
+                                    <label class="w-33" style="vertical-align: top;">Address :</label>
+                                    <label class="color-gray client-info-add-fix">
+                                        {{clientDetails?.address}} </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Emergency Contact & Document card -->
+            <div class="row" *ngIf="ISeditClient === true">
+                <div class="col-lg-12">
+                    <div class="card mb-4 card-height">
+                        <div class="card-body pb-2">
+                            <div class="d-flex" style="justify-content:space-between;">
+                                <h2 class="card-title-color">Client's Contact Details</h2>
+                                <button class="btn bg-gradient-dark mb-0 height-40 edit-small-btn" style="float: right;"
+                                    (click)="addClientContact()">
+                                    <div class="edit-add-btn">
+                                        <i class="fas fa-plus" aria-hidden="true"></i>
+                                    </div>
+                                </button>
+                            </div>
+                            <div class="table-responsive p-0">
+                                <table class="table align-items-center mb-0">
+                                    <thead class="w-100">
+                                        <tr>
+                                            <th class="theme-color w-15">
+                                                Name</th>
+
+                                            <th class="theme-color w-10">
+                                                Date of Birth</th>
+                                            <th class="theme-color w-25">
+                                                Email</th>
+                                            <th class="theme-color w-10">
+                                                Mobile No.</th>
+                                            <th class="theme-color w-15">
+                                                Whatsapp Number</th>
+                                            <th class="theme-color w-10">
+                                                Skype ID</th>
+                                            <th class="theme-color w-15">
+                                                Is default</th>
+                                            <!-- <th class="theme-color">
+                                                Remark</th> -->
+                                            <th class="theme-color w-10">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr
+                                            *ngFor="let clientContactData of clientContactList| paginate: { itemsPerPage: l, currentPage: p } ;let clientContactMasterIndex = index">
+                                            <td class="w-15 table-ellips">
+                                                {{clientContactData.firstName}} {{clientContactData.lastName}}
+                                            </td>
+                                            <td class="w-10 table-ellips">
+                                                {{clientContactData.birthDate}}
+                                            </td>
+                                            <td class="w-25 table-ellips text-transform-lowercase">
+                                                {{clientContactData.email | lowercase}}
+                                            </td>
+                                            <td class="w-10 table-ellips">
+                                                {{clientContactData.phone}}
+                                            </td>
+                                            <td class="w-15 table-ellips">
+                                                {{clientContactData.whatsUpNumber}}
+                                            </td>
+                                            <td class="w-10 table-ellips">
+                                                {{clientContactData.skypeId}}
+                                            </td>
+                                            <td class="w-15 table-ellips">
+                                                <button class="btn bg-gradient-dark Default-set-btn cursor-pointer"
+                                                    *ngIf="clientContactData.isDefault === false"
+                                                    (confirm-click)="updateClientIsDefault(clientContactData._id)"
+                                                    appConfirm [confirmTitle]="'Make Default'"
+                                                    [confirmContent]="'Are you sure to set default this contact detail?'">Make
+                                                    default</button>
+                                                <button class="btn bg-gradient-dark mb-0 cursor-pointer"
+                                                    *ngIf="clientContactData.isDefault === true">Default</button>
+                                            </td>
+                                            <td class="w-10 table-ellips">
+                                                <div class="d-flex">
+                                                    <div class="card-header p-0">
+                                                        <button
+                                                            class="mb-0 cursor-pointer btn bg-gradient-dark emp-edit-btn"
+                                                            (click)="editClientContact(clientContactData._id)"><i
+                                                                class="fas fa-edit" aria-hidden="true"></i></button>
+                                                        <button class="mb-0 cursor-pointer btn bg-gradient-dark dtl-btn"
+                                                            *ngIf="clientContactData.status == 2"
+                                                            (confirm-click)="statusClientContact({id :clientContactData._id,index:clientContactData,status:1})"
+                                                            appConfirm [confirmTitle]="'Active'"
+                                                            [confirmContent]="'Are you sure to active this contact detail?'"><i
+                                                                class="fa fa-plus" aria-hidden="true"></i></button>
+                                                        <button class="mb-0 cursor-pointer btn bg-gradient-dark dtl-btn"
+                                                            *ngIf="clientContactData.status == 1"
+                                                            (confirm-click)="statusClientContact({id :clientContactData._id,index:clientContactData,status:2})"
+                                                            appConfirm [confirmTitle]="'Deactive'"
+                                                            [confirmContent]="'Are you sure to Deactive this contact detail?'"><i
+                                                                class="fa fa-trash" aria-hidden="true"></i></button>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div class="footer-pagination" *ngIf="clientContactList?.length > l">
+                                    <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                                </div>
+                                <!-- <pagination-controls (pageChange)="p = $event"></pagination-controls> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal quick-edit-modal fade" tabindex="-1" id="add-client-basic-details-modal" role="dialog">
+    <div class="modal-dialog model-height" role="document">
+        <div class="card modal-content">
+            <div class="modal-header">
+                <h3 class="text-center mb-2 w-100">Edit Client Information</h3>
+                <button class="btn bg-gradient-dark cancel-btn" (click)="closeBasicInfoModel()"
+                    style="float: right;margin-right: 0;border-radius: 50%;padding: 7px 12px;">
+                    <i class="fa fa-times" style="font-size: 10px;"></i>
+                </button>
+            </div>
+            <div class="card-body model-scroll">
+                <form role="form" class="add-employee-form basic-information-form" [formGroup]="clientMasterForm"
+                    autocomplete="off">
+                    <div class="p-3">
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <label class="required">Client Name</label>
+                                <div class="mb-3">
+                                    <span class="icon-position"><i class="fa fa-user"></i></span>
+                                    <input type="text" class="form-control" formControlName="clientName"
+                                        placeholder="Client Name">
+                                    <div *ngIf="submittedClientData && fClientData.clientName.errors">
+                                        <div *ngIf="fClientData.clientName.errors.required">
+                                            <span class="error_msg">Client Name is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <label class="required">Company name</label>
+                                <div class="mb-3">
+                                    <!-- <span class="icon-position"><i class="fa fa-building-o"></i></span> -->
+                                    <!-- <ng-select [items]="companyActiveDataList" class="blood-group-dropdown"
+                                        bindLabel="companyName" bindValue="_id" placeholder="Select Company"
+                                        formControlName="companyId">
+                                    </ng-select> -->
+                                    <input type="text" class="form-control ps-2" formControlName="companyName"
+                                        placeholder="Client Name">
+                                    <div *ngIf="submittedClientData && fClientData.companyName.errors">
+                                        <div *ngIf="fClientData.companyName.errors.required">
+                                            <span class="error_msg">Company name is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <label class="required">Country</label>
+                                <div class="mb-3">
+                                    <span class="icon-position"><i class="fa fa-flag"></i></span>
+                                    <!-- <input type="text" class="form-control" formControlName="country"
+                                        placeholder="Country"> -->
+                                    <ng-select [items]="countryList" formControlName="country"
+                                        (change)="onCountryChange()" class="" bindLabel="name" bindValue="shortName"
+                                        placeholder="Select Country">
+                                    </ng-select>
+                                    <div *ngIf="submittedClientData && fClientData.country.errors">
+                                        <div *ngIf="fClientData.country.errors.required">
+                                            <span class="error_msg">Country Name is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <label class="">State</label>
+                                <div class="mb-3">
+                                    <span class="icon-position"><i class="fa fa-city"></i></span>
+                                    <!-- <input type="text" class="form-control" formControlName="state" placeholder="state"> -->
+                                    <ng-select [items]="stateList" formControlName="state" (change)="onStateChange()"
+                                        bindLabel="stateList" bindValue="stateList" placeholder="Select State">
+                                    </ng-select>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <label class="">city</label>
+                                <div class="mb-3">
+                                    <span class="icon-position"><i class="fa fa-city"></i></span>
+                                    <!-- <input type="text" class="form-control" formControlName="city" placeholder="city"> -->
+                                    <ng-select [items]="cityList" formControlName="city" bindLabel="cityList"
+                                        bindValue="cityList" placeholder="Select City">
+                                    </ng-select>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <label>GST IN No.</label>
+                                <div class="mb-3">
+                                    <span class="icon-position"><i class="fa fa-building-user"></i></span>
+                                    <input type="text" maxlength="15" (keypress)="numberAndletterOnly($event)"
+                                        class="form-control ps-2" formControlName="GSTIN" placeholder="GST No.">
+                                    <div *ngIf="submittedClientData && fClientData.GSTIN.errors">
+                                        <div *ngIf="fClientData.GSTIN.errors.required">
+                                            <span class="error_msg">GST No. is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <label>Pancard</label>
+                                <div class="mb-3">
+                                    <span class="icon-position"><i class="fa fa-building-user"></i></span>
+                                    <input type="text" maxlength="10" (keypress)="numberAndletterOnly($event)"
+                                        class="form-control ps-2" formControlName="pancard" placeholder="Pancard">
+                                    <div *ngIf="submittedClientData && fClientData.pancard.errors">
+                                        <div *ngIf="fClientData.pancard.errors.required">
+                                            <span class="error_msg">Pancard is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <label class="">Address</label>
+                                <div class="mb-3">
+                                    <span class="icon-position"><i class="fa fa-address-book"></i></span>
+                                    <textarea type="textarea" maxlength="200" class="form-control textarea-height"
+                                        formControlName="address" placeholder="Address"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="w-100">
+                    <div class="text-center">
+                        <button type="button" (click)="UpdateClient()" class="btn bg-gradient-dark my-2"
+                            *ngIf="ISeditClient === true">Update</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal quick-edit-modal fade" tabindex="-1" id="add-contact-details-modal" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="card modal-content model-scroll">
+            <div class="card-body">
+                <button class="btn bg-gradient-dark cancel-btn" (click)="cancelClientContact()"
+                    style="float: right;margin-right: 0;border-radius: 50%;padding: 7px 12px;">
+                    <i class="fa fa-times" style="font-size: 10px;"></i>
+                </button>
+                <h3 class="text-align-center mb-4">Client's Contact Details</h3>
+
+                <form role="form" class="add-employee-form basic-information-form" [formGroup]="clientContactMasterForm"
+                    autocomplete="off">
+                    <div class="p-3">
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <label class="required">First Name</label>
+                                <div class="mb-3">
+                                    <span class="icon-position"><i class="fa fa-user"></i></span>
+                                    <input type="text" class="form-control" (keypress)="letterOnly($event)"
+                                        formControlName="firstName" placeholder="First Name" maxlength="25">
+                                    <div *ngIf="submittedClientContactData && fClientContactData.firstName.errors">
+                                        <div *ngIf="fClientContactData.firstName.errors.required">
+                                            <span class="error_msg">First Name is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <label class="required">Last Name</label>
+                                <div class="mb-3">
+                                    <span class="icon-position"><i class="fa fa-user"></i></span>
+                                    <input type="text" class="form-control" (keypress)="letterOnly($event)"
+                                        formControlName="lastName" placeholder="Last Name" maxlength="25">
+                                    <div *ngIf="submittedClientContactData && fClientContactData.lastName.errors">
+                                        <div *ngIf="fClientContactData.lastName.errors.required">
+                                            <span class="error_msg">Last Name is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <label>Date of Birth</label>
+                                <div class="mb-3 position-relative mat-date-picker" (click)="birthDate.open()">
+                                    <span class="icon-position cursor-pointer"><i class="fa fa-calendar"></i></span>
+                                    <input matInput class="form-control" [max]="maxDate"
+                                        placeholder="Please Select Date" [matDatepicker]="birthDate"
+                                        formControlName="birthDate">
+                                    <div class="mat-dat-picker-icon">
+                                        <div class="calendar-icon"><i class="bx bxs-calendar"></i></div>
+                                        <mat-datepicker-toggle matSuffix [for]="birthDate">
+                                        </mat-datepicker-toggle>
+                                        <mat-datepicker #birthDate></mat-datepicker>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <label class="required">Email ID</label>
+                                <div class="mb-3 position-relative">
+                                    <span class="icon-position"><i class="fa fa-envelope"></i></span>
+                                    <input type="email" class="form-control" formControlName="email"
+                                        placeholder="Personal Email Id" maxlength="30">
+                                    <div *ngIf="submittedClientContactData && fClientContactData.email.errors">
+                                        <div *ngIf="fClientContactData.email.errors.required">
+                                            <span class="error_msg">Email ID is Required.</span>
+                                        </div>
+                                        <div
+                                            *ngIf="!fClientContactData.email.errors.valid && !fClientContactData.email.errors.required">
+                                            <span class="error_msg">Please Enter Valid Email ID.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <label class="required">Contact Number</label>
+                                <div class="mb-3 position-relative">
+                                    <span class="icon-position"><i class="fa fa-phone"></i></span>
+                                    <input type="text" class="form-control" formControlName="phone"
+                                        placeholder="Contact Number">
+                                    <div *ngIf="submittedClientContactData && fClientContactData.phone.errors">
+                                        <div *ngIf="fClientContactData.phone.errors.required">
+                                            <span class="error_msg">Contact Number is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <label class="required">Whatsapp Number</label>
+                                <div class="mb-3 position-relative">
+                                    <span class="icon-position"><i class="fa fa-phone"></i></span>
+                                    <input type="text" class="form-control" formControlName="whatsUpNumber"
+                                        placeholder="Whatsapp Number">
+                                    <div *ngIf="submittedClientContactData && fClientContactData.whatsUpNumber.errors">
+                                        <div *ngIf="fClientContactData.whatsUpNumber.errors.required">
+                                            <span class="error_msg">Whatsapp Number is Required.</span>
+                                        </div>
+                                        <div *ngIf="fClientContactData.whatsUpNumber.errors.pattern">
+                                            <span class="error_msg">Whatsapp Number is less than 10 digit.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <label class="">Skype Id</label>
+                                <div class="mb-3">
+                                    <span class="icon-position"><i class="fa fa-skype"></i></span>
+                                    <input type="text" class="form-control" formControlName="skypeId"
+                                        placeholder="Skype Id" aria-label="Email" aria-describedby="email-addon"
+                                        maxlength="25">
+                                    <!-- <div *ngIf="submittedCompanyInfoData && fClientContactData.skypeId.errors">
+                                        <div *ngIf="fClientContactData.skypeId.errors.required">
+                                            <span class="error_msg">Skype ID is Required.</span>
+                                        </div>
+                                    </div> -->
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <label class="">Remark</label>
+                                <div class="mb-3">
+                                    <span class="icon-position"><i class="fa fa-comment"></i></span>
+                                    <textarea type="textarea" maxlength="200" class="form-control textarea-height"
+                                        formControlName="remark" placeholder="Permanent Address"></textarea>
+                                    <!-- <div *ngIf="fClientContactData && fClientContactData.remark.errors">
+                                        <div *ngIf="fClientContactData.remark.errors.required">
+                                            <span class="error_msg">Permanent Address is Required.</span>
+                                        </div>
+                                    </div> -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div class="d-flex justify-content-between">
+                    <div class="text-center">
+                        <button type="button" *ngIf="IsClientContact == false" (click)="saveClientContactDetails()"
+                            class="btn bg-gradient-dark my-4">Save</button>
+                        <button type="button" *ngIf="IsClientContact == true" (click)="updateClientContactDetails()"
+                            class="btn bg-gradient-dark my-4">Update</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

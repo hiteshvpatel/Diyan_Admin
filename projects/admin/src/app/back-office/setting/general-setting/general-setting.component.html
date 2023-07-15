@@ -1,0 +1,188 @@
+<div class="main-content recipe-list-page">
+    <div class="container-fluid">
+        <form [formGroup]="settingForm">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-header card-header-icon">
+                            <div class="card-icon color-ffffff">
+                                <i class="material-icons">add</i>
+                            </div>
+                            <h4 class="card-title">General Setting</h4>
+                        </div>
+
+
+                        <div class="card-body">
+                            <input type="hidden" name="_id" formControlName="_id">
+                            <div class="row">
+                                <div class="col-lg-2">
+                                    <label class="color-808080">Logo </label>
+                                </div>
+                                <div class="col-lg-10">
+                                    <div class="form-group">
+                                        <div class="fileinput fileinput-new">
+                                            <span class="btn btn-round btn-file">
+                                                <input #filelogo type="file" accept='image/x-png,image/gif,image/jpeg'
+                                                    class="z-index-1" (change)="previewlogo(filelogo.files)" />
+                                                <span class="fileinput-new">Select image</span>
+                                            </span>
+                                            <div class="fileinput-new thumbnail" *ngIf="imgURLlogo">
+                                                <img [src]="imgURLlogo"
+                                                    onerror="this.src ='assets/img/no-image-available.jpg'" height="200"
+                                                    class="prev-img">
+                                                <div class="recipe-image-control">
+                                                    <button class="border-0 float-right btn-delete-icon btn m-0"
+                                                        (click)="removeuploadlogo()">
+                                                        <i class="fa fa-times font-14"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-2">
+                                    <label class="color-808080">Side Menu Image </label>
+                                </div>
+                                <div class="col-lg-10">
+                                    <div class="form-group">
+                                        <div class="fileinput fileinput-new">
+                                            <span class="btn btn-round btn-file">
+                                                <input #filemenu type="file" accept='image/x-png,image/gif,image/jpeg'
+                                                    class="z-index-1" (change)="previewmenu(filemenu.files)" />
+                                                <span class="fileinput-new">Select image</span>
+                                            </span>
+                                            <div class="fileinput-new thumbnail" *ngIf="imgURLmenu">
+                                                <img [src]="imgURLmenu"
+                                                    onerror="this.src ='assets/img/no-image-available.jpg'" height="200"
+                                                    class="prev-img">
+                                                <div class="recipe-image-control">
+                                                    <button class="border-0 float-right btn-delete-icon btn m-0"
+                                                        (click)="removeuploadmenu()">
+                                                        <i class="fa fa-times font-14"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-2">
+                                    <label class="color-808080">Login layout Background Image </label>
+                                </div>
+                                <div class="col-lg-10">
+                                    <div class="form-group">
+                                        <div class="fileinput fileinput-new">
+                                            <span class="btn btn-round btn-file">
+                                                <input #fileloginlayoutbg type="file"
+                                                    accept='image/x-png,image/gif,image/jpeg' class="z-index-1"
+                                                    (change)="previewloginlayoutbg(fileloginlayoutbg.files)" />
+                                                <span class="fileinput-new">Select image</span>
+                                            </span>
+                                            <div class="fileinput-new thumbnail" *ngIf="imgURLloginlayoutbg">
+                                                <img [src]="imgURLloginlayoutbg"
+                                                    onerror="this.src ='assets/img/no-image-available.jpg'" height="200"
+                                                    class="prev-img">
+                                                <div class="recipe-image-control">
+                                                    <button class="border-0 float-right btn-delete-icon btn m-0"
+                                                        (click)="removeuploadloginlayoutbg()">
+                                                        <i class="fa fa-times font-14"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-2">
+                                    <label class="color-808080">Colour</label>
+                                </div>
+                                <div class="col-lg-10">
+                                    <ul class="p-0">
+                                        <li class="d-inline-block">
+                                            <div class="form-group">
+                                                <label class="position-relative colour-radiobtn">
+                                                    <div class="fileinput-new thumbnail mr-10">
+                                                        <input type="radio" name="colour" class="mr-15"
+                                                            formControlName="colour" value="1">
+                                                        <span class="checkmark bg-primary"></span>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </li>
+                                        <li class="d-inline-block">
+                                            <div class="form-group">
+                                                <label class="position-relative colour-radiobtn">
+                                                    <div class="fileinput-new thumbnail mr-10">
+                                                        <input type="radio" name="colour" class="mr-15"
+                                                            formControlName="colour" value="2">
+                                                        <span class="checkmark bg-info"></span>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </li>
+                                        <li class="d-inline-block">
+                                            <div class="form-group">
+                                                <label class="position-relative colour-radiobtn">
+                                                    <div class="fileinput-new thumbnail mr-10">
+                                                        <input type="radio" name="colour" class="mr-15"
+                                                            formControlName="colour" value="3">
+                                                        <span class="checkmark bg-success"></span>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </li>
+                                        <li class="d-inline-block">
+                                            <div class="form-group">
+                                                <label class="position-relative colour-radiobtn">
+                                                    <div class="fileinput-new thumbnail mr-10">
+                                                        <input type="radio" name="colour" class="mr-15"
+                                                            formControlName="colour" value="4">
+                                                        <span class="checkmark bg-warning"></span>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </li>
+                                        <li class="d-inline-block">
+                                            <div class="form-group">
+                                                <label class="position-relative colour-radiobtn">
+                                                    <div class="fileinput-new thumbnail mr-10">
+                                                        <input type="radio" name="colour" class="mr-15"
+                                                            formControlName="colour" value="5">
+                                                        <span class="checkmark bg-danger"></span>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </li>
+                                        <li class="d-inline-block">
+                                            <div class="form-group">
+                                                <label class="position-relative colour-radiobtn">
+                                                    <div class="fileinput-new thumbnail">
+                                                        <input type="radio" name="colour" class="mr-15"
+                                                            formControlName="colour" value="6">
+                                                        <span class="checkmark bg-rose"></span>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="" *ngIf="this.isUpdated === true">
+                                <button mat-raised-button [attr.color]="colour" class="text-white"
+                                    (click)="UpdateGeneralSetting()">
+                                    Save
+                                </button>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

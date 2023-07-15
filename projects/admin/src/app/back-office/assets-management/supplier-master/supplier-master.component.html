@@ -1,0 +1,318 @@
+<div class="">
+  <div class="container-fluid py-4">
+    <div class="row">
+      <div class="mb-3 d-flex" style="justify-content: space-between;">
+        <span class="icon-position"><i class="fa fa-search"></i></span>
+        <input type="text" style="width:30%" class="searchTerm form-control" (input)="search($event.target.value)"
+          [(ngModel)]="searchTerm" placeholder="Type here...">
+        <div class="right-container d-flex" *ngIf="this.isCreated == true">
+          <button class="btn bg-gradient-dark mb-0 add-btn" style="width: 166px;" (confirm-click)="generateLedger()"
+            appConfirm [confirmTitle]="'Generate Ledger'" [confirmContent]="'Are you sure want to generate ledger ?'">
+            <span class="long-text">
+              Generate Ledger
+            </span>
+            <!-- <i id="icon-chat" class="fas fa-plus" aria-hidden="true"></i> -->
+          </button>
+          <button class="btn bg-gradient-dark mb-0 ms-2 add-btn right-container-button" (click)="addSupplierMaster()">
+            <span class="long-text">Add New</span>
+            <i class="fas fa-plus" aria-hidden="true"></i></button>
+        </div>
+      </div>
+      <div class="col-lg-8"></div>
+
+    </div>
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table" matSort matSortActive="companyName" matSortDirection="asc" matSortDisableClear="true"
+                (matSortChange)="sortingList($event)">
+                <thead>
+                  <tr>
+                    <th class="theme-color m-95">Action</th>
+                    <th class="theme-color m-45">No.</th>
+                    <th class="theme-color m-300" mat-sort-header="companyName">Company Name</th>
+                    <th class="theme-color m-300" mat-sort-header="contactPersonName">Person Name</th>
+                    <th class="theme-color m-130">Phone</th>
+                    <th class="theme-color m-305" mat-sort-header="email">Email</th>
+                    <!-- <th class="theme-color">Address</th> -->
+                    <!-- <th class="theme-color">Country</th>
+                    <th class="theme-color">State</th>
+                    <th class="theme-color">City</th>
+                    <th class="theme-color">Pincode</th> -->
+                    <th class="theme-color m-170">GST No.</th>
+                    <th class="theme-color m-130">PAN No.</th>
+                    <th class="theme-color m-110">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    *ngFor="let suppliermasterData of suppliermasterList | filter: searchTerm |  paginate: { itemsPerPage: l, currentPage: p };let supplierMasterIndex = index">
+                    <td class="text-color">
+                      <ul class="d-flex align-items-center action-list p-0">
+                        <li class="action-list-item me-3" *ngIf="this.isUpdated == true">
+                          <button class="font-20 btn bg-gradient-dark emp-edit-btn" title="Edit Supplier Master"
+                            (click)="editSupplierMaster({id :suppliermasterData._id,index:supplierMasterIndex})">
+                            <i class="fa fa-edit"></i></button>
+                        </li>
+                        <li class="action-list-item" *ngIf="this.isDeleted == true">
+                          <button *ngIf="suppliermasterData.status == 2" class="dtl-btn btn bg-gradient-dark"
+                            title="Active Supplier Master"
+                            (confirm-click)="statusSupplierMaster({id :suppliermasterData._id,index:supplierMasterIndex, status:1})"
+                            appConfirm [confirmTitle]="'Active'"
+                            [confirmContent]="'Are you sure to Active this Supplier Master?'">
+                            <i class="fa fa-plus"></i></button>
+                          <button *ngIf="suppliermasterData.status == 1" class="dtl-btn btn bg-gradient-dark"
+                            title="Deactive Supplier Master"
+                            (confirm-click)="statusSupplierMaster({id :suppliermasterData._id,index:supplierMasterIndex, status:2})"
+                            appConfirm [confirmTitle]="'Deactive'"
+                            [confirmContent]="'Are you sure to Deactive this Supplier Master?'">
+                            <i class="fa fa-trash"></i></button>
+                        </li>
+                      </ul>
+                    </td>
+                    <td class="text-color">
+                      {{ l * (p - 1) + supplierMasterIndex +1 }}
+                    </td>
+                    <td class="text-color">
+                      {{ suppliermasterData.companyName }}
+                    </td>
+                    <td class="text-color">
+                      {{ suppliermasterData.contactPersonName }}
+                    </td>
+                    <td class="text-color">
+                      {{ suppliermasterData.phone }}
+                    </td>
+                    <td class="text-color abcd" style="text-transform: lowercase;">
+                      {{ suppliermasterData.email }}
+                    </td>
+                    <!-- <td class="text-color">
+                      {{ suppliermasterData.address }}
+                    </td> -->
+                    <!-- <td class="text-color">
+                      {{ suppliermasterData.countryName }}
+                    </td>
+                    <td class="text-color">
+                      {{ suppliermasterData.stateName }}
+                    </td>
+                    <td class="text-color">
+                      {{ suppliermasterData.cityName }}
+                    </td>
+                    <td class="text-color">
+                      {{ suppliermasterData.pincode }}
+                    </td> -->
+                    <td class="text-color abcd2">
+                      {{ suppliermasterData.gstno | uppercase }}
+                    </td>
+                    <td class="text-color">
+                      {{ suppliermasterData.panNo | uppercase }}
+                    </td>
+                    <td class="text-color">
+                      <span *ngIf="suppliermasterData.status == 1" class="badge bg-gradient-success">Active</span>
+                      <span *ngIf="suppliermasterData.status == 2" class="badge bg-gradient-danger">Deactive</span>
+                    </td>
+
+                  </tr>
+                  <tr *ngIf="noData">
+                    <td colspan="9">
+                      <h2 class="text-center mb-0">Data Not Found</h2>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="footer-pagination mt-2" *ngIf="suppliermasterList?.length > l">
+              <pagination-controls (pageChange)="p = $event"></pagination-controls>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal quick-edit-modal fade" tabindex="-1" id="add-supplier-modal" role="dialog">
+  <div class="modal-dialog model-setting-menu-width modal-height" role="document">
+    <div class="card modal-content m-0">
+      <div class="modal-header">
+        <h4 class="text-center mb-2 w-100" *ngIf="IsEditSupplierMaster === false">Add New Supplier Master</h4>
+        <h4 class="text-center mb-2 w-100" *ngIf="IsEditSupplierMaster === true">Edit Supplier Master</h4>
+        <button class="btn bg-gradient-dark cancel-btn popup-close-btn" (click)="cancelSupplierMaster()">
+          <i class="fa fa-times" style="font-size: 10px;"></i>
+        </button>
+      </div>
+      <div class="card-body model-scroll">
+        <form role="form" class="add-employee-form" [formGroup]="supplierMasterForm" autocomplete="off">
+          <div class="p-3 basic-information-form">
+            <div class="row">
+              <div class="col-lg-4">
+                <label for="role" class="required">Company Name</label>
+                <div class="mb-3">
+                  <!-- <span class="icon-position"><i class="fa fa-tasks"></i></span> -->
+                  <input type="text" class="form-control ps-2" formControlName="companyName" placeholder="Company Name"
+                    maxlength="60">
+                  <div *ngIf="submittedSupplierMasterData && fSupplierData.companyName.errors">
+                    <div *ngIf="fSupplierData.companyName.errors.required">
+                      <span class="error_msg">Company Name is Required.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <label for="role">Person Name</label>
+                <div class="mb-3">
+                  <!-- <span class="icon-position"><i class="fa fa-tasks"></i></span> -->
+                  <input type="text" class="form-control ps-2" formControlName="contactPersonName"
+                    placeholder="Person Name" maxlength="40">
+
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <label for="role">Phone</label>
+                <div class="mb-3">
+                  <input type="text" class="form-control ps-2" mask="000-000-0000" formControlName="phone"
+                    placeholder="Phone">
+                  <div *ngIf="submittedSupplierMasterData && fSupplierData.phone.errors">
+                    <div *ngIf="fSupplierData.phone.errors.required">
+                      <span class="error_msg">Phone Number is Required.</span>
+                    </div>
+                    <div *ngIf="fSupplierData.phone.errors.pattern">
+                      <span class="error_msg">Phone Number is less than 10 digit.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <label for="role">Email ID</label>
+                <div class="mb-3">
+                  <input type="text" class="form-control ps-2" formControlName="email" placeholder="Email ID">
+                  <div *ngIf="submittedSupplierMasterData && fSupplierData.email.errors">
+                    <div *ngIf="fSupplierData.email.errors.required">
+                      <span class="error_msg">Email ID is Required.</span>
+                    </div>
+                    <div *ngIf="!fSupplierData.email.errors.valid && !fSupplierData.email.errors.required">
+                      <span class="error_msg">Please Enter Valid Email ID.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <label for="role">Country</label>
+                <div class="mb-3">
+                  <!-- <ng-select [items]="countryList" formControlName="countryId" (change)="onCountryChange()" class=""
+                    bindLabel="name" bindValue="_id" placeholder="Select Country">
+                  </ng-select> -->
+                  <ng-select [items]="countryList" formControlName="country" (change)="onCountryChange()" class=""
+                    bindLabel="name" bindValue="shortName" placeholder="Select Country">
+                  </ng-select>
+                  <!-- <input type="text" class="form-control ps-2" formControlName="country" placeholder="Role Name"> -->
+                  <div *ngIf="submittedSupplierMasterData && fSupplierData.country.errors">
+                    <div *ngIf="fSupplierData.country.errors.required">
+                      <span class="error_msg">Country is Required.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <label for="role">State</label>
+                <div class="mb-3">
+                  <!-- <ng-select [items]="stateList" formControlName="stateId" (change)="onStateChange()" bindLabel="name"
+                    bindValue="_id" placeholder="Select State">
+                  </ng-select> -->
+                  <ng-select [items]="stateList" formControlName="state" (change)="onStateChange()"
+                    bindLabel="stateList" bindValue="stateList" placeholder="Select State">
+                  </ng-select>
+                  <div *ngIf="submittedSupplierMasterData && fSupplierData.state.errors">
+                    <div *ngIf="fSupplierData.state.errors.required">
+                      <span class="error_msg">State is Required.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <label for="role">City</label>
+                <div class="mb-3">
+                  <!-- <ng-select [items]="cityList" formControlName="cityId" bindLabel="name" bindValue="_id"
+                    placeholder="Select City"> -->
+                  <ng-select [items]="cityList" formControlName="city" bindLabel="cityList" bindValue="cityList"
+                    placeholder="Select City">
+                  </ng-select>
+                  <!-- </ng-select> -->
+                  <div *ngIf="submittedSupplierMasterData && fSupplierData.city.errors">
+                    <div *ngIf="fSupplierData.city.errors.required">
+                      <span class="error_msg">City is Required.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <label for="role">Pincode</label>
+                <div class="mb-3">
+                  <input type="text" class="form-control ps-2" formControlName="pincode" placeholder="Pincode"
+                    maxlength="6">
+                  <div *ngIf="submittedSupplierMasterData && fSupplierData.pincode.errors">
+                    <div *ngIf="fSupplierData.pincode.errors.required">
+                      <span class="error_msg">Pincode is Required.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <label for="role">GST No.</label>
+                <div class="mb-3">
+                  <input type="text" maxlength="15" (keypress)="numberAndletterOnly($event)" class="form-control ps-2"
+                    formControlName="gstno" placeholder="GST No." style="text-transform: uppercase">
+                  <div *ngIf="submittedSupplierMasterData && fSupplierData.gstno.errors">
+                    <div *ngIf="fSupplierData.gstno.errors.required">
+                      <span class="error_msg">GST No. is Required.</span>
+                    </div>
+                    <div *ngIf="fSupplierData.gstno.hasError('maxlength')">
+                      <span class="error_msg">Please Enter 15 digit or character GSTIN Number.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <label for="role">PAN No.</label>
+                <div class="mb-3">
+                  <input type="text" maxlength="10" appNumbersOnly (keypress)="numberAndletterOnly($event)"
+                    class="form-control ps-2" style="text-transform: uppercase" formControlName="panNo"
+                    placeholder="PAN No.">
+                  <div *ngIf="submittedSupplierMasterData && fSupplierData.panNo.errors">
+                    <div *ngIf="fSupplierData.panNo.errors.required">
+                      <span class="error_msg">PAN No. is Required.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <label for="role">Address</label>
+                <div class="mb-3">
+                  <textarea class="form-control ps-2" maxlength="200" rows="3" formControlName="address"
+                    placeholder="Address"></textarea>
+                  <!-- <input type="text" class="form-control ps-2" formControlName="address" placeholder="Role Name"> -->
+                  <div *ngIf="submittedSupplierMasterData && fSupplierData.address.errors">
+                    <div *ngIf="fSupplierData.address.errors.required">
+                      <span class="error_msg">Address is Required.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <div class="w-100">
+          <div class="text-center">
+            <button *ngIf="IsEditSupplierMaster === false" (click)="saveSupplierMaster()"
+              class="btn bg-gradient-dark my-2">Save</button>
+            <button *ngIf="IsEditSupplierMaster === true" (click)="updateSupplierMaster()"
+              class="btn bg-gradient-dark my-2">Update</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

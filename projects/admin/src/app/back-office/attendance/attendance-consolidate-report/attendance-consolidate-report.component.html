@@ -1,0 +1,269 @@
+<div class="">
+    <div class="container-fluid py-4">
+        <div class="row">
+            <form [formGroup]="searchForm">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="col-lg-3">
+                        <div class="form-group mb-0 mr-20">
+                            <span class="icon-position"><i class="fa fa-user"></i></span>
+                            <input formControlName="name" type="text" class="text-feild form-control"
+                                placeholder="Employee Name" (input)="searchFilter($event.target.value)"
+                                [(ngModel)]="searchTerm">
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group mb-0 mr-20">
+                            <ng-select formControlName="month" [items]="monthArray" class="" bindLabel="month"
+                                bindValue="value" placeholder="Select Month">
+                            </ng-select>
+                            <div *ngIf="searchData && fSearchData.month.errors">
+                                <div *ngIf="fSearchData.month.errors.required">
+                                    <span class="error_msg">Please select month for search.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group mb-0 mr-20">
+                            <ng-select formControlName="year" [items]="yearArray" class="" bindLabel="yearArray"
+                                bindValue="yearArray" placeholder="Select Year">
+                            </ng-select>
+                            <div *ngIf="searchData && fSearchData.year.errors">
+                                <div *ngIf="fSearchData.year.errors.required">
+                                    <span class="error_msg">Please select year for search.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="">
+                            <a class="btn bg-gradient-dark mb-0" (click)='search()'>
+                                <i class="fas fa-search" aria-hidden="true"></i>&nbsp;&nbsp;Search
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive mb-4">
+                            <table class="table" matSort matSortActive="empNumber" matSortDirection="asc"
+                                matSortDisableClear="true" (matSortChange)="sortingList($event)">
+                                <thead>
+                                    <tr>
+                                        <th class="theme-color" width="5%">No.</th>
+                                        <th class="theme-color" width="10%" mat-sort-header="empNumber">Employee ID</th>
+                                        <th class="theme-color" width="25%" mat-sort-header="employeeName
+                                        ">Employee Name</th>
+                                        <th class="theme-color" width="10%">Total Days</th>
+                                        <th class="theme-color" width="10%">Leave Days</th>
+                                        <th class="theme-color" width="10%">Holidays</th>
+                                        <th class="theme-color" width="10%">Present Days</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr
+                                        *ngFor="let consolidateReportdata of consolidateReport | filter : searchTerm | paginate: { itemsPerPage: l, currentPage: p };let leaveIndex = index">
+                                        <td class="text-color">{{ l * (p - 1) + leaveIndex +1 }}</td>
+                                        <td class="text-color">{{consolidateReportdata.empNumber}}</td>
+                                        <td class="text-color">{{consolidateReportdata.employeeName}}</td>
+                                        <td class="text-color">{{consolidateReportdata.totalDaysOfMonth}}</td>
+                                        <td class="text-color">
+                                            <a
+                                                (click)="getTotalLeaves({employeeId:consolidateReportdata.employeeId,month:consolidateReportdata.month,year:consolidateReportdata.year})">{{consolidateReportdata.totalLeave}}</a>
+                                        </td>
+                                        <td class="text-color">
+                                            <a
+                                                (click)="getTotalHolidays({month:consolidateReportdata.month,year:consolidateReportdata.year})">{{consolidateReportdata.totalHolidays}}</a>
+                                        </td>
+                                        <td class="text-color">
+                                            <a
+                                                (click)="getPresentDays({employeeId:consolidateReportdata.employeeId,month:consolidateReportdata.month,year:consolidateReportdata.year})">{{consolidateReportdata.TotalPresentDay}}</a>
+                                        </td>
+                                    </tr>
+                                    <tr *ngIf="noData">
+                                        <td colspan="6">
+                                            <h2 class="text-center mb-0">Data Not Found</h2>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="footer-pagination" *ngIf="consolidateReport?.length > l">
+                            <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal quick-edit-modal fade" tabindex="-1" id="leave-days-modal" role="dialog">
+    <div class="modal-dialog model-setting-product-width" role="document">
+        <div class="card modal-content">
+            <div class="modal-header">
+                <h4 class="text-center mb-2 w-100">Leave Days</h4>
+                <button class="btn bg-gradient-dark cancel-btn popup-close-btn"
+                    (click)="cancelModal('leave-days-modal')">
+                    <i class="fa fa-times" style="font-size: 10px;"></i>
+                </button>
+            </div>
+            <div class="card-body model-scroll">
+                <div class="table-responsive mb-4">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th class="theme-color">No.</th>
+                                <th class="theme-color">Date</th>
+                                <th class="theme-color">Leave Type</th>
+                                <th class="theme-color">Reason</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let leaveData of getTotalLeavebyEmployeeId;let leaveIndex = index">
+                                <td class="text-color">{{leaveIndex +1 }}</td>
+                                <td class="text-color">{{leaveData.date}}</td>
+                                <td class="text-color">
+                                    <span>
+                                        {{leaveData.leaveTypeName}}
+                                    </span>
+                                    <span *ngIf="leaveData.lossOfPayType">
+                                        {{leaveData.lossOfPayType == 1 ? '(Casual)' : leaveData.lossOfPayType == 2 ?
+                                        '(Sick)' : leaveData.lossOfPayType == 3 ? '(Emergency)' : ''}}
+                                    </span>
+                                </td>
+                                <td class="text-color">{{leaveData.reason}}</td>
+                            </tr>
+                            <tr *ngIf="noData">
+                                <td colspan="4">
+                                    <h2 class="text-center mb-0">Data Not Found</h2>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="w-100">
+                    <div class="text-center">
+
+                        <button type="button" (click)="cancelModal('leave-days-modal')"
+                            class="btn bg-gradient-dark my-2">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal quick-edit-modal fade" tabindex="-1" id="holidays-modal" role="dialog">
+    <div class="modal-dialog model-setting-product-width" role="document">
+        <div class="card modal-content">
+            <div class="modal-header">
+                <h4 class="text-center mb-2 w-100">Holidays</h4>
+                <button class="btn bg-gradient-dark cancel-btn popup-close-btn" (click)="cancelModal('holidays-modal')">
+                    <i class="fa fa-times" style="font-size: 10px;"></i>
+                </button>
+            </div>
+            <div class="card-body model-scroll">
+                <div class="table-responsive mb-4">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th class="theme-color">No.</th>
+                                <th class="theme-color">Date</th>
+                                <th class="theme-color">Holiday Type</th>
+                                <th class="theme-color">Day</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let holidayData of getTotalHoliday;let holidayIndex = index">
+                                <td class="text-color">{{holidayIndex +1 }}</td>
+                                <td class="text-color">{{holidayData.holidayDate}}</td>
+                                <td class="text-color">
+                                    <span *ngIf="holidayData.HolidayType === 1">Public</span>
+                                    <span *ngIf="holidayData.HolidayType === 2">Regular</span>
+                                </td>
+                                <td class="text-color">
+                                    <span *ngIf="holidayData.HolidayType === 1">{{holidayData.Holiday}}</span>
+                                    <span *ngIf="holidayData.HolidayType === 2">{{holidayData.Day}}</span>
+                                </td>
+                            </tr>
+                            <tr *ngIf="noData">
+                                <td colspan="4">
+                                    <h2 class="text-center mb-0">Data Not Found</h2>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="w-100">
+                    <div class="text-center">
+
+                        <button type="button" (click)="cancelModal('holidays-modal')" class="btn bg-gradient-dark my-2">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal quick-edit-modal fade" tabindex="-1" id="presentDays-modal" role="dialog">
+    <div class="modal-dialog model-setting-product-width" role="document">
+        <div class="card modal-content">
+            <div class="modal-header">
+                <h4 class="text-center mb-2 w-100">Present Days</h4>
+                <button class="btn bg-gradient-dark cancel-btn popup-close-btn"
+                    (click)="cancelModal('presentDays-modal')">
+                    <i class="fa fa-times" style="font-size: 10px;"></i>
+                </button>
+            </div>
+            <div class="card-body model-scroll">
+                <div class="table-responsive mb-4">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th class="theme-color">No.</th>
+                                <th class="theme-color">Date</th>
+                                <th class="theme-color">Check In</th>
+                                <th class="theme-color">Check Out</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let presentData of getPresentDay;let presentIndex = index">
+                                <td class="text-color">{{presentIndex +1 }}</td>
+                                <td class="text-color">{{presentData.date}}-{{presentData.month}}-{{presentData.year}}
+                                </td>
+                                <td class="text-color">{{presentData.checkInTimeInDate | date:'shortTime':'UTC' }}</td>
+                                <td class="text-color">{{presentData.checkOutTimeInDate | date:'shortTime':'UTC' }}</td>
+                            </tr>
+                            <tr *ngIf="noData">
+                                <td colspan="4">
+                                    <h2 class="text-center mb-0">Data Not Found</h2>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="w-100">
+                    <div class="text-center">
+                        <button type="button" (click)="cancelModal('presentDays-modal')"
+                            class="btn bg-gradient-dark my-2">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,153 @@
+<div class="container-fluid py-4">
+  <div class="row">
+    <div class="d-flex">
+      <div class="mb-4 d-flex" style="width: 100%;" [formGroup]="searchForm">
+        <div class="col-lg-4 mr-20">
+          <span class="icon-position"><i class="fa fa-search"></i></span>
+          <input type="text" class="searchTerm form-control" (input)="searchFilter($event.target.value)"
+            [ngModelOptions]="{standalone: true}" [(ngModel)]="searchTerm" placeholder="Type here...">
+        </div>
+        <div class="col-lg-4 mr-20">
+          <div class="form-group mb-0 position-relative mat-date-picker" (click)="fromDate.open()">
+
+            <span class="icon-position cursor-pointer"><i class="fa fa-calendar"></i></span>
+            <input matInput class="form-control" (dateChange)="onfromDateChange()" placeholder="Please Select From Date"
+              [matDatepicker]="fromDate" formControlName="fromDate">
+            <div class="mat-dat-picker-icon">
+              <div class="calendar-icon"><i class="bx bxs-calendar"></i></div>
+              <mat-datepicker-toggle matSuffix [for]="fromDate"></mat-datepicker-toggle>
+              <mat-datepicker #fromDate></mat-datepicker>
+            </div>
+
+            <!-- <span class="icon-position cursor-pointer" (click)="fromDate.toggle()"><i class="fa fa-calendar"></i></span>
+            <input class="form-control" (dateSelect)="onfromDateChange($event)" (input)="onfromDateChange($event)"
+              (click)="fromDate.toggle()" formControlName="fromDate" placeholder="From Date (YYYY-MM-DD)" name="dp"
+              #fromDate="ngbDatepicker" ngbDatepicker> -->
+
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="form-group mb-0 position-relative mat-date-picker" (click)="toDate.open()">
+            <span class="icon-position cursor-pointer"><i class="fa fa-calendar"></i></span>
+            <input matInput class="form-control" placeholder="Please Select To Date"
+              [min]="this.searchForm.value.fromDate" [matDatepicker]="toDate" formControlName="toDate">
+            <div class="mat-dat-picker-icon">
+              <div class="calendar-icon"><i class="bx bxs-calendar"></i></div>
+              <mat-datepicker-toggle matSuffix [for]="toDate"></mat-datepicker-toggle>
+              <mat-datepicker #toDate></mat-datepicker>
+            </div>
+            <!-- <div class="form-group mb-0">
+            <span class="icon-position cursor-pointer" (click)="toDate.toggle()"><i class="fa fa-calendar"></i></span>
+            <input class="form-control" (input)="ontoDateChange($event)" (dateSelect)="ontoDateChange($event)"
+              (click)="toDate.toggle()" formControlName="toDate" placeholder="To Date (YYYY-MM-DD)" name="dp"
+              #toDate="ngbDatepicker" ngbDatepicker> -->
+          </div>
+        </div>
+        <!-- <div class="col-lg-4"></div> -->
+
+        <!-- <div>
+              <a class="btn bg-gradient-dark mb-0 add-btn" (click)="addSupplierMaster()"><i class="fas fa-plus"
+                  aria-hidden="true"></i>&nbsp;&nbsp;Add New</a>
+            </div> -->
+        <!-- <div class="col-lg-8"></div> -->
+      </div>
+      <div style="width: 100%;">
+        <a class="btn bg-gradient-dark mb-0 add-btn" (click)="getPendingAttendanceList()"><i class="fas fa-search"
+            aria-hidden="true"></i>&nbsp;&nbsp;Search</a>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table" matSort matSortActive="empNumber" matSortDirection="asc" matSortDisableClear="true"
+              (matSortChange)="sortingList($event)">
+              <thead>
+                <tr>
+                  <!-- <th class="theme-color">No.</th> -->
+                  <th class="theme-color" mat-sort-header="fullName">User Name</th>
+                  <th class="theme-color">Reason</th>
+                  <th class="theme-color">Date</th>
+                  <th class="theme-color">Check In Time</th>
+                  <th class="theme-color">Check Out Time</th>
+                  <!-- <th class="theme-color">Day Type</th> -->
+                  <th class="theme-color">Status</th>
+                </tr>
+              </thead>
+              <tbody class="">
+                <tr
+                  *ngFor="let pendingAttendanceData of pendingAttendanceList | filter : searchTerm |  paginate: { itemsPerPage: l, currentPage: p };let pendingAttendanceIndex = index">
+                  <td class="text-color">
+                    {{ pendingAttendanceData.fullName }}
+                  </td>
+                  <td class="text-color pending-att-table-fix-width"
+                    title="{{ pendingAttendanceData.manualAttendanceReason }}">
+                    {{ pendingAttendanceData.manualAttendanceReason }}
+                  </td>
+                  <td class="text-color">
+                    {{ pendingAttendanceData.date+'/'+pendingAttendanceData.month+'/'+pendingAttendanceData.year }}
+                  </td>
+                  <td class="text-color">
+                    <span *ngIf="pendingAttendanceData.isCheckIn === true">{{ pendingAttendanceData.checkInTimeInDate |
+                      date : 'hh:mm a':'+0000'}}</span>
+                  </td>
+                  <td class="text-color">
+                    <span *ngIf="pendingAttendanceData.isCheckOut === true">{{ pendingAttendanceData.checkOutTimeInDate
+                      | date : 'hh:mm a':'+0000'}}</span>
+                  </td>
+
+                  <td class="text-color" *ngIf="this.isUpdated == true">
+
+                    <!-- <div class="d-flex">
+                      <div (confirm-click)="approveEmployeeShortLeave(empShortLeaveListData._id)"
+                          appConfirm [confirmTitle]="'Approve Pending Attendance'"
+                          [confirmContent]="'Are you sure to Approve this user Pending Attendance?'"
+                          title="Approve Short Leave"
+                          *ngIf="empShortLeaveListData.shortLeavestatus == 1"
+                          class="icon icon-shape icon-sm shadow border-radius-md bg-gradient-dark text-center me-2 d-flex align-items-center cursor-pointer justify-content-center">
+                          <i class="fa fa-check"></i>
+                      </div>
+                      <div (confirm-click)="rejectEmployeeShortLeaveModalOpen(empShortLeaveListData._id)"
+                          appConfirm [confirmTitle]="'Reject Short Leave'"
+                          [confirmContent]="'Are you sure to Reject this user Short Leave?'"
+                          title="Reject Short Leave"
+                          *ngIf="empShortLeaveListData.shortLeavestatus == 1 || empShortLeaveListData.shortLeavestatus == 2"
+                          class="icon icon-shape icon-sm shadow border-radius-md bg-gradient-dark text-center me-2 d-flex align-items-center cursor-pointer justify-content-center">
+                          <i class="fa fa-remove"></i>
+                      </div>
+                  </div> -->
+
+                    <ng-select [items]="statusList" class=""
+                      *ngIf="pendingAttendanceData.isApprovedManualAttendance == 1"
+                      (change)="updateStatus($event, pendingAttendanceData._id)" [id]="pendingAttendanceData._id"
+                      bindLabel="label" bindValue="id"
+                      [disabled]="pendingAttendanceData.isCheckIn == false || pendingAttendanceData.isCheckOut === false"
+                      [(ngModel)]="pendingAttendanceData.isApprovedManualAttendance" placeholder="Select Status">
+                    </ng-select>
+                    <span class="badge"
+                      [ngClass]="pendingAttendanceData.isApprovedManualAttendance == 2 ? 'bg-gradient-success' : pendingAttendanceData.isApprovedManualAttendance == 3 ? 'bg-gradient-danger' : ''"
+                      *ngIf="pendingAttendanceData.isApprovedManualAttendance == 2 || pendingAttendanceData.isApprovedManualAttendance == 3">
+                      {{ pendingAttendanceData.isApprovedManualAttendance == 2 ? 'Approved' :
+                      pendingAttendanceData.isApprovedManualAttendance == 3 ? 'Rejected' : '' }}
+                    </span>
+
+                  </td>
+                </tr>
+                <tr *ngIf="noData">
+                  <td colspan="9">
+                    <h2 class="text-center mb-0">Data Not Found</h2>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="footer-pagination" *ngIf="pendingAttendanceList?.length > l">
+              <pagination-controls (pageChange)="p = $event"></pagination-controls>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

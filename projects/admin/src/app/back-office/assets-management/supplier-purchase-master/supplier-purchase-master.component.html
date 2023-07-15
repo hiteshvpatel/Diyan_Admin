@@ -1,0 +1,80 @@
+<div class="">
+  <div class="container-fluid py-4">
+    <div class="row">
+      <div class="mb-3 d-flex" style="justify-content: space-between;">
+        <span class="icon-position"><i class="fa fa-search"></i></span>
+        <input type="text" style="width:30%" class="searchTerm form-control" (input)="search($event.target.value)"
+          placeholder="Type here...">
+        <div class="right-container" *ngIf="this.isCreated == true">
+          <button class="btn bg-gradient-dark mb-0 add-btn right-container-button"
+            routerLink="/admin/assets-management/add-new-supplier-purchase-master">
+            <span class="long-text">Add New</span>
+            <i class="fas fa-plus" aria-hidden="true"></i></button>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="table-responsive mb-2">
+              <table class="table product-master-tabl" matSort matSortActive="supplierName" matSortDirection="asc"
+                matSortDisableClear="true" (matSortChange)="sortingList($event)">
+                <thead [ngClass]="{'text-primary': storageService.getValue('colour') === '1',
+                         'text-info': storageService.getValue('colour') === '2',
+                         'text-success': storageService.getValue('colour') === '3',
+                         'text-warning': storageService.getValue('colour') === '4',
+                         'text-danger': storageService.getValue('colour') === '5',
+                         'text-rose': storageService.getValue('colour') === '6' }">
+                  <tr>
+                    <th class="col-lg-2 theme-color">Action</th>
+                    <th class="col-lg-1 theme-color">No.</th>
+                    <th class="col-lg-4 theme-color" mat-sort-header="supplierName">Supplier Name</th>
+                    <th class="col-lg-2 theme-color" mat-sort-header="purchaseDate">Purchase Date</th>
+                    <th class="col-lg-3 theme-color" mat-sort-header="InvoiceNumber">Invoice Number</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    *ngFor="let supplierPurchaseData of supplierPurchaseList | paginate: { itemsPerPage: l, currentPage: p };let productIndex = index">
+                    <td class="text-color">
+                      <ul class="d-flex align-items-center action-list p-0">
+                        <li class="action-list-item me-3" *ngIf="this.isUpdated == true">
+                          <button class="font-20 btn bg-gradient-dark emp-edit-btn" title="Edit Product Master"
+                            routerLink="/admin/assets-management/edit-supplier-purchase-master/{{supplierPurchaseData._id}}">
+                            <i class="fa fa-edit"></i></button>
+                        </li>
+                      </ul>
+                    </td>
+                    <td class="text-color">
+                      {{ l * (p - 1) + productIndex +1 }}
+                    </td>
+                    <td class="text-color doc-master-tbl">
+                      {{ supplierPurchaseData.supplierName }}
+                    </td>
+                    <td class="text-color doc-master-tbl">
+                      {{ supplierPurchaseData.purchaseDate }}
+                    </td>
+                    <td class="text-color">
+                      {{ supplierPurchaseData.InvoiceNumber | uppercase }}
+                    </td>
+
+                  </tr>
+                  <tr *ngIf="noData">
+                    <td colspan="5">
+                      <h2 class="text-center mb-0">Data Not Found</h2>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+            </div>
+            <div class="footer-pagination" *ngIf="supplierPurchaseList?.length > l">
+              <pagination-controls (pageChange)="p = $event"></pagination-controls>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

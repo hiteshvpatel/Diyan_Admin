@@ -1,0 +1,150 @@
+<style>
+    table {
+        table-layout: fixed;
+        width: 100% !important;
+    }
+
+    td {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+</style>
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="d-flex">
+            <div class="mb-4 d-flex" style="width: 100%;" [formGroup]="searchForm">
+                <div class="col-lg-4 mr-20">
+                    <div class="form-group mb-0 position-relative mat-date-picker" (click)="fromDate.open()">
+
+                        <span class="icon-position cursor-pointer"><i class="fa fa-calendar"></i></span>
+                        <input matInput class="form-control" placeholder="Please Select From Date"
+                            [matDatepicker]="fromDate" formControlName="fromDate">
+                        <div class="mat-dat-picker-icon">
+                            <div class="calendar-icon"><i class="bx bxs-calendar"></i></div>
+                            <mat-datepicker-toggle matSuffix [for]="fromDate">
+                            </mat-datepicker-toggle>
+                            <mat-datepicker #fromDate></mat-datepicker>
+                        </div>
+
+
+                        <!-- <span class="icon-position cursor-pointer" (click)="fromDate.toggle()"><i
+                                class="fa fa-calendar"></i></span>
+                        <input class="form-control" (dateSelect)="onfromDateChange($event)"
+                            (input)="onfromDateChange($event)" (click)="fromDate.toggle()" formControlName="fromDate"
+                            placeholder="From Date (YYYY-MM-DD)" name="dp" #fromDate="ngbDatepicker" ngbDatepicker> -->
+
+                        <div *ngIf="submittedAccountListData && fSearchFormData.fromDate.errors">
+                            <div *ngIf="fSearchFormData.fromDate.errors.required">
+                                <span class="error_msg">From Date is Required.</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-lg-4 mr-20">
+
+                    <div class="form-group mb-0 position-relative mat-date-picker" (click)="toDate.open()">
+
+                        <span class="icon-position cursor-pointer"><i class="fa fa-calendar"></i></span>
+                        <input matInput class="form-control" placeholder="Please Select From Date"
+                            [matDatepicker]="toDate" formControlName="toDate">
+                        <div class="mat-dat-picker-icon">
+                            <div class="calendar-icon"><i class="bx bxs-calendar"></i></div>
+                            <mat-datepicker-toggle matSuffix [for]="toDate">
+                            </mat-datepicker-toggle>
+                            <mat-datepicker #toDate></mat-datepicker>
+                        </div>
+
+                        <!-- <div class="form-group mb-0">
+                        <span class="icon-position cursor-pointer" (click)="toDate.toggle()"><i
+                                class="fa fa-calendar"></i></span>
+                        <input class="form-control" (input)="ontoDateChange($event)"
+                            (dateSelect)="ontoDateChange($event)" (click)="toDate.toggle()" formControlName="toDate"
+                            placeholder="To Date (YYYY-MM-DD)" name="dp" #toDate="ngbDatepicker" ngbDatepicker> -->
+                        <!-- <div *ngIf="submitterSearchFormData === true">
+                            <span class="error_msg">Please Enter Valid Date.</span>
+                        </div> -->
+                    </div>
+                </div>
+                <div class="col-lg-4 mr-20">
+                    <ng-select [items]="activeGroupMasterList" formControlName="groupId" bindLabel="groupName"
+                        bindValue="_id" placeholder="Select Group" (change)="onGroupChange($event)">
+                    </ng-select>
+                </div>
+                <div class="col-lg-4 mr-20">
+                    <ng-select [items]="ledgerMasterListByGroupId" formControlName="ledgerId" bindLabel="ledger"
+                        bindValue="_id" placeholder="Select Ledger">
+                    </ng-select>
+                </div>
+            </div>
+            <div style="width: 100%;">
+                <a class="btn bg-gradient-dark mb-0 add-btn" *ngIf="this.isCreated == true" (click)="getAccountList()">
+                    <i class="fas fa-search" aria-hidden="true"></i>&nbsp;&nbsp;Search
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table" matSort matSortActive="transactionDate" matSortDirection="asc"
+                            matSortDisableClear="true" (matSortChange)="sortingList($event)">
+                            <thead>
+                                <tr>
+                                    <!-- <th class="theme-color">No.</th> -->
+                                    <th class="theme-color" mat-sort-header="transactionDate">Transaction Date</th>
+                                    <th class="theme-color">Is Credit</th>
+                                    <th class="theme-color" mat-sort-header="value">Value</th>
+                                    <th class="theme-color" mat-sort-header="groupName">Group</th>
+                                    <th class="theme-color" mat-sort-header="ledger">Ledger</th>
+                                    <th class="theme-color">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    *ngFor="let accountMasterData of accountMasterList |  paginate: { itemsPerPage: l, currentPage: p }">
+                                    <td class="text-color">
+                                        {{ accountMasterData.transactionDate | date : 'MMM dd, yyyy' }}
+                                    </td>
+                                    <td class="text-color">
+                                        {{ accountMasterData.iscredit }}
+                                    </td>
+                                    <td class="text-color  designation-account-list">
+                                        {{ accountMasterData.value }}
+                                    </td>
+                                    <td class="text-color">
+                                        {{ accountMasterData.groupName }}
+                                    </td>
+                                    <td class="text-color">
+                                        {{ accountMasterData.ledger }}
+                                    </td>
+                                    <td class="text-color" *ngIf="this.isDeleted == true">
+                                        <button class="dtl-btn btn bg-gradient-dark" title="Delete"
+                                            (confirm-click)="deleteAccountData(accountMasterData._id)" appConfirm
+                                            [confirmTitle]="'Delete'"
+                                            [confirmContent]="'Are you sure to Delete this Account Data?'">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </td>
+
+
+                                </tr>
+                                <tr *ngIf="noData">
+                                    <td colspan="6">
+                                        <h2 class="text-center mb-0">Data Not Found</h2>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="footer-pagination" *ngIf="accountMasterList?.length > l">
+                            <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

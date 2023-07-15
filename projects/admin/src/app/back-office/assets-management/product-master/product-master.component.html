@@ -1,0 +1,671 @@
+<div class="">
+    <div class="container-fluid py-4">
+        <div class="row">
+            <div class="mb-3 d-flex" style="justify-content: space-between;">
+                <span class="icon-position"><i class="fa fa-search"></i></span>
+                <input type="text" style="width:30%" class="searchTerm form-control"
+                    (input)="search($event.target.value)" [(ngModel)]="searchTerm" placeholder="Type here...">
+                <div class="right-container" *ngIf="this.isCreated == true">
+                    <button class="btn bg-gradient-dark mb-0 add-btn right-container-button" (click)="addProduct()">
+                        <span class="long-text">Add New</span>
+                        <i class="fas fa-plus" aria-hidden="true"></i></button>
+                </div>
+            </div>
+            <div class="col-lg-8"></div>
+            <!-- <div class="col-lg-4">
+                <div class="">
+                    <div class="float-right ml-15 mr-15" *ngIf="this.isCreated === true">
+                        <a mat-raised-button (click)="addProduct()" [ngClass]="{'hover-text-primary': storageService.getValue('colour') === '1',
+                           'hover-text-info': storageService.getValue('colour') === '2',
+                           'hover-text-success': storageService.getValue('colour') === '3',
+                           'hover-text-warning': storageService.getValue('colour') === '4',
+                           'hover-text-danger': storageService.getValue('colour') === '5',
+                           'hover-text-rose': storageService.getValue('colour') === '6' }">Add New</a>
+                    </div>
+                </div>
+            </div> -->
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <!-- <div class="card-header align-items-center"
+                       [ngClass]="{'card-header-primary': storageService.getValue('colour') === '1',
+                           'card-header-info': storageService.getValue('colour') === '2',
+                           'card-header-success': storageService.getValue('colour') === '3',
+                           'card-header-warning': storageService.getValue('colour') === '4',
+                           'card-header-danger': storageService.getValue('colour') === '5',
+                           'card-header-rose': storageService.getValue('colour') === '6' }">
+                      <div class="row">
+                          <div class="col-lg-6">
+                              <label class="form-group text-white">
+                                  Show &nbsp;
+                                  <select class="custom-select custom-select-sm form-control form-control-sm" [(ngModel)]="mySelect" (change)="itemsPerPage()">
+                                      <option value="5">5</option>
+                                      <option value="10" selected>10</option>
+                                      <option value="25">25</option>
+                                      <option value="50">50</option>
+                                  </select>&nbsp; entries
+                              </label>
+                          </div>
+                          <div class="col-lg-6">
+                              <div class="float-right text-white text-end">
+
+                                  <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                              </div>
+                          </div>
+                      </div>
+                  </div> -->
+                    <div class="card-body">
+                        <div class="table-responsive mb-2">
+                            <table class="table" matSort matSortActive="productName" matSortDirection="asc"
+                                matSortDisableClear="true" (matSortChange)="sortingList($event)">
+                                <thead [ngClass]="{'text-primary': storageService.getValue('colour') === '1',
+                           'text-info': storageService.getValue('colour') === '2',
+                           'text-success': storageService.getValue('colour') === '3',
+                           'text-warning': storageService.getValue('colour') === '4',
+                           'text-danger': storageService.getValue('colour') === '5',
+                           'text-rose': storageService.getValue('colour') === '6' }">
+                                    <tr>
+                                        <th class="w-10 theme-color">Action</th>
+                                        <th class="w-5 theme-color">No.</th>
+                                        <th class="w-20 theme-color" mat-sort-header="companyName">Supplier Name</th>
+                                        <th class="w-20 theme-color" mat-sort-header="categoryName">Category Name</th>
+                                        <th class="w-15 theme-color" mat-sort-header="productName">Product Name</th>
+                                        <th class="w-15 theme-color" mat-sort-header="productNo">Product No.</th>
+                                        <th class=" w-15 theme-color">Barcode</th>
+                                        <th class=" w-15 theme-color">Assigned Name</th>
+                                        <th class=" w-15 theme-color">Invoice</th>
+                                        <th class="theme-color" style="width:101px;">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr
+                                        *ngFor="let productData of productList | filter: searchTerm | paginate: { itemsPerPage: l, currentPage: p };let productIndex = index">
+                                        <td class="text-color">
+                                            <ul class="d-flex align-items-center action-list p-0">
+                                                <li class="action-list-item me-3" *ngIf="this.isUpdated == true">
+                                                    <button class="font-20 btn bg-gradient-dark emp-edit-btn"
+                                                        title="Edit Product Master"
+                                                        (click)="editProductmaster({id :productData._id,index:productIndex})">
+                                                        <i class="fa fa-edit"></i></button>
+                                                </li>
+                                                <li class="action-list-item me-3">
+                                                    <button class="font-20 btn bg-gradient-dark emp-edit-btn"
+                                                        title="View Product History"
+                                                        (click)="viewProductHistory(productData._id)">
+                                                        <i class="fa fa-eye"></i></button>
+                                                </li>
+                                                <li class="action-list-item" *ngIf="this.isDeleted == true">
+                                                    <button *ngIf="productData.status == 2"
+                                                        class="dtl-btn btn bg-gradient-dark"
+                                                        title="Active Product Master"
+                                                        (confirm-click)="statusProduct({id :productData._id,index:productIndex, status:1})"
+                                                        appConfirm [confirmTitle]="'Active'"
+                                                        [confirmContent]="'Are you sure to Active this Product Master?'">
+                                                        <i class="fa fa-plus"></i></button>
+                                                    <button *ngIf="productData.status == 1"
+                                                        class="dtl-btn btn bg-gradient-dark"
+                                                        title="Deactive Product Master"
+                                                        (confirm-click)="statusProduct({id :productData._id,index:productIndex, status:2})"
+                                                        appConfirm [confirmTitle]="'Deactive'"
+                                                        [confirmContent]="'Are you sure to Deactive this Product Master?'">
+                                                        <i class="fa fa-trash"></i></button>
+                                                </li>
+
+                                            </ul>
+                                        </td>
+                                        <td class="text-color">
+                                            {{ l * (p - 1) + productIndex +1 }}
+                                        </td>
+                                        <td class="text-color doc-master-tbl">
+                                            {{ productData.companyName }}
+                                        </td>
+                                        <td class="text-color doc-master-tbl">
+                                            {{ productData.categoryName }}
+                                        </td>
+                                        <td class="text-color">
+                                            {{ productData.productName }}
+                                        </td>
+                                        <td class="text-color product-master-tabl-ellips">
+                                            {{ productData.productNo }}
+                                        </td>
+                                        <td class="text-color product-master-tabl-ellips">
+                                            {{ productData.barcodeNo }}
+                                        </td>
+                                        <td class="text-color product-master-tabl-ellips">
+                                            {{ productData.assignPersonName }}
+                                        </td>
+                                        <td class="text-color">
+                                            <ul class="d-flex align-items-center action-list p-0"
+                                                *ngIf="productData.billImage">
+                                                <li class="action-list-item me-3">
+                                                    <a class="font-20 btn bg-gradient-dark emp-edit-btn"
+                                                        title="Download Invoice" target="_blank"
+                                                        [href]="this.commonService.rootData.uploadsUrl + 'photos/'+ productData.billImage">
+                                                        <i class="fa fa-download"></i></a>
+                                                </li>
+                                            </ul>
+                                        </td>
+                                        <td class="text-color" style="min-width:101px; max-width:101px;">
+                                            <span *ngIf="productData.status == 1"
+                                                class="badge bg-gradient-success">Active</span>
+                                            <span *ngIf="productData.status == 2"
+                                                class="badge bg-gradient-danger">Deactive</span>
+                                        </td>
+
+                                    </tr>
+                                    <tr *ngIf="noData">
+                                        <td colspan="6">
+                                            <h2 class="text-center mb-0">Data Not Found</h2>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+                        <div class="footer-pagination" *ngIf="productList?.length > l">
+                            <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal quick-edit-modal fade" tabindex="-1" id="add-product-modal" role="dialog">
+    <div class="modal-dialog model-setting-product-width" role="document">
+        <div class="card modal-content">
+            <div class="modal-header">
+                <h4 class="text-center mb-2 w-100" *ngIf="ISeditProduct === false">Add Product</h4>
+                <h4 class="text-center mb-2 w-100" *ngIf="ISeditProduct === true">Edit Product</h4>
+                <button class="btn bg-gradient-dark cancel-btn popup-close-btn" (click)="cancelProduct()">
+                    <i class="fa fa-times" style="font-size: 10px;"></i>
+                </button>
+            </div>
+            <div class="card-body model-scroll">
+                <form role="form" class="add-employee-form mb-3" *ngIf="ISeditProduct === false"
+                    [formGroup]="cloneProductForm" autocomplete="off">
+                    <div class="p-3 basic-information-form">
+                        <div class="mb-3">
+                            <span>
+                                <h4>Clone Product</h4>
+                            </span>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-5">
+                                <label>Category</label>
+                                <div class="mb-3">
+                                    <ng-select [items]="categoryMasterList" class="" bindLabel="categoryName"
+                                        bindValue="_id" placeholder="Select Category" formControlName="categoryId"
+                                        (change)=getProductListfoorCloneByClientId()>
+                                    </ng-select>
+                                </div>
+                            </div>
+                            <div class="col-lg-5">
+                                <label class="required">Product</label>
+                                <div class="mb-3">
+                                    <ng-select [items]="cloneProductList" class="" bindLabel="productNamee"
+                                        bindValue="_id" placeholder=" Select Product" formControlName="productId">
+                                    </ng-select>
+                                    <div *ngIf="submittedCloneProductData && fCloneData.productId.errors">
+                                        <div *ngIf="fCloneData.productId.errors.required">
+                                            <span class="error_msg">Product is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2">
+                                <label></label>
+                                <div class="text-center">
+                                    <button type="button" (click)="cloneProductBySetData()"
+                                        class="btn bg-gradient-dark my-2">Clone</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <form role="form" class="add-employee-form" [formGroup]="productForm" autocomplete="off">
+                    <div class="p-3 basic-information-form">
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <label class="required">Supplier</label>
+                                <div class="mb-3">
+                                    <!-- <span class="icon-position"><i class="fa fa-fa-heading"></i></span> -->
+                                    <ng-select [items]="supplierMasterList" class="" bindLabel="companyName"
+                                        bindValue="_id" placeholder=" Select Company Name" formControlName="supplierId">
+                                    </ng-select>
+                                    <div *ngIf="submittedProductData && fTitleData.supplierId.errors">
+                                        <div *ngIf="fTitleData.supplierId.errors.required">
+                                            <span class="error_msg">Supplier is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <label class="required">Category</label>
+                                <div class="mb-3">
+                                    <ng-select [items]="categoryMasterList" class="" bindLabel="categoryName"
+                                        bindValue="_id" placeholder="Select Category Name" formControlName="categoryId">
+                                    </ng-select>
+                                    <div *ngIf="submittedProductData && fTitleData.categoryId.errors">
+                                        <div *ngIf="fTitleData.categoryId.errors.required">
+                                            <span class="error_msg">Category is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <label>Product No</label>
+                                <div class="mb-3">
+                                    <input type="text" placeholder="Enter Product No."
+                                        class="text-feild form-control ps-2" formControlName="productNo">
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <label for="role">Purchase Date</label>
+                                <div class="position-relative mat-date-picker">
+                                    <span class="icon-position cursor-pointer"><i class="fa fa-calendar"></i></span>
+                                    <input matInput class="form-control" (click)="purchasedDate.open()"
+                                        placeholder="Please Select Date" [matDatepicker]="purchasedDate"
+                                        formControlName="purchasedDate">
+                                    <div class="mat-dat-picker-icon">
+                                        <div class="clear-date-button cursor-pointer"
+                                            *ngIf="fTitleData.purchasedDate.value != null">
+                                            <mat-icon matDatepickerToggleIcon (click)="clearDate(0)">x
+                                            </mat-icon>
+                                        </div>
+                                        <div class="calendar-icon"><i class="bx bxs-calendar"></i></div>
+                                        <mat-datepicker-toggle matSuffix [for]="purchasedDate">
+                                        </mat-datepicker-toggle>
+                                        <mat-datepicker #purchasedDate></mat-datepicker>
+                                    </div>
+                                </div>
+
+
+                                <!-- <label>Purchase Date</label>
+                                <div class="mb-3 position-relative mat-date-picker">
+                                    <span class="icon-position cursor-pointer"><i class="fa fa-calendar"></i></span>
+                                    <input matInput class="form-control" (click)="purchasedDate.open()"
+                                        placeholder="Please Select Date" [matDatepicker]="purchasedDate"
+                                        formControlName="purchasedDate">
+                                    <div class="mat-dat-picker-icon">
+                                        <div class="clear-date-button cursor-pointer"
+                                            *ngIf="fTitleData.purchasedDate.value != null">
+                                            <mat-icon matDatepickerToggleIcon (click)="clearDate(0)">x
+                                            </mat-icon>
+                                        </div>
+                                        <div class="calendar-icon"><i class="bx bxs-calendar"></i></div>
+                                        <mat-datepicker-toggle matSuffix [for]="purchasedDate">
+                                        </mat-datepicker-toggle>
+                                        <mat-datepicker #purchasedDate></mat-datepicker>
+                                    </div>
+                                </div> -->
+                            </div>
+                            <div class="col-lg-4">
+                                <label class="required">Product Name</label>
+                                <div class="mb-3">
+                                    <input type="text" class="form-control ps-2" formControlName="productName"
+                                        placeholder="Product Name">
+                                    <div *ngIf="submittedProductData && fTitleData.productName.errors">
+                                        <div *ngIf="fTitleData.productName.errors.required">
+                                            <span class="error_msg">Product Name is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <label>Barcode No</label>
+                                <div class="mb-3">
+                                    <input type="text" class="form-control ps-2" formControlName="barcodeNo"
+                                        placeholder="Barcode No">
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <label>Amount</label>
+                                <div class="mb-3">
+                                    <input type="text" class="form-control ps-2" formControlName="amount"
+                                        placeholder="Amount">
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <label>Invoice No</label>
+                                <div class="mb-3">
+                                    <input type="text" class="form-control ps-2" formControlName="supplierInNo"
+                                        placeholder="Invoice No.">
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <label>Product Description</label>
+                                <div class="mb-3">
+                                    <textarea type="textarea" maxlength="200" class="form-control ps-2"
+                                        formControlName="productDescription" placeholder="Product Description"
+                                        aria-label="Password" aria-describedby="password-addon"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <label>Bill Image</label>
+                                <div class="d-flex">
+                                    <div class="" style="width: 120px;">
+                                        <input #file type="file" accept='*' class="category-upload cursor-pointer mt-2"
+                                            width="100px" (change)="preview(file.files)" />
+                                        <button class="btn bg-gradient-dark mt-2 cursor-pointer mr-20">Upload</button>
+                                    </div>
+                                    <div *ngIf="imgURL">
+                                        <div class="position-relative">
+                                            <div class="mt-2">
+                                                <div class="recipe-image">
+                                                    <a target="_blank"
+                                                        [href]="this.commonService.rootData.uploadsUrl + 'photos/' + imgURL">
+                                                        <img src="../../../../assets/img/file1.png" height="70px"
+                                                            width="auto"
+                                                            onerror="this.src ='assets/img/no-image-available.jpg'"
+                                                            style="border-radius: 5px;">
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="recipe-image-control">
+                                                <button class="border-0 float-right btn btn-delete-icon"
+                                                    (click)="removeuploadFile()">
+                                                    <i class="fa fa-times"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <label for="role">Warranty StartDate</label>
+                                <div class="position-relative mat-date-picker">
+                                    <span class="icon-position cursor-pointer"><i class="fa fa-calendar"></i></span>
+                                    <input matInput class="form-control" (click)="warrantyStartDate.open()"
+                                        placeholder="Please Select Warranty Start Date"
+                                        (dateChange)="onWarrentyStartChange()" [matDatepicker]="warrantyStartDate"
+                                        formControlName="warrantyStartDate">
+                                    <div class="mat-dat-picker-icon">
+                                        <div class="clear-date-button cursor-pointer"
+                                            *ngIf="fTitleData.warrantyStartDate.value != null">
+                                            <mat-icon matDatepickerToggleIcon (click)="clearDate(1)">x
+                                            </mat-icon>
+                                        </div>
+                                        <div class="calendar-icon"><i class="bx bxs-calendar"></i></div>
+                                        <mat-datepicker-toggle matSuffix [for]="warrantyStartDate">
+                                        </mat-datepicker-toggle>
+                                        <mat-datepicker #warrantyStartDate></mat-datepicker>
+                                    </div>
+                                </div>
+
+
+                                <!-- <label>Warranty StartDate</label>
+                                <div class="mb-3 position-relative mat-date-picker">
+                                    <span class="icon-position cursor-pointer"><i class="fa fa-calendar"></i></span>
+                                    <input matInput class="form-control" (click)="warrantyStartDate.open()"
+                                        (dateChange)="onWarrentyStartChange()" placeholder="Please Select Date"
+                                        [matDatepicker]="warrantyStartDate" formControlName="warrantyStartDate">
+                                    <div class="mat-dat-picker-icon">
+                                        <div class="clear-date-button cursor-pointer"
+                                            *ngIf="fTitleData.warrantyStartDate.value != null">
+                                            <mat-icon matDatepickerToggleIcon (click)="clearDate(1)">x
+                                            </mat-icon>
+                                        </div>
+                                        <div class="calendar-icon"><i class="bx bxs-calendar"></i></div>
+                                        <mat-datepicker-toggle matSuffix [for]="warrantyStartDate">
+                                        </mat-datepicker-toggle>
+                                        <mat-datepicker #warrantyStartDate></mat-datepicker>
+                                    </div>
+                                </div> -->
+                            </div>
+                            <div class="col-lg-4">
+                                <label for="role">Warranty EndDate</label>
+                                <div class="position-relative mat-date-picker">
+                                    <span class="icon-position cursor-pointer"><i class="fa fa-calendar"></i></span>
+                                    <input matInput class="form-control" (click)="warrantyEndDate.open()"
+                                        placeholder="Please Select Warranty End Date" [matDatepicker]="warrantyEndDate"
+                                        [min]="fTitleData.warrantyStartDate.value" formControlName="warrantyEndDate">
+                                    <div class="mat-dat-picker-icon">
+                                        <div class="clear-date-button cursor-pointer"
+                                            *ngIf="fTitleData.warrantyEndDate.value != null">
+                                            <mat-icon matDatepickerToggleIcon (click)="clearDate(2)">x
+                                            </mat-icon>
+                                        </div>
+                                        <div class="calendar-icon"><i class="bx bxs-calendar"></i></div>
+                                        <mat-datepicker-toggle matSuffix [for]="warrantyEndDate">
+                                        </mat-datepicker-toggle>
+                                        <mat-datepicker #warrantyEndDate></mat-datepicker>
+                                    </div>
+                                </div>
+
+
+                                <!-- <label>Warranty EndDate</label>
+                                <div class="mb-3 position-relative mat-date-picker">
+                                    <span class="icon-position cursor-pointer"><i class="fa fa-calendar"></i></span>
+                                    <input matInput class="form-control" (click)="warrantyEndDate.open()"
+                                        placeholder="Please Select Date" [min]="fTitleData.warrantyStartDate.value"
+                                        [matDatepicker]="warrantyEndDate" formControlName="warrantyEndDate">
+                                    <div class="mat-dat-picker-icon">
+                                        <div class="clear-date-button cursor-pointer"
+                                            *ngIf="fTitleData.warrantyEndDate.value != null">
+                                            <mat-icon matDatepickerToggleIcon (click)="clearDate(2)">x
+                                            </mat-icon>
+                                        </div>
+
+                                        <div class="calendar-icon"><i class="bx bxs-calendar"></i></div>
+                                        <mat-datepicker-toggle matSuffix [for]="warrantyEndDate">
+                                        </mat-datepicker-toggle>
+                                        <mat-datepicker #warrantyEndDate></mat-datepicker>
+                                    </div>
+                                </div> -->
+
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="w-100">
+                    <div class="text-center">
+                        <button type="button" *ngIf="ISeditProduct === false" (click)="saveProduct()"
+                            class="btn bg-gradient-dark my-2">Save</button>
+                        <button type="button" *ngIf="ISeditProduct === true" (click)="updateProduct()"
+                            class="btn bg-gradient-dark my-2">Update</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- view assign product through get data  -->
+<div class="modal quick-edit-modal fade" tabindex="-1" id="view-product-modal" role="dialog">
+    <div class="modal-dialog model-setting-product-width" role="document">
+        <div class="card modal-content">
+            <div class="modal-header">
+                <h4 class="text-center mb-2 w-100">View Product Details</h4>
+                <button class="btn bg-gradient-dark cancel-btn popup-close-btn" (click)="cancelProduct()">
+                    <i class="fa fa-times" style="font-size: 10px;"></i>
+                </button>
+            </div>
+            <div class="card-body model-scroll">
+                <form role="form" class="add-employee-form" [formGroup]="productForm" autocomplete="off">
+                    <div class="p-3 basic-information-form">
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <label class="required">Supplier</label>
+                                <div class="mb-3">
+                                    <!-- <span class="icon-position"><i class="fa fa-fa-heading"></i></span> -->
+                                    <ng-select [items]="supplierMasterList" class="" bindLabel="companyName"
+                                        bindValue="_id" placeholder=" Select Company Name" formControlName="supplierId">
+                                    </ng-select>
+                                    <div *ngIf="submittedProductData && fTitleData.supplierId.errors">
+                                        <div *ngIf="fTitleData.supplierId.errors.required">
+                                            <span class="error_msg">Supplier is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <label class="required">Category</label>
+                                <div class="mb-3">
+                                    <ng-select [items]="categoryMasterList" class="" bindLabel="categoryName"
+                                        bindValue="_id" placeholder="Select Category Name" formControlName="categoryId">
+                                    </ng-select>
+                                    <div *ngIf="submittedProductData && fTitleData.categoryId.errors">
+                                        <div *ngIf="fTitleData.categoryId.errors.required">
+                                            <span class="error_msg">Category is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <label>Product No</label>
+                                <div class="mb-3">
+                                    <input type="text" placeholder="Enter Product No."
+                                        class="text-feild form-control ps-2" formControlName="productNo">
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <label>Purchase Date</label>
+                                <div class="mb-3 position-relative mat-date-picker" (click)="purchasedDate.open()">
+                                    <span class="icon-position cursor-pointer"><i class="fa fa-calendar"></i></span>
+                                    <input matInput class="form-control" placeholder="Please Select Date"
+                                        [matDatepicker]="purchasedDate" formControlName="purchasedDate">
+                                    <div class="mat-dat-picker-icon">
+                                        <div class="calendar-icon"><i class="bx bxs-calendar"></i></div>
+                                        <mat-datepicker-toggle matSuffix [for]="purchasedDate">
+                                        </mat-datepicker-toggle>
+                                        <mat-datepicker #purchasedDate></mat-datepicker>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <label class="required">Product Name</label>
+                                <div class="mb-3">
+                                    <input type="text" class="form-control ps-2" formControlName="productName"
+                                        placeholder="Product Name">
+                                    <div *ngIf="submittedProductData && fTitleData.productName.errors">
+                                        <div *ngIf="fTitleData.productName.errors.required">
+                                            <span class="error_msg">Product Name is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <label>Barcode No</label>
+                                <div class="mb-3">
+                                    <input type="text" class="form-control ps-2" formControlName="barcodeNo"
+                                        placeholder="Barcode No" appNumbersOnly>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <label>Amount</label>
+                                <div class="mb-3">
+                                    <input type="text" class="form-control ps-2" formControlName="amount"
+                                        placeholder="Amount">
+                                </div>
+
+                            </div>
+                            <div class="col-lg-4">
+                                <label>Invoice No</label>
+                                <div class="mb-3">
+                                    <input type="text" class="form-control ps-2" formControlName="supplierInNo"
+                                        placeholder="SupplierInNo">
+                                </div>
+
+                            </div>
+                            <div class="col-lg-4">
+                                <label>Product Description</label>
+                                <div class="mb-3">
+                                    <textarea type="textarea" maxlength="200" class="form-control ps-2"
+                                        formControlName="productDescription" placeholder="Product Description"
+                                        aria-label="Password" aria-describedby="password-addon"></textarea>
+
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <label>Bill Image</label>
+                                <div class="d-flex">
+                                    <div class="" style="width: 120px;">
+                                        <input #file type="file" accept='*' class="category-upload cursor-pointer mt-2"
+                                            width="100px" (change)="preview(file.files)" disabled />
+                                        <button class="btn bg-gradient-dark mt-2 cursor-pointer mr-20"
+                                            disabled>Upload</button>
+                                    </div>
+                                    <div *ngIf="imgURL">
+                                        <div class="position-relative">
+                                            <div class="mt-2">
+                                                <div class="recipe-image">
+                                                    <a target="_blank"
+                                                        [href]="this.commonService.rootData.uploadsUrl + 'photos/' + imgURL">
+                                                        <img src="../../../../assets/img/file1.png" height="70px"
+                                                            width="auto"
+                                                            onerror="this.src ='assets/img/no-image-available.jpg'"
+                                                            style="border-radius: 5px;">
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="recipe-image-control">
+                                                <button class="border-0 float-right btn btn-delete-icon"
+                                                    (click)="removeuploadFile()">
+                                                    <i class="fa fa-times"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <label>Warranty StartDate</label>
+                                <div class="mb-3 position-relative mat-date-picker" (click)="warrantyStartDate.open()">
+                                    <span class="icon-position cursor-pointer"><i class="fa fa-calendar"></i></span>
+                                    <input matInput class="form-control" placeholder="Please Select Date"
+                                        [matDatepicker]="warrantyStartDate" formControlName="warrantyStartDate">
+                                    <div class="mat-dat-picker-icon">
+                                        <div class="calendar-icon"><i class="bx bxs-calendar"></i></div>
+                                        <mat-datepicker-toggle matSuffix [for]="warrantyStartDate">
+                                        </mat-datepicker-toggle>
+                                        <mat-datepicker #warrantyStartDate></mat-datepicker>
+                                    </div>
+                                    <!-- <div class="mb-3">
+                                    <span class="icon-position cursor-pointer" (click)="warrantyStartDate.toggle()"><i
+                                            class="fa fa-calendar"></i></span>
+                                    <input class="form-control" formControlName="warrantyStartDate"
+                                        (dateSelect)="onWarrentyStartChange($event)"
+                                        (input)="onWarrentyStartChange($event)" (click)="warrantyStartDate.toggle()"
+                                        placeholder="yyyy-mm-dd" name="JD" #warrantyStartDate="ngbDatepicker"
+                                        ngbDatepicker> -->
+
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <label>Warranty EndDate</label>
+                                <div class="mb-3 position-relative mat-date-picker" (click)="warrantyEndDate.open()">
+                                    <span class="icon-position cursor-pointer"><i class="fa fa-calendar"></i></span>
+                                    <input matInput class="form-control" placeholder="Please Select Date"
+                                        [min]="fTitleData.warrantyStartDate.value" [matDatepicker]="warrantyEndDate"
+                                        formControlName="warrantyEndDate">
+                                    <div class="mat-dat-picker-icon">
+                                        <div class="calendar-icon"><i class="bx bxs-calendar"></i></div>
+                                        <mat-datepicker-toggle matSuffix [for]="warrantyEndDate">
+                                        </mat-datepicker-toggle>
+                                        <mat-datepicker #warrantyEndDate></mat-datepicker>
+                                    </div>
+                                    <!-- <div class="mb-3">
+                                    <span class="icon-position cursor-pointer" (click)="warrantyEndDate.toggle()"><i
+                                            class="fa fa-calendar"></i></span>
+                                    <input class="form-control" [minDate]="minWarrentyDate"
+                                        (dateSelect)="onWarrentyEndChange($event)" (input)="onWarrentyEndChange($event)"
+                                        formControlName="warrantyEndDate" (click)="warrantyEndDate.toggle()"
+                                        placeholder="yyyy-mm-dd" name="JD" #warrantyEndDate="ngbDatepicker"
+                                        ngbDatepicker>
+                                    <div *ngIf="showInvalidEndDate === true">
+                                        <span class="error_msg">Please Select Valid Warrenty End Date.</span>
+                                    </div> -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

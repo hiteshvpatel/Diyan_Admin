@@ -1,0 +1,107 @@
+<div class="">
+  <div class="container-fluid py-4">
+    <div class="row">
+      <form [formGroup]="searchForm">
+        <div class="d-flex align-items-center mb-3">
+          <div class="col-lg-3">
+            <div class="form-group mb-0 mr-20">
+              <span class="icon-position"><i class="fa fa-user"></i></span>
+              <input type="text" class="text-feild form-control" placeholder="Employee Name"
+                (input)="search($event.target.value)">
+            </div>
+          </div>
+          <div class="col-lg-3">
+            <div class="form-group mb-0 mr-20">
+              <ng-select formControlName="month" [items]="monthArray" class="" bindLabel="month" bindValue="value"
+                placeholder="Select Month">
+              </ng-select>
+              <div *ngIf="searchData && fSearchData.month.errors">
+                <div *ngIf="fSearchData.month.errors.required">
+                  <span class="error_msg">Please select month for search.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3">
+            <div class="form-group mb-0 mr-20">
+              <ng-select formControlName="year" [items]="yearArray" class="" bindLabel="yearArray" bindValue="yearArray"
+                placeholder="Select Year">
+              </ng-select>
+              <div *ngIf="searchData && fSearchData.year.errors">
+                <div *ngIf="fSearchData.year.errors.required">
+                  <span class="error_msg">Please select Year for search.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="mr-20" *ngIf="this.isCreated == true">
+            <div class="mb-4">
+              <a class="btn bg-gradient-dark mb-0 add-btn" (click)='getSalaryGenerationList()'>Generate</a>
+            </div>
+          </div>
+          <div *ngIf="salaryTableShow === true">
+            <div class="mb-4">
+              <a class="btn bg-gradient-dark mb-0 add-btn" (click)='generateSalaryExcel()'>Export Excel</a>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="row" *ngIf="salaryTableShow === true">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table" matSort matSortActive="empNumber" matSortDirection="asc" matSortDisableClear="true"
+                (matSortChange)="sortingList($event)">
+                <thead>
+                  <tr>
+                    <th class="theme-color w-5" mat-sort-header="empNumber">Employee No.</th>
+                    <th class="theme-color w-25" mat-sort-header="employeeName">Employee Name</th>
+                    <th class="theme-color w-10">Basic Salary</th>
+                    <th class="theme-color w-5">HRA</th>
+                    <th class="theme-color w-10">Professional Text</th>
+                    <th class="theme-color w-10">Transport Allowance</th>
+                    <th class="theme-color w-5">PF</th>
+                    <th class="theme-color w-10">PF Employer</th>
+                    <th class="theme-color w-10">Miscellaneous Allowances</th>
+                    <th class="theme-color w-10">Total Salary</th>
+                    <!-- <th class="theme-color w-10">Action</th> -->
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    *ngFor="let salaryGenerationData of salaryGenerationList | filter : searchTerm |  paginate: { itemsPerPage: l, currentPage: p };let salaryGenerateIndex=index">
+                    <td>{{salaryGenerationData.empNumber}}</td>
+                    <td>{{salaryGenerationData.employeeName}}</td>
+                    <td>{{salaryGenerationData.basicSalary}}</td>
+                    <td>{{salaryGenerationData.HRA}}</td>
+                    <td>{{salaryGenerationData.professionalText}}</td>
+                    <td>{{salaryGenerationData.transportAllowance}}</td>
+                    <td>{{salaryGenerationData.PF}}</td>
+                    <td>{{salaryGenerationData.PFEmployer}}</td>
+                    <td>{{salaryGenerationData.miscellaneousAllowances}}</td>
+                    <td style="font-weight: 700;">{{salaryGenerationData.finalAmount}}</td>
+                    <!-- <td>
+                      <button class="font-20 btn bg-gradient-dark emp-edit-btn" title="Download Salary Report"
+                        (click)="downloadSalaryGenerationWorkReport(salaryGenerationData.employeeId)">
+                        <i class="fa fa-download"></i></button>
+                    </td> -->
+                  </tr>
+                  <tr *ngIf="noData">
+                    <td colspan="10">
+                      <h2 class="text-center mb-0">Data Not Found</h2>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="footer-pagination" *ngIf="salaryGenerationList?.length > l">
+              <pagination-controls (pageChange)="p = $event"></pagination-controls>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

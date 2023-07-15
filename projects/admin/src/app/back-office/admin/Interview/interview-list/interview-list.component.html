@@ -1,0 +1,132 @@
+<div class="">
+    <div class="container-fluid py-4">
+        <div class="row">
+            <div class="mb-3 d-flex" style="justify-content: space-between;">
+                <span class="icon-position"><i class="fa fa-search"></i></span>
+                <input type="text" style="width:30%" class="searchTerm form-control"
+                    (input)="search($event.target.value)" placeholder="Type here...">
+                <div class="right-container" *ngIf="this.isCreated == true">
+                    <button class="btn bg-gradient-dark mb-0 add-btn right-container-button"
+                        routerLink="/admin/add-interview-details">
+                        <span class="long-text">Add
+                            New</span>
+                        <i class="fas fa-plus" aria-hidden="true"></i></button>
+                </div>
+            </div>
+            <div class="col-lg-8"></div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table" matSort matSortActive="name" matSortDirection="asc"
+                                matSortDisableClear="true" (matSortChange)="sortingList($event)">
+                                <thead>
+                                    <tr>
+                                        <th class="theme-color">Action</th>
+                                        <th class="theme-color">No.</th>
+                                        <th class="theme-color" mat-sort-header="userName">Name</th>
+                                        <th class="theme-color" mat-sort-header="p_Email">Email</th>
+                                        <th class="theme-color" mat-sort-header="p_Mobile">Mobile</th>
+                                        <th class="theme-color" mat-sort-header="designationName">Designation</th>
+                                        <th class="theme-color">Round</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr
+                                        *ngFor="let interviewData of interviewList  | paginate: { itemsPerPage: l, currentPage: p };let designationIndex = index">
+                                        <!-- <td class="text-color">
+                                            <span *ngIf="interviewData.status == 1"
+                                                class="badge bg-gradient-success">Active</span>
+                                            <span *ngIf="interviewData.status == 2"
+                                                class="badge bg-gradient-danger">Deactive</span>
+                                        </td> -->
+                                        <td class="text-color">
+                                            <ul class="d-flex action-list p-0">
+                                                <li class="action-list-item me-3" *ngIf="this.isUpdated == true">
+                                                    <button class="font-20 btn bg-gradient-dark emp-edit-btn"
+                                                        title="Edit Interview"
+                                                        routerLink="/admin/update-interview-details/{{interviewData._id}}">
+                                                        <i class="fa fa-edit"></i></button>
+                                                </li>
+                                                <!-- <li class="action-list-item" *ngIf="this.isDeleted == true">
+                                                    <button *ngIf="interviewData.status == 2"
+                                                        class="dtl-btn btn bg-gradient-dark" title="Active Interview"
+                                                        (confirm-click)="statusInterview({id :interviewData._id,index:designationIndex, status:1})"
+                                                        appConfirm [confirmTitle]="'Active'"
+                                                        [confirmContent]="'Are you sure to Active this Interview?'">
+                                                        <i class="fa fa-plus"></i></button>
+                                                    <button *ngIf="interviewData.status == 1"
+                                                        class="dtl-btn btn bg-gradient-dark" title="Deactive Interview"
+                                                        (confirm-click)="statusInterview({id :interviewData._id,index:designationIndex, status:2})"
+                                                        appConfirm [confirmTitle]="'Deactive'"
+                                                        [confirmContent]="'Are you sure to Deactive this Interview?'">
+                                                        <i class="fa fa-trash"></i></button>
+                                                </li> -->
+                                            </ul>
+                                        </td>
+                                        <td class="text-color">
+                                            {{ l * (p - 1) + designationIndex +1 }}
+                                        </td>
+                                        <td class="text-color table-fixed-width-maxwidth">
+                                            {{ interviewData.userName }}
+                                        </td>
+                                        <td class="text-color table-fixed-width-maxwidth"
+                                            style="text-transform: lowercase;">
+                                            {{ interviewData.p_Email | lowercase }}
+                                        </td>
+                                        <td class="text-color table-fixed-width-maxwidth">
+                                            {{ interviewData.p_Mobile }}
+                                        </td>
+                                        <td class="text-color table-fixed-width-maxwidth">
+                                            {{ interviewData.designationName }}
+                                        </td>
+                                        <td class="text-color">
+                                            <span class="badge"
+                                                [title]="interviewData?.stageStatus == 2 ? 'Formal Round is Completed.' : 'Rejected in Formal Round'"
+                                                [ngClass]="interviewData?.stageStatus == 2 ? 'bg-gradient-success' : 'bg-gradient-danger'"
+                                                *ngIf="interviewData.stage == 1">
+                                                {{interviewData?.stageStatus == 2 ? 'Formal Round is Completed.' :
+                                                'Rejected in Formal Round'}}
+                                            </span>
+                                            <span class="badge"
+                                                [title]="interviewData?.stageStatus == 2 ? 'Theoretical Round is Completed.' : 'Rejected in Theoretical Round'"
+                                                [ngClass]="interviewData?.stageStatus == 2 ? 'bg-gradient-success' : 'bg-gradient-danger'"
+                                                *ngIf="interviewData.stage == 2">
+                                                {{interviewData?.stageStatus == 2 ? 'Theoretical Round is Completed.' :
+                                                'Rejected in Theoretical Round'}}
+                                            </span>
+                                            <span class="badge"
+                                                [title]="interviewData?.stageStatus == 2 ? 'Practical Round is Completed.' : 'Rejected in Practical Round'"
+                                                [ngClass]="interviewData?.stageStatus == 2 ? 'bg-gradient-success' : 'bg-gradient-danger'"
+                                                *ngIf="interviewData.stage == 3">
+                                                {{interviewData?.stageStatus == 2 ? 'Practical Round is Completed.' :
+                                                'Rejected in Practical Round'}}
+                                            </span>
+                                            <span class="badge"
+                                                [title]="interviewData?.stageStatus == 2 ? 'HR Final Round is Completed.' : 'Rejected in HR Final Round'"
+                                                [ngClass]="interviewData?.stageStatus == 2 ? 'bg-gradient-success' : 'bg-gradient-danger'"
+                                                *ngIf="interviewData.stage == 4">
+                                                {{interviewData?.stageStatus == 2 ? 'HR Final Round is Completed.' :
+                                                'Rejected in HR Final Round'}}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr *ngIf="noData">
+                                        <td colspan="9">
+                                            <h2 class="text-center mb-0">Data Not Found</h2>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="footer-pagination" *ngIf="interviewList?.length > l">
+                                <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

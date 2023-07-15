@@ -1,0 +1,396 @@
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-lg-12 m-auto">
+            <!-- basic information Card -->
+            <div class="card mb-4">
+                <div class="card-header pb-0">
+                    <div>
+                        <h4 class="card-title-color">Invoice Number</h4>
+                    </div>
+                    <form role="form" class="add-template-form" [formGroup]="invoiceGenerateForm" autocomplete="off">
+                        <div class="row">
+                            <div class="col-lg-3 col-md-6 col-sm-12">
+                                <label>Company</label>
+                                <div class="mb-3 position-relative">
+                                    <!-- <span class="icon-position"><i class="fa fa-h-square"></i></span> -->
+                                    <!-- <ng-select class="" placeholder="Select Company">
+                                    </ng-select> -->
+                                    <ng-select [items]="companyActiveDataList" class="blood-group-dropdown"
+                                        bindLabel="companyName" bindValue="_id" placeholder="Select Company"
+                                        formControlName="companyId">
+                                    </ng-select>
+                                    <div *ngIf="submittedInvoiceData && fInvoiceData.companyId.errors">
+                                        <div *ngIf="fInvoiceData.companyId.errors.required">
+                                            <span class="error_msg">Company is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-6 col-sm-12">
+                                <label class="required">Bill No</label>
+                                <div class="mb-3">
+                                    <span class="icon-position"><i class="fa fa-file-text"></i></span>
+                                    <input type="text" formControlName="billNo" class="form-control"
+                                        placeholder="Bill Number">
+                                    <!-- <div>
+                                      <div>
+                                        <span class="error_msg">First Name is Required.</span>
+                                      </div>
+                                    </div> -->
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-6 col-sm-12">
+                                <label class="required">Bill Date</label>
+                                <div class="mb-3 position-relative mat-date-picker" (click)="billDate.open()">
+                                    <span class="icon-position cursor-pointer"><i class="fa fa-calendar"></i></span>
+                                    <input matInput class="form-control" placeholder="Please Select Date"
+                                        [matDatepicker]="billDate" formControlName="billDate">
+                                    <div class="mat-dat-picker-icon">
+                                        <div class="calendar-icon"><i class="bx bxs-calendar"></i></div>
+                                        <mat-datepicker-toggle matSuffix [for]="billDate"></mat-datepicker-toggle>
+                                        <mat-datepicker #billDate></mat-datepicker>
+                                    </div>
+                                    <div *ngIf="submittedInvoiceData && fInvoiceData.billDate.errors">
+                                        <div *ngIf="fInvoiceData.billDate.errors.required">
+                                            <span class="error_msg">Bill Date is Required.</span>
+                                        </div>
+                                    </div>
+                                    <!-- <div class="mb-3">
+                                    <span class="icon-position" (click)="d.toggle()"><i
+                                            class="fa fa-calendar"></i></span>
+                                    <input class="form-control" formControlName="billDate" (click)="d.toggle()"
+                                        placeholder="yyyy-mm-dd" name="dp" #d="ngbDatepicker" ngbDatepicker>
+                                    <div *ngIf="submittedInvoiceData && fInvoiceData.billDate.errors">
+                                        <div *ngIf="fInvoiceData.billDate.errors.required">
+                                            <span class="error_msg">Bill Date is Required.</span>
+                                        </div>
+                                    </div> -->
+                                    <!-- <input type="date" class="text-feild form-control" [max]="getToday()"
+                                    placeholder="Date of Birth" formControlName="dob"> -->
+                                    <!-- <div>
+                                        <div>
+                                            <span class="error_msg">Date of Birth is Required.</span>
+                                        </div>
+                                    </div> -->
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-6 col-sm-12">
+                                <label class="required">Is International ? </label>
+                                <div class="mb-3">
+                                    <mat-radio-group aria-label="Select an option" formControlName="isInternational">
+                                        <mat-radio-button value="true">
+                                            Yes
+                                        </mat-radio-button>
+                                        <mat-radio-button value="false">
+                                            No
+                                        </mat-radio-button>
+                                    </mat-radio-group>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-lg-3 col-md-3 col-sm-12">
+                                <label class="required">Template</label>
+                                <div class="mb-3 position-relative">
+                                    <!-- <span class="icon-position"><i class="fa fa-h-square"></i></span> -->
+                                    <ng-select [items]="templeteActiveDataList" class="blood-group-dropdown"
+                                        bindLabel="templateName" bindValue="_id"
+                                        (change)="onTempleteChange($event,false)" placeholder="Select Template"
+                                        formControlName="templateId">
+                                    </ng-select>
+                                    <div *ngIf="submittedInvoiceData && fInvoiceData.templateId.errors">
+                                        <div *ngIf="fInvoiceData.templateId.errors.required">
+                                            <span class="error_msg">Templete is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-12">
+                                <label class="required">Currency</label>
+                                <div class="mb-3 position-relative">
+                                    <!-- <span class="icon-position"><i class="fa fa-h-square"></i></span> -->
+                                    <!-- <ng-select class="" placeholder="Select Currency">
+                                    </ng-select> -->
+                                    <ng-select [items]="CurrencyName" class="blood-group-dropdown"
+                                        bindLabel="CurrencyName" bindValue="CurrencyName" placeholder="Select Currency"
+                                        formControlName="currencyName">
+                                    </ng-select>
+                                    <div *ngIf="submittedInvoiceData && fInvoiceData.currencyName.errors">
+                                        <div *ngIf="fInvoiceData.currencyName.errors.required">
+                                            <span class="error_msg">Currency is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-12">
+                                <label class="required">Client</label>
+                                <div class="mb-3 position-relative">
+                                    <!-- <span class="icon-position"><i class="fa fa-h-square"></i></span> -->
+                                    <!-- <ng-select class="" placeholder="Select Client">
+                                    </ng-select> -->
+                                    <ng-select [items]="clientActiveDataList" class="blood-group-dropdown"
+                                        bindLabel="companyName" bindValue="_id" placeholder="Select Client"
+                                        formControlName="clientId">
+                                    </ng-select>
+                                    <div *ngIf="submittedInvoiceData && fInvoiceData.clientId.errors">
+                                        <div *ngIf="fInvoiceData.clientId.errors.required">
+                                            <span class="error_msg">Client is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-12">
+                                <label class="required">Financial Year</label>
+                                <div class="mb-3 position-relative">
+                                    <!-- <span class="icon-position"><i class="fa fa-h-square"></i></span> -->
+                                    <!-- <ng-select class="" placeholder="Select Year">
+                                    </ng-select> -->
+                                    <ng-select [items]="financialActiveDataList" class="blood-group-dropdown"
+                                        bindLabel="finacialYear" bindValue="_id" placeholder="Select Year"
+                                        formControlName="finacialYearId">
+                                    </ng-select>
+                                    <div *ngIf="submittedInvoiceData && fInvoiceData.finacialYearId.errors">
+                                        <div *ngIf="fInvoiceData.finacialYearId.errors.required">
+                                            <span class="error_msg">Financial Year is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr
+                            *ngIf="itemName === true || amount === true || discount === true || cgst === true || sgst === true || igst === true || quantity === true || hours === true || rate === true || hsnCode === true || description === true">
+                        <div formArrayName="billItem"
+                            *ngIf="itemName === true || amount === true || discount === true || cgst === true || sgst === true || igst === true || quantity === true || hours === true || rate === true || hsnCode === true || description === true"
+                            class="box-input" style="background-color: #f2f2f2; padding: 10px;">
+                            <div class="row" [formGroupName]="i"
+                                *ngFor="let item of invoiceGenerateForm.get('billItem')['controls']; let i = index;">
+                                <div class="col-lg-12 col-md-6 col-sm-12">
+                                    <div class="d-flex" style="float:right;"
+                                        *ngIf="itemName === true || amount === true || discount === true || cgst === true || sgst === true || igst === true || quantity === true || hours === true || rate === true || hsnCode === true || description === true">
+                                        <div class="text-center">
+                                            <button type="button" (click)="removeTempleteItem(i)"
+                                                class="btn bg-gradient-dark m-3 popup-close-btn cancel-btn">
+                                                <i class="fa fa-times"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12 col-md-2 col-sm-6"
+                                    [ngClass]="itemName === false ? 'd-none' : '' ">
+                                    <!-- <label class="required">item Name</label> -->
+                                    <div class="mb-3">
+                                        <!-- <span class="icon-position"><i class="fa fa-user"></i></span> -->
+                                        <input type="text" formControlName="itemName" class="form-control px-3"
+                                            placeholder="item Name">
+                                        <div *ngIf="submittedInvoiceData && item.controls.itemName.errors">
+                                            <div *ngIf="item.controls.itemName.errors.required">
+                                                <span class="error_msg">Item Name is Required.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-sm-12"
+                                    [ngClass]="(hsnCode === false ? 'd-none' : '') + ' ' + (discount === false ? 'col-lg-4' : 'col-lg-3')">
+                                    <!-- <label class="required">HSNCode</label> -->
+                                    <div class="mb-3">
+                                        <input type="text" formControlName="hsnCode" class="form-control px-3"
+                                            placeholder="HSNCode">
+                                        <div *ngIf="submittedInvoiceData && item.controls.hsnCode.errors">
+                                            <div *ngIf="item.controls.hsnCode.errors.required">
+                                                <span class="error_msg">HSN Code is Required.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-sm-12"
+                                    [ngClass]="(quantity === false ? 'd-none' : '') + ' ' + (discount === false ? 'col-lg-4' : 'col-lg-3')">
+                                    <!-- <label class="required">Quantity</label> -->
+                                    <div class="mb-3">
+                                        <!-- <span class="icon-position"><i class="fa fa-user"></i></span> -->
+                                        <input type="text" (input)="quantityChange(i)" (keypress)="numberOnly($event)"
+                                            formControlName="quantity" class="form-control px-3" placeholder="Quantity">
+                                        <div *ngIf="submittedInvoiceData && item.controls.quantity.errors">
+                                            <div *ngIf="item.controls.quantity.errors.required">
+                                                <span class="error_msg">Quantity is Required.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-sm-12"
+                                    [ngClass]="(hours === false ? 'd-none' : '') + ' ' + (discount === false ? 'col-lg-4' : 'col-lg-3')">
+                                    <!-- <label class="required">Hours</label> -->
+                                    <div class="mb-3">
+                                        <!-- <span class="icon-position"><i class="fa fa-user"></i></span> -->
+                                        <input type="text" formControlName="hours" (input)="quantityChange(i)"
+                                            (keypress)="numberDecimalOnly($event)" class="form-control px-3"
+                                            placeholder="Hours">
+                                        <div *ngIf="submittedInvoiceData && item.controls.hours.errors">
+                                            <div *ngIf="item.controls.hours.errors.required">
+                                                <span class="error_msg">Hours is Required.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-sm-12"
+                                    [ngClass]="(rate === false ? 'd-none' : '') + ' ' + (discount === false ? 'col-lg-4' : 'col-lg-3')">
+                                    <!-- <label class="required">Rate</label> -->
+                                    <div class="mb-3">
+                                        <!-- <span class="icon-position"><i class="fa fa-user"></i></span> -->
+                                        <input type="text" formControlName="rate" (input)="quantityChange(i)"
+                                            (keypress)="numberOnly($event)" class="form-control px-3"
+                                            placeholder="Rate">
+                                        <div *ngIf="submittedInvoiceData && item.controls.rate.errors">
+                                            <div *ngIf="item.controls.rate.errors.required">
+                                                <span class="error_msg">Rate is Required.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- <div class="col-lg-4 col-md-2 col-sm-6" [ngClass]="amount === false ? 'd-none' : '' ">
+                                  <div class="mb-3">
+                                    <input type="text" formControlName="amount" class="form-control px-3" placeholder="Amount">
+                                  </div>
+                                </div> -->
+                                <div class="col-lg-3 col-md-6 col-sm-12"
+                                    [ngClass]="discount === false ? 'd-none' : '' ">
+                                    <!-- <label class="required">Discount</label> -->
+                                    <div class="mb-3 position-relative">
+                                        <span class="icon-position" style="right:0;"><i
+                                                class="fa fa-percent"></i></span>
+                                        <input type="text" formControlName="discount" (input)="quantityChange(i)"
+                                            (keypress)="numberDecimalOnly($event)" class="form-control px-3"
+                                            style="padding-right:40px !important ;" placeholder="Discount">
+                                        <div *ngIf="submittedInvoiceData && item.controls.discount.errors">
+                                            <div *ngIf="item.controls.discount.errors.required">
+                                                <span class="error_msg">Discount is Required.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-4 col-md-6 col-sm-12" [ngClass]="cgst === false ? 'd-none' : ''">
+                                    <!-- <label class="required">CGST</label> -->
+                                    <div class="mb-3 position-relative form-control p-0">
+                                        <span class="icon-position" style="left:0; top:0;"><i
+                                                class="fa fa-percent"></i></span>
+                                        <input type="text" (input)="quantityChange(i)" formControlName="cgst"
+                                            (keypress)="numberDecimalOnly($event)" class="px-3 py-2 "
+                                            style="margin-right: 10px; text-align: center; padding-left:30px !important ; width: 90px; border: none !important; border-right: 1px solid #d2d6da !important; border-top-left-radius: 10px; border-bottom-left-radius: 10px;"
+                                            placeholder="CGST"> {{invoiceGenerateForm.value.billItem[i].cgstAmount}}
+                                    </div>
+                                    <div *ngIf="submittedInvoiceData && item.controls.cgst.errors">
+                                        <div *ngIf="item.controls.cgst.errors.required">
+                                            <span class="error_msg">CGST is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-6 col-sm-12" [ngClass]="sgst === false ? 'd-none' : '' ">
+                                    <!-- <label class="required">SGST</label> -->
+                                    <div class="mb-3 position-relative form-control p-0">
+                                        <span class="icon-position" style="left:0; top:0;"><i
+                                                class="fa fa-percent"></i></span>
+                                        <input type="text" (input)="quantityChange(i)" formControlName="sgst"
+                                            (keypress)="numberDecimalOnly($event)" class="px-3 py-2"
+                                            style="margin-right: 10px; text-align: center; padding-left:30px !important ; width: 90px; border: none !important; border-right: 1px solid #d2d6da !important; border-top-left-radius: 10px; border-bottom-left-radius: 10px;"
+                                            placeholder="SGST"> {{invoiceGenerateForm.value.billItem[i].sgstAmount}}
+                                    </div>
+                                    <div *ngIf="submittedInvoiceData && item.controls.sgst.errors">
+                                        <div *ngIf="item.controls.sgst.errors.required">
+                                            <span class="error_msg">SGST is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-6 col-sm-12" [ngClass]="igst === false ? 'd-none' : '' ">
+                                    <!-- <label class="required">IGST</label> -->
+                                    <div class="mb-3 position-relative form-control p-0">
+                                        <span class="icon-position" style="left:0; top:0;"><i
+                                                class="fa fa-percent"></i></span>
+                                        <input type="text" (input)="quantityChange(i)" formControlName="igst"
+                                            (keypress)="numberDecimalOnly($event)" class="px-3 py-2"
+                                            style="margin-right: 10px; text-align: center; padding-left:30px !important ; width: 90px; border: none !important; border-right: 1px solid #d2d6da !important; border-top-left-radius: 10px; border-bottom-left-radius: 10px;"
+                                            placeholder="IGST"> {{invoiceGenerateForm.value.billItem[i].igstAmount}}
+                                    </div>
+                                    <div *ngIf="submittedInvoiceData && item.controls.igst.errors">
+                                        <div *ngIf="item.controls.igst.errors.required">
+                                            <span class="error_msg">IGST is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 col-sm-12"
+                                    [ngClass]="(description === false ? 'd-none' : '') + ' ' + (igst === true ? 'col-lg-8' : cgst === true ? 'col-lg-4' : sgst === true ? 'col-lg-4' : 'col-lg-12')">
+                                    <!-- <label class="required">Description</label> -->
+                                    <div class="mb-3">
+                                        <!-- <span class="icon-position"><i class="fa fa-user"></i></span> -->
+                                        <textarea type="textarea" maxlength="200" formControlName="description"
+                                            class="form-control ps-2" placeholder="Description"></textarea>
+                                        <div *ngIf="submittedInvoiceData && item.controls.description.errors">
+                                            <div *ngIf="item.controls.description.errors.required">
+                                                <span class="error_msg">Description is Required.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12 col-md-12 col-sm-12">
+                                    <div class="invoice-text">
+                                        <div class="text-box">
+                                            <h6>Total</h6>
+                                            <input type="text" disabled formControlName="subTotal" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr *ngIf="i+1 != templeteList.length">
+                            </div>
+
+                        </div>
+                        <div class="d-flex justify-content-end"
+                            *ngIf="itemName === true || amount === true || discount === true || cgst === true || sgst === true || igst === true || quantity === true || hours === true || rate === true || hsnCode === true || description === true">
+                            <div class="text-center">
+                                <button type="button" (click)="addTempleteItem()" class="btn bg-gradient-dark m-3">Add
+                                    item </button>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="invoice-text">
+                            <!-- <div class="text-box">
+                              <h6>Sub Total</h6>
+                              <input type="text" formControlName="subTotal" class="form-control">
+                              <span>10,000</span>
+                            </div> -->
+                            <!-- <div class="text-box">
+                              <h6>Discount</h6>
+                              <input type="text" formControlName="discount" class="form-control">
+                              <span>10,000</span>
+                            </div> -->
+                            <!-- <div class="text-box">
+                              <h6>Tax</h6>
+                              <input type="text" formControlName="tax" class="form-control">
+                              <span>10,000</span>
+                            </div> -->
+                            <div class="text-box">
+                                <h6>Final Amount</h6>
+                                <input type="text" disabled formControlName="finalAmount" class="form-control">
+                                <!-- <span>10,000</span> -->
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div style="margin-right: 45px;text-align: right;">
+                    <button type="button" (click)="saveCreatedInvoice()" *ngIf="addGenerateInvoice === false"
+                        class="btn bg-gradient-dark my-4">
+                        Save
+                    </button>
+                    <button type="button" (click)="updateCreatedInvoice()" *ngIf="addGenerateInvoice === true"
+                        class="btn bg-gradient-dark my-4">
+                        Update
+                    </button>
+                    <button type="button" routerLink="/admin/company-management/invoice-list"
+                        class="btn bg-gradient-danger m-3">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

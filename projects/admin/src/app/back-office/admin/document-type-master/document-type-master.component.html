@@ -1,0 +1,181 @@
+<div class="">
+    <div class="container-fluid py-4">
+        <div class="row">
+            <div class="mb-3 d-flex" style="justify-content: space-between;">
+                <span class="icon-position"><i class="fa fa-search"></i></span>
+                <input type="text" style="width:30%" class="searchTerm form-control"
+                    (input)="search($event.target.value)" [(ngModel)]="searchTerm" placeholder="Type here...">
+                <div class="right-container" *ngIf="this.isCreated == true">
+                    <button class="btn bg-gradient-dark mb-0 add-btn right-container-button"
+                        (click)="addDocumenttypeMaster()">
+                        <span class="long-text">Add New</span>
+                        <i class="fas fa-plus" aria-hidden="true"></i></button>
+                </div>
+            </div>
+            <div class="col-lg-8"></div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table" matSort matSortActive="documentType" matSortDirection="asc"
+                                matSortDisableClear="true" (matSortChange)="sortingList($event)">
+                                <thead>
+                                    <tr>
+                                        <th class="theme-color">No.</th>
+                                        <th class="theme-color" mat-sort-header="documentType">Document type</th>
+                                        <th class="theme-color">Status</th>
+                                        <th class="theme-color">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr
+                                        *ngFor="let documenttypeMasterData of documenttypemasterList | filter : searchTerm | paginate: { itemsPerPage: l, currentPage: p };let documenttypeIndex = index">
+                                        <td class="text-color">
+                                            {{ l * (p - 1) + documenttypeIndex +1 }}
+                                        </td>
+                                        <td class="text-color doc-type-master-tabel">
+                                            {{ documenttypeMasterData.documentType }}
+                                        </td>
+                                        <td class="text-color">
+                                            <span *ngIf="documenttypeMasterData.status == 1"
+                                                class="badge bg-gradient-success">Active</span>
+                                            <span *ngIf="documenttypeMasterData.status == 2"
+                                                class="badge bg-gradient-danger">Deactive</span>
+                                        </td>
+                                        <td class="text-color">
+                                            <ul class="d-flex action-list p-0">
+                                                <li class="action-list-item me-3" *ngIf="this.isUpdated == true">
+                                                    <button class="font-20 btn bg-gradient-dark emp-edit-btn"
+                                                        title="Edit Documnet"
+                                                        (click)="editDocumentTypeMaster({id :documenttypeMasterData._id,index:documenttypeIndex})">
+                                                        <i class="fa fa-edit"></i></button>
+                                                </li>
+                                                <li class="action-list-item" *ngIf="this.isDeleted == true">
+                                                    <button *ngIf="documenttypeMasterData.status == 2"
+                                                        class="dtl-btn btn bg-gradient-dark"
+                                                        title="Active Document Type"
+                                                        (confirm-click)="statusDocumentTypeMaster({id :documenttypeMasterData._id,index:documenttypeIndex, status:1})"
+                                                        appConfirm [confirmTitle]="'Active'"
+                                                        [confirmContent]="'Are you sure to Active this Document Type?'">
+                                                        <i class="fa fa-plus"></i></button>
+                                                    <button *ngIf="documenttypeMasterData.status == 1"
+                                                        class="dtl-btn btn bg-gradient-dark"
+                                                        title="Deactive Document Type"
+                                                        (confirm-click)="statusDocumentTypeMaster({id :documenttypeMasterData._id,index:documenttypeIndex, status:2})"
+                                                        appConfirm [confirmTitle]="'Deactive'"
+                                                        [confirmContent]="'Are you sure to Deactive this Document Type?'">
+                                                        <i class="fa fa-trash"></i></button>
+                                                </li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                    <tr *ngIf="noData">
+                                        <td colspan="6">
+                                            <h2 class="text-center mb-0">Data Not Found</h2>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="footer-pagination" *ngIf="documenttypemasterList?.length > l">
+                            <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal quick-edit-modal fade" tabindex="-1" id="add-documenttype-modal" role="dialog">
+    <div class="modal-dialog model-setting-menu-width" role="document">
+        <div class="card modal-content">
+            <div class="modal-header">
+                <h4 class="text-center mb-2 w-100" *ngIf="ISeditDocumentTypeMaster === false">Add New Document Type</h4>
+                <h4 class="text-center mb-2 w-100" *ngIf="ISeditDocumentTypeMaster === true">Edit Document Type</h4>
+                <button class="btn bg-gradient-dark cancel-btn popup-close-btn" (click)="cancelDocumentTypeMaster()">
+                    <i class="fa fa-times" style="font-size: 10px;"></i>
+                </button>
+            </div>
+            <div class="card-body model-scroll">
+                <form role="form" class="add-employee-form" [formGroup]="documenttypemasterForm" autocomplete="off">
+                    <div class="p-3 basic-information-form">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <label for="role" class="required">Document Type</label>
+                                <div class="mb-3">
+                                    <span class="icon-position"><i class="fa fa-file"></i></span>
+                                    <input type="text" class="form-control" formControlName="documentType"
+                                        placeholder="Documenttype">
+                                    <div
+                                        *ngIf="submittedDocumenttypeMasterData && fDocumenttypenameData.documentType.errors">
+                                        <div *ngIf="fDocumenttypenameData.documentType.errors.required">
+                                            <span class="error_msg">Document Type is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <div class="w-100">
+                    <div class="text-center">
+                        <button type="button" *ngIf="ISeditDocumentTypeMaster === false"
+                            (click)="saveDocumenttypemaster()" class="btn bg-gradient-dark my-2">Save</button>
+                        <button type="button" *ngIf="ISeditDocumentTypeMaster === true"
+                            (click)="updateDocumenttypemaster()" class="btn bg-gradient-dark my-2">Update</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- <div class="modal quick-edit-modal fade" tabindex="-1" id="add-documenttype-modal" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="card modal-content">
+            <div class="card-header card-header-icon">
+                <div class="card-icon">
+                    <i class="material-icons">create</i>
+                </div>
+                <h4 class="card-title" *ngIf="ISeditDocumentTypeMaster === false">Add New Document Type</h4>
+                <h4 class="card-title" *ngIf="ISeditDocumentTypeMaster === true">Edit Document Type</h4>
+            </div>
+            <div class="card-body">
+                <form [formGroup]="documenttypemasterForm">
+                    <input type="hidden" name="Id" formControlName="_id">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div>
+                                <label for="role">Documenttype</label>
+                            </div>
+                            <div class="form-group">
+                                <span class="icon-position"><i class="fa fa-user"></i></span>
+                                <input type="text" class="form-control" formControlName="documentType"
+                                    placeholder="Documenttype">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div class="d-flex justify-content-end">
+                    <div class="text-center">
+                        <button type="button" *ngIf="ISeditDocumentTypeMaster === false"
+                            (click)="saveDocumenttypemaster()" class="btn bg-gradient-dark my-4">Save</button>
+                        <button type="button" *ngIf="ISeditDocumentTypeMaster === true"
+                            (click)="updateDocumenttypemaster()" class="btn bg-gradient-dark my-4">Update</button>
+                    </div>
+                    <div class="text-center ms-3">
+                        <button type="button" (click)="cancelDocumentTypeMaster()"
+                            class="btn bg-gradient-danger my-4">Cancel</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div> -->

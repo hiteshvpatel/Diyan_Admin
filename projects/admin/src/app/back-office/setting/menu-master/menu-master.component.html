@@ -1,0 +1,320 @@
+<div class="">
+    <div class="container-fluid py-4">
+        <div class="row">
+            <div class="mb-3 d-flex" style="justify-content: space-between;">
+                <span class="icon-position"><i class="fa fa-search"></i></span>
+                <input type="text" style="width:30%" (input)="search($event.target.value)"
+                    class="searchTerm form-control" [(ngModel)]="searchTerm" placeholder="Type here...">
+                <div class="right-container" *ngIf="this.isCreated == true">
+                    <button class="btn bg-gradient-dark mb-0 add-btn right-container-button" (click)="addMenu()">
+                        <span class="long-text">Add New</span>
+                        <i class="fas fa-plus" aria-hidden="true"></i></button>
+                </div>
+
+            </div>
+            
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <!-- <div class="card-header align-items-center"
+                         [ngClass]="{'card-header-primary': storageService.getValue('colour') === '1',
+                             'card-header-info': storageService.getValue('colour') === '2',
+                             'card-header-success': storageService.getValue('colour') === '3',
+                             'card-header-warning': storageService.getValue('colour') === '4',
+                             'card-header-danger': storageService.getValue('colour') === '5',
+                             'card-header-rose': storageService.getValue('colour') === '6' }">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <label class="form-group text-white">
+                                    Show &nbsp;
+                                    <select class="custom-select custom-select-sm form-control form-control-sm" [(ngModel)]="mySelect" (change)="itemsPerPage()">
+                                        <option value="5">5</option>
+                                        <option value="10" selected>10</option>
+                                        <option value="25">25</option>
+                                        <option value="50">50</option>
+                                    </select>&nbsp; entries
+                                </label>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="float-right text-white text-end">
+
+                                    <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                                </div>
+                            </div>
+                        </div>
+                    </div> -->
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead >
+                                    <tr class="h-58">
+                                        <th class="width-5 theme-color">No.</th>
+                                        <th class="width-20 theme-color">Menu Name</th>
+                                        <th class="width-20 theme-color">Parent Name</th>
+                                        <th class="width-15 theme-color">Module</th>
+                                        <th class="width-5 theme-color">Order</th>
+                                        <th class="width-5 theme-color">Icon</th>
+                                        <th class="width-15 theme-color">Status</th>
+                                        <th class="width-15 theme-color">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="h-58"
+                                        *ngFor="let menuData of menuList | paginate: { itemsPerPage: l, currentPage: p };let menuIndex = index">
+                                        <td class="text-color">
+                                            {{ l * (p - 1) + menuIndex +1 }}
+                                        </td>
+                                        <td class="text-color menu-master-table-width-fix">
+                                            <span>{{ menuData.title }}</span>
+                                        </td>
+                                        <td class="text-color menu-master-table-width-fix">
+                                            <span>{{ menuData.parentName }}</span>
+                                        </td>
+                                        <td class="text-color menu-master-table-width-fix">
+                                            <span>{{ menuData.module }}</span>
+                                        </td>
+                                        <td class="text-color">
+                                            {{ menuData.order }}
+                                        </td>
+                                        <td class="text-color">
+                                            <i class="material-icons">{{menuData.icon}}</i>
+                                        </td>
+                                        <td class="text-color">
+                                            <span *ngIf="menuData.status == 1"
+                                                class="badge bg-gradient-success">Active</span>
+                                            <span *ngIf="menuData.status == 2"
+                                                class="badge bg-gradient-danger">Deactive</span>
+                                        </td>
+                                        <td class="text-color">
+                                            <ul class="d-flex align-items-center action-list p-0">
+                                                <li class="action-list-item me-3" *ngIf="this.isUpdated == true">
+                                                    <button class="font-20 btn bg-gradient-dark emp-edit-btn"
+                                                        (click)="editRolemaster({id :menuData._id,index:menuIndex})">
+                                                        <i class="fa fa-edit"></i></button>
+                                                </li>
+                                                <li class="action-list-item" *ngIf="this.isDeleted == true">
+                                                    <button *ngIf="menuData.status == 2"
+                                                        class="dtl-btn btn bg-gradient-dark"
+                                                        (confirm-click)="statusMenu({id :menuData._id,index:menuIndex, status:1})"
+                                                        appConfirm [confirmTitle]="'Active'"
+                                                        [confirmContent]="'Are you sure to Active this Menu Master?'">
+                                                        <i class="fa fa-plus"></i></button>
+                                                    <button *ngIf="menuData.status == 1"
+                                                        class="dtl-btn btn bg-gradient-dark"
+                                                        (confirm-click)="statusMenu({id :menuData._id,index:menuIndex, status:2})"
+                                                        appConfirm [confirmTitle]="'Deactive'"
+                                                        [confirmContent]="'Are you sure to Deactive this Menu Master?'">
+                                                        <i class="fa fa-trash"></i></button>
+                                                </li>
+
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                    <tr *ngIf="noData">
+                                        <td colspan="8">
+                                            <h2 class="text-center mb-0">Data Not Found</h2>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="footer-pagination" *ngIf="menuList?.length > l">
+                                <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal quick-edit-modal fade" tabindex="-1" id="add-menu-modal" role="dialog">
+    <div class="modal-dialog model-setting-menu-width" role="document">
+        <div class="card modal-content">
+            <div class="modal-header">
+                <h4 class="text-center mb-2 w-100" *ngIf="ISeditMenu === false">Add Menu</h4>
+                <h4 class="text-center mb-2 w-100" *ngIf="ISeditMenu === true">Edit Menu</h4>
+                <button class="btn bg-gradient-dark cancel-btn" (click)="cancelMenu()"
+                    style="float: right;margin-right: 0;border-radius: 50%;padding: 6px 12px;">
+                    <i class="fa fa-times" style="font-size: 10px;"></i>
+                </button>
+            </div>
+            <div class="card-body model-scroll">
+                <form role="form" class="add-employee-form" [formGroup]="menuForm" autocomplete="off">
+                    <div class="p-3 basic-information-form">
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <label for="role" class="required">Title</label>
+                                <div class="mb-3">
+                                    <!-- <span class="icon-position"><i class="fa fa-fa-heading"></i></span> -->
+                                    <input type="text" class="form-control ps-2" formControlName="title"
+                                        placeholder="Title">
+                                    <div *ngIf="submittedMenuData && fTitleData.title.errors">
+                                        <div *ngIf="fTitleData.title.errors.required">
+                                            <span class="error_msg">Title is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <label for="role">Path</label>
+                                <div class="mb-3">
+                                    <!-- <span class="icon-position"><i class="fa fa-bank"></i></span> -->
+                                    <input type="text" class="form-control ps-2" formControlName="path"
+                                        placeholder="Path">
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <label for="role">Class</label>
+                                <div class="mb-3">
+                                    <input type="text" class="form-control ps-2" formControlName="class"
+                                        placeholder="Class">
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <label for="role">Icon</label>
+                                <div class="mb-3">
+                                    <input type="text" class="form-control ps-2" formControlName="icon"
+                                        placeholder="icon">
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <label for="role">Order</label>
+                                <div class="mb-3">
+                                    <input type="text" class="form-control ps-2" formControlName="order"
+                                        placeholder="Order" min="1" (keypress)="numberOnly($event)">
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <label for="role">Parent Name</label>
+                                <div class="mb-3">
+                                    <ng-select [items]="perentList" class="" bindLabel="title" bindValue="_id"
+                                        placeholder="Select Parent Name" formControlName="parentId">
+                                    </ng-select>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <label for="role">Module</label>
+                                <div class="mb-3">
+                                    <ng-select [items]="moduleList" class="" bindLabel="name" bindValue="value"
+                                        placeholder="Select Module" formControlName="module">
+                                    </ng-select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="w-100">
+                    <div class="text-center">
+                        <button type="button" *ngIf="ISeditMenu === false" (click)="saveMenu()"
+                            class="btn bg-gradient-dark my-2">Save</button>
+                        <button type="button" *ngIf="ISeditMenu === true" (click)="updateMenu()"
+                            class="btn bg-gradient-dark my-2">Update</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- <div class="modal quick-edit-modal fade" tabindex="-1" id="add-menu-modal" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="card modal-content">
+            <div class="card-header card-header-icon">
+                <div class="card-icon">
+                    <i class="material-icons">create</i>
+                </div>
+                <h4 class="card-title" *ngIf="ISeditMenu === false">Add Menu</h4>
+                <h4 class="card-title" *ngIf="ISeditMenu === true">Edit Menu</h4>
+            </div>
+            <div class="card-body">
+                <form [formGroup]="menuForm">
+                    <input type="hidden" name="Id" formControlName="_id">
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div>
+                                <label for="role">Title</label>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control ps-2" formControlName="title"
+                                    placeholder="Title">
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div>
+                                <label for="role">Path</label>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control ps-2" formControlName="path" placeholder="Path">
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div>
+                                <label for="role">Class</label>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control ps-2" formControlName="class"
+                                    placeholder="Class">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div>
+                                <label for="role">Icon</label>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control ps-2" formControlName="icon" placeholder="icon">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div>
+                                <label for="role">Order</label>
+                            </div>
+                            <div class="form-group">
+                                <input type="number" class="form-control ps-2" formControlName="order"
+                                    placeholder="Order" min="1">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div>
+                                <label for="role">Parent Name</label>
+                            </div>
+                            <div class="form-group">
+                                <ng-select [items]="perentList" class="" bindLabel="title" bindValue="_id"
+                                    placeholder="Select Parent Name" formControlName="parentId">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div>
+                                <label for="role">Module</label>
+                            </div>
+                            <div class="form-group">
+                                <ng-select [items]="moduleList" class="" bindLabel="name" bindValue="value"
+                                    placeholder="Select Module" formControlName="module">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div class="d-flex justify-content-end">
+                    <div class="text-center">
+                        <button type="button" *ngIf="ISeditMenu === false" (click)="saveMenu()"
+                            class="btn bg-gradient-dark my-4">Save</button>
+                        <button type="button" *ngIf="ISeditMenu === true" (click)="updateMenu()"
+                            class="btn bg-gradient-dark my-4">Update</button>
+                    </div>
+                    <div class="text-center ms-3">
+                        <button type="button" (click)="cancelMenu()" class="btn bg-gradient-danger my-4">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> -->

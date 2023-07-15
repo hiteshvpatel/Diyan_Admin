@@ -1,0 +1,109 @@
+<div class="">
+  <div class="container-fluid py-4">
+    <div class="row">
+      <div class="mb-3 d-flex" style="justify-content: space-between;">
+        <span class="icon-position"><i class="fa fa-search"></i></span>
+        <input type="text" style="width:30%" (input)="search($event.target.value)" class="searchTerm form-control"
+          [(ngModel)]="searchTerm" placeholder="Type here...">
+        <div class="right-container" *ngIf="this.isCreated == true">
+          <button class="btn bg-gradient-dark mb-0 add-btn right-container-button"
+            routerLink="/admin/company-management/generate-invoice">
+            <span class="long-text">Add New</span>
+            <i class="fas fa-plus" aria-hidden="true"></i></button>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="table-responsive mb-4">
+              <table class="table" matSort matSortActive="companyName" matSortDirection="asc" matSortDisableClear="true"
+                (matSortChange)="sortingList($event)">
+                <thead>
+                  <tr>
+                    <th class="theme-color">No.</th>
+                    <th class="theme-color" mat-sort-header="companyName">Company Name</th>
+                    <th class="theme-color" mat-sort-header="templateName">Templete Name</th>
+                    <th class="theme-color" mat-sort-header="clientName">Client Name</th>
+                    <th class="theme-color" mat-sort-header="finacialYear">Financial Year</th>
+                    <th class="theme-color" mat-sort-header="billNo">Bill No.</th>
+                    <th class="theme-color" mat-sort-header="billDate">Bill Date</th>
+                    <th class="theme-color" mat-sort-header="finalAmount">Final Amount</th>
+                    <th class="theme-color">Download</th>
+                    <th class="theme-color">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    *ngFor="let invoiceData of invoiceList | filter : searchTerm |  paginate: { itemsPerPage: l, currentPage: p };let invoiceIndex = index">
+                    <td class="text-color">
+                      <!-- <span>{{ invoiceIndex +1 }}</span> -->
+                      <span>{{ l * (p - 1) + invoiceIndex +1 }}</span>
+                    </td>
+                    <td class="text-color doc-master-tbl company-list-table">
+                      <span>{{ invoiceData.companyName | titlecase }}</span>
+                    </td>
+                    <td class="text-color doc-master-tbl company-list-table">
+                      <span>{{ invoiceData.templateName | titlecase }}</span>
+                    </td>
+                    <td class="text-color doc-master-tbl">
+                      <span>{{ invoiceData.clientName | titlecase }}</span>
+                    </td>
+                    <td class="text-color doc-master-tbl">
+                      <span>{{ invoiceData.finacialYear }}</span>
+                    </td>
+                    <td class="text-color doc-master-tbl">
+                      <span>{{ invoiceData.billNo }}</span>
+                    </td>
+                    <td class="text-color doc-master-tbl">
+                      <span>{{ invoiceData.billDate }}</span>
+                    </td>
+                    <td class="text-color doc-master-tbl">
+                      <span>{{ invoiceData.finalAmount }}</span>
+                    </td>
+                    <td class="text-color" *ngIf="this.isUpdated == true">
+                      <button class="mb-0 cursor-pointer btn bg-gradient-dark download-btn"
+                        (click)="downloadInvoice({id:invoiceData._id})">
+                        <i class="fa fa-download"></i>
+                      </button>
+                    </td>
+                    <td class="text-color">
+                      <ul class="d-flex align-items-center action-list p-0">
+                        <li class="action-list-item me-3" *ngIf="this.isUpdated == true">
+                          <button class="font-20 btn bg-gradient-dark emp-edit-btn"
+                            routerLink="/admin/company-management/edit-generated-invoice/{{invoiceData._id}}">
+                            <i class="fa fa-edit"></i></button>
+                        </li>
+                        <!-- <li class="action-list-item">
+                          <button *ngIf="invoiceData.status == 2" class="dtl-btn btn bg-gradient-dark"
+                            (confirm-click)="statusInvoice({id :invoiceData._id,index:invoiceIndex, status:1})"
+                            appConfirm [confirmTitle]="'Active'"
+                            [confirmContent]="'Are you sure to Active this Invoice?'">
+                            <i class="fa fa-plus"></i></button>
+                          <button *ngIf="invoiceData.status == 1" class="dtl-btn btn bg-gradient-dark"
+                            (confirm-click)="statusInvoice({id :invoiceData._id,index:invoiceIndex, status:2})"
+                            appConfirm [confirmTitle]="'Deactive'"
+                            [confirmContent]="'Are you sure to Deactive this Invoice?'">
+                            <i class="fa fa-trash"></i></button>
+                        </li> -->
+                      </ul>
+                    </td>
+                  </tr>
+                  <tr *ngIf="noData">
+                    <td colspan="10">
+                      <h2 class="text-center mb-0">Data Not Found</h2>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="footer-pagination" *ngIf="invoiceList?.length > l">
+              <pagination-controls (pageChange)="p = $event"></pagination-controls>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

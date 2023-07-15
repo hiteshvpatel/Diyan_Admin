@@ -1,0 +1,80 @@
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="mb-4 d-flex">
+            <div class="d-flex w-100">
+                <span class="icon-position"><i class="fa fa-search"></i></span>
+                <input type="text" style="width:30%" (input)="search($event.target.value)"
+                    class="searchTerm form-control" [(ngModel)]="searchTerm" placeholder="Type here...">
+                <ng-select [items]="activeDeactiveDataList" class="ms-2" [(ngModel)]="selectedActiveDeActive"
+                    style="width:30%" bindLabel="name" bindValue="value" (change)="onChangeStatus($event.value)">
+                </ng-select>
+            </div>
+            <div class="right-container d-flex" style="float:right" *ngIf="this.isCreated == true">
+                <button class="btn bg-gradient-dark mb-0 add-btn" style="width: 166px;"
+                    (confirm-click)="generateLedger()" appConfirm [confirmTitle]="'Generate Ledger'"
+                    [confirmContent]="'Are you sure want to generate ledger ?'">
+                    <span class="long-text">
+                        Generate Ledger
+                    </span>
+                    <!-- <i id="icon-chat" class="fas fa-plus" aria-hidden="true"></i> -->
+                </button>
+                <button class="btn bg-gradient-dark mb-0 add-btn right-container-button ms-2"
+                    (click)="addEmployee()"><span class="long-text">Add
+                        Employee</span><i id="icon-chat" class="fas fa-plus" aria-hidden="true"></i></button>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-3 col-md-6 col-sm-12"
+            *ngFor="let userMasterData of usermasterList | filter: searchTerm | sortAsc : 'userName' | paginate: { itemsPerPage: l, currentPage: p };let userMasterIndex = index">
+            <div class="card mb-4 height-230">
+                <div class="card-body">
+                    <div class="table-responsive p-0">
+                        <div class="text-center">
+                            <div class="employe-img">
+                                <a>
+                                    <img src="{{imgUrl}}{{userMasterData.profile_image}}"
+                                        onerror="this.src ='/assets/img/no-image-available.jpg'" alt="Profile Image"
+                                        class="avatar profile-Image">
+                                </a>
+                            </div>
+                            <div *ngIf="!!userMasterData.empCompanyInfoData && this.isDeleted == true">
+                                <button class="employe-list-edit btn bg-gradient-dark cus-btn" title="Active Employee"
+                                    *ngIf="userMasterData.empCompanyInfoData.status == 2"
+                                    (confirm-click)="statusUser({id :userMasterData.empCompanyInfoData._id,index:userMasterIndex,status:1})"
+                                    appConfirm [confirmTitle]="'Active'"
+                                    [confirmContent]="'Are you sure to Active this User?'"><i class="fas fa-user-plus"
+                                        aria-hidden="true"></i></button>
+                                <button class="employe-list-edit btn bg-gradient-dark cus-btn" title="Deactive Employee"
+                                    *ngIf="userMasterData.empCompanyInfoData.status == 1"
+                                    (confirm-click)="statusUser({id :userMasterData.empCompanyInfoData._id,index:userMasterIndex,status:2})"
+                                    appConfirm [confirmTitle]="'Deactive'"
+                                    [confirmContent]="'Are you sure to Deactive this User?'"><i
+                                        class="fas fa-user-times" aria-hidden="true"></i></button>
+                            </div>
+                            <div *ngIf="this.isUpdated == true">
+                                <button class="employe-list-dlt btn bg-gradient-dark emp-edit-btn" title="Edit Employee"
+                                    routerLink="/admin/edit-employee/{{userMasterData._id}}">
+                                    <i class="fa fa-edit"></i>
+                                </button>
+                            </div>
+
+                            <p class="font-weight-bolder mb-0 user-card-name"
+                                title="{{userMasterData.userName | titlecase}}">
+                                {{userMasterData.userName | titlecase}}
+                            </p>
+                            <span class="mb-0 font-weight-bolder mt-2" *ngIf="!!userMasterData.empCompanyInfoData">
+                                {{userMasterData.empCompanyInfoData.empNumber}}
+                            </span><br>
+                            <p class="user-list-card-designation" title="{{userMasterData.designationName}}">
+                                {{userMasterData.designationName}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer-pagination" *ngIf="usermasterList?.length > l">
+        <pagination-controls (pageChange)="p = $event"></pagination-controls>
+    </div>
+</div>

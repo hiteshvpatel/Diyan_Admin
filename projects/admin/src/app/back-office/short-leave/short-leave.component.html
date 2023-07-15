@@ -1,0 +1,157 @@
+<div class="">
+    <div class="container-fluid py-4">
+        <div class="row mb-3">
+            <div class="col-lg-3">
+                <span class="icon-position"><i class="fa fa-search"></i></span>
+                <input type="text" (input)="search($event.target.value)" [(ngModel)]="searchTerm" style="width:100%"
+                    class="searchTerm form-control" placeholder="Type here...">
+            </div>
+            <div class="col-lg-3">
+                <ng-select [(ngModel)]="month" [items]="monthArray" class="" bindLabel="month" bindValue="value"
+                    placeholder="Select Month" (change)="getShortLeaveListData()" [clearable]="false">
+                </ng-select>
+            </div>
+            <div class="col-lg-3">
+                <ng-select [(ngModel)]="year" [items]="yearArray" class="" bindLabel="yearArray" [clearable]="false"
+                    bindValue="yearArray" placeholder="Select Year" (change)="getShortLeaveListData()">
+                </ng-select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table" matSort matSortActive="userName" matSortDirection="asc"
+                                matSortDisableClear="true" (matSortChange)="sortingList($event)">
+                                <thead>
+                                    <tr>
+                                        <th class="theme-color">
+                                            Status</th>
+                                        <th class="theme-color" mat-sort-header="userName">Username</th>
+                                        <th class="theme-color">Date</th>
+                                        <th class="theme-color">Time</th>
+                                        <th class="theme-color">Leave Type</th>
+                                        <th class="theme-color">Discuss With</th>
+                                        <th class="theme-color">Reason</th>
+                                        <th class="theme-color">Remark</th>
+                                        <th class="theme-color">Approved / Rejected By</th>
+
+                                        <th class="theme-color">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr
+                                        *ngFor="let empShortLeaveListData of empShortLeaveList ;let empShortLeaveIndex = index">
+                                        <td class="text-color">
+                                            <span class="badge" [ngClass]="{'bg-gradient-success' : empShortLeaveListData.shortLeavestatus == 2,
+                                        'bg-gradient-danger' : empShortLeaveListData.shortLeavestatus == 3 || empShortLeaveListData.shortLeavestatus == 4,
+                                        'bg-gradient-warning' : empShortLeaveListData.shortLeavestatus == 1
+                                }">
+                                                {{empShortLeaveListData.shortLeavestatus == 1 ? 'Pending'
+                                                :empShortLeaveListData.shortLeavestatus == 2 ? 'Approved'
+                                                :empShortLeaveListData.shortLeavestatus == 4 ? 'Cancle'
+                                                :empShortLeaveListData.shortLeavestatus == 3 ? 'Reject' : '' }}
+                                            </span>
+                                        </td>
+                                        <td class="text-color ellips-line">
+                                            {{empShortLeaveListData.userName}}
+                                        </td>
+                                        <td class="text-color">
+                                            {{empShortLeaveListData.dateObj | date : 'dd/MM/yyyy'}}
+                                        </td>
+                                        <td class="text-color">
+                                            {{empShortLeaveListData.time}}
+                                        </td>
+                                        <td class="text-color white-space-normal">
+                                            {{empShortLeaveListData.shortLeaveType == 1 ? 'Late'
+                                            :empShortLeaveListData.shortLeaveType
+                                            == 2 ? 'Early':'' }}
+                                        </td>
+                                        <td class="text-color white-space-normal">
+                                            {{empShortLeaveListData.disscussWith}}
+                                        </td>
+                                        <td class="text-color white-space-normal">
+                                            {{empShortLeaveListData.shortLeaveReason}}
+                                        </td>
+                                        <td class="text-color white-space-normal">
+                                            {{empShortLeaveListData.remark ? empShortLeaveListData.remark : '-'}}
+                                        </td>
+                                        <td class="text-color white-space-normal">
+                                            {{empShortLeaveListData.shortLeavestatus == 2 ?
+                                            empShortLeaveListData?.approvedPerson :
+                                            empShortLeaveListData.shortLeavestatus == 3 ?
+                                            empShortLeaveListData?.rejectedPerson :
+                                            '-'}}
+                                        </td>
+
+                                        <td class="text-color">
+                                            <div class="d-flex">
+                                                <div (confirm-click)="approveEmployeeShortLeave(empShortLeaveListData._id)"
+                                                    appConfirm [confirmTitle]="'Approve Short Leave'"
+                                                    [confirmContent]="'Are you sure to Approve this user Short Leave?'"
+                                                    title="Approve Short Leave"
+                                                    *ngIf="empShortLeaveListData.shortLeavestatus == 1"
+                                                    class="icon icon-shape icon-sm shadow border-radius-md bg-gradient-dark text-center me-2 d-flex align-items-center cursor-pointer justify-content-center">
+                                                    <i class="fa fa-check"></i>
+                                                </div>
+                                                <div (confirm-click)="rejectEmployeeShortLeaveModalOpen(empShortLeaveListData._id)"
+                                                    appConfirm [confirmTitle]="'Reject Short Leave'"
+                                                    [confirmContent]="'Are you sure to Reject this user Short Leave?'"
+                                                    title="Reject Short Leave"
+                                                    *ngIf="empShortLeaveListData.shortLeavestatus == 1 || empShortLeaveListData.shortLeavestatus == 2"
+                                                    class="icon icon-shape icon-sm shadow border-radius-md bg-gradient-dark text-center me-2 d-flex align-items-center cursor-pointer justify-content-center">
+                                                    <i class="fa fa-remove"></i>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr *ngIf="noData">
+                                        <td colspan="10">
+                                            <h2 class="text-center mb-0">Data Not Found</h2>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal quick-edit-modal fade" tabindex="-1" id="reject-emp-short-leave-modal" role="dialog">
+    <div class="modal-dialog model-setting-menu-width" role="document">
+        <div class="card modal-content">
+            <div class="modal-header">
+                <h4 class="text-center mb-2 w-100">Reject Short Leave</h4>
+                <button class="btn bg-gradient-dark cancel-btn popup-close-btn" (click)="rejectShortLeaveRemarkModal()">
+                    <i class="fa fa-times" style="font-size: 10px;"></i>
+                </button>
+            </div>
+            <div class="card-body model-scroll">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <label for="role">Remark</label>
+                        <div class="mb-3">
+                            <textarea name="" class="form-control ps-2" id="" [(ngModel)]="remark" placeholder="Remark"
+                                rows="3"></textarea>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="w-100">
+                    <div class="text-center">
+                        <button type="button" (click)="rejectShortLeaveSave()" class="btn bg-gradient-dark my-2">Reject
+                            Short Leave</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

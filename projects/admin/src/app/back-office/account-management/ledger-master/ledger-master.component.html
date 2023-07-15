@@ -1,0 +1,187 @@
+<div class="">
+  <div class="container-fluid py-4">
+    <div class="row">
+      <div class="mb-3 d-flex" style="justify-content: space-between;">
+        <span class="icon-position"><i class="fa fa-search"></i></span>
+        <input type="text" style="width:30%" (input)="search($event.target.value)" class="searchTerm form-control"
+          [(ngModel)]="searchTerm" placeholder="Type here...">
+        <div class="right-container" *ngIf="this.isCreated == true">
+          <button class="btn bg-gradient-dark mb-0 add-btn right-container-button" (click)="addLedgerMaster()">
+            <span class="long-text">Add New</span>
+            <i class="fas fa-plus" aria-hidden="true"></i></button>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="table-responsive mb-4">
+              <table class="table" matSort matSortActive="ledger" matSortDirection="asc" matSortDisableClear="true"
+                (matSortChange)="sortingList($event)">
+                <thead>
+                  <tr class="h-54">
+                    <th class="theme-color w-5">No.</th>
+                    <th class="theme-color w-20" mat-sort-header="groupName">Group Name</th>
+                    <th class="theme-color w-10" mat-sort-header="unit">Unit</th>
+                    <th class="theme-color w-30" mat-sort-header="ledger">Ledger</th>
+                    <th class="theme-color w-15">Is Edit Allows</th>
+                    <th class="theme-color w-15">Status</th>
+                    <th class="theme-color w-20">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="h-54"
+                    *ngFor="let ledgermasterData of ledgermasterList | filter : searchTerm |  paginate: { itemsPerPage: l, currentPage: p };let ledgermasterIndex = index">
+                    <td class="text-color">
+                      <span>{{ l * (p - 1) + ledgermasterIndex +1 }}</span>
+                    </td>
+                    <td class="text-color doc-master-tbl">
+                      {{ ledgermasterData.groupName }}
+                    </td>
+                    <td class="text-color doc-master-tbl">
+                      {{ ledgermasterData.unit }}
+                    </td>
+                    <td class="text-color doc-master-tbl">
+                      {{ ledgermasterData.ledger }}
+                    </td>
+                    <td class="text-color doc-master-tbl">
+                      {{ ledgermasterData.isEditable }}
+                    </td>
+                    <td class="text-color">
+                      <span *ngIf="ledgermasterData.status == 1" class="badge bg-gradient-success">Active</span>
+                      <span *ngIf="ledgermasterData.status == 2" class="badge bg-gradient-danger">Deactive</span>
+                    </td>
+                    <td class="text-color">
+                      <ul class="d-flex align-items-center action-list p-0">
+                        <li class="action-list-item me-3" *ngIf="this.isUpdated == true">
+                          <button class="font-20 btn bg-gradient-dark emp-edit-btn" title="Edit Ledger"
+                            (click)="editLedgerMaster({id :ledgermasterData._id,index:ledgermasterIndex})">
+                            <i class="fa fa-edit"></i></button>
+                        </li>
+                        <li class="action-list-item"
+                          *ngIf="this.isDeleted == true &&  ledgermasterData.isEditable == true">
+                          <button *ngIf="ledgermasterData.status == 2" class="dtl-btn btn bg-gradient-dark"
+                            title="Active Ledger"
+                            (confirm-click)="statusLedgerMaster({id :ledgermasterData._id,index:ledgermasterIndex, status:1})"
+                            appConfirm [confirmTitle]="'Active'"
+                            [confirmContent]="'Are you sure to Active this Ledger Master?'">
+                            <i class="fa fa-plus"></i></button>
+                          <button *ngIf="ledgermasterData.status == 1" class="dtl-btn btn bg-gradient-dark"
+                            title="Deactive Ledger"
+                            (confirm-click)="statusLedgerMaster({id :ledgermasterData._id,index:ledgermasterIndex, status:2})"
+                            appConfirm [confirmTitle]="'Deactive'"
+                            [confirmContent]="'Are you sure to Deactive this Ledger Master?'">
+                            <i class="fa fa-trash"></i></button>
+                        </li>
+                      </ul>
+                    </td>
+                  </tr>
+                  <tr *ngIf="noData">
+                    <td colspan="6">
+                      <h2 class="text-center mb-0">Data Not Found</h2>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="footer-pagination" *ngIf="ledgermasterList?.length > l">
+              <pagination-controls (pageChange)="p = $event"></pagination-controls>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- //Document Details Popup start -->
+<div class="modal quick-edit-modal fade" tabindex="-1" id="add-ledger-modal" role="dialog">
+  <div class="modal-dialog model-setting-menu-width" role="document">
+    <div class="card modal-content">
+      <div class="modal-header">
+        <h4 class="text-center mb-2 w-100" *ngIf="ISeditLedgerMaster === false">Add New Ledger</h4>
+        <h4 class="text-center mb-2 w-100" *ngIf="ISeditLedgerMaster === true">Edit Ledger</h4>
+        <button class="btn bg-gradient-dark cancel-btn" (click)="cancelLedgerMaster()"
+          style="float: right;margin-right: 0;border-radius: 50%;padding: 6px 12px;">
+          <i class="fa fa-times" style="font-size: 10px;"></i>
+        </button>
+      </div>
+      <div class="card-body model-scroll">
+        <form role="form" class="add-employee-form" [formGroup]="ledgerMasterForm" autocomplete="off">
+          <div class="p-3 basic-information-form">
+            <div class="row">
+              <div class=""
+                [ngClass]="(isEditable?.isEditable == false && ISeditLedgerMaster == true) ? 'col-lg-12' : 'col-lg-6'">
+                <label for="group">
+                  <span class="required">Group Name</span>
+                  <span *ngIf="isEditable?.isEditable == false && ISeditLedgerMaster == true">
+                    &nbsp;&nbsp; : &nbsp;&nbsp; {{isEditable?.groupName}}
+                  </span>
+                </label>
+                <div class="mb-3">
+                  <!-- <span class="icon-position"><i class="fa fa-tasks"></i></span> -->
+                  <ng-select [items]="activeGroupMasterList"
+                    *ngIf="(isEditable?.isEditable == true && ISeditLedgerMaster == true) || ISeditLedgerMaster == false"
+                    formControlName="groupId" bindLabel="groupName" bindValue="_id" placeholder="Select Group">
+                  </ng-select>
+                  <div *ngIf="submittedLedgerMaster && fLedgerData.groupId.errors">
+                    <div *ngIf="fLedgerData.groupId.errors.required">
+                      <span class="error_msg">Group Name is Required.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                [ngClass]="(isEditable?.isEditable == false && ISeditLedgerMaster == true) ? 'col-lg-12' : 'col-lg-6'">
+                <label for="group">
+                  <span class="required">Ledger</span>
+                  <span *ngIf="isEditable?.isEditable == false && ISeditLedgerMaster == true">
+                    &nbsp;&nbsp; : &nbsp;&nbsp; {{isEditable?.ledger}}
+                  </span>
+                </label>
+                <div class="mb-3">
+                  <!-- <span class="icon-position"><i class="fa fa-tasks"></i></span> -->
+                  <input type="text" class="form-control ps-2"
+                    *ngIf="(isEditable?.isEditable == true && ISeditLedgerMaster == true) || ISeditLedgerMaster == false"
+                    formControlName="ledger" placeholder="Ledger">
+                  <div *ngIf="submittedLedgerMaster && fLedgerData.ledger.errors">
+                    <div *ngIf="fLedgerData.ledger.errors.required">
+                      <span class="error_msg">Ledger is Required.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <label for="group">Unit</label>
+                <div class="mb-3">
+                  <!-- <span class="icon-position"><i class="fa fa-tasks"></i></span> -->
+                  <ng-select [items]="activeUnitMasterList" [multiple]="true" formControlName="unitId" bindLabel="unit"
+                    bindValue="_id" placeholder="Select Unit">
+                  </ng-select>
+                </div>
+              </div>
+              <!-- <div class="col-lg-6">
+                <label for="group" class="required me-3">Is Edit Allows ?</label>
+                <div class="mb-3">
+                  <input type="checkbox" class="keep-originals ml-3" [checked]="isEditAllows"
+                    (change)="setIsEditAllows($event)">
+                </div>
+              </div> -->
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <div class="w-100">
+          <div class="text-center">
+            <button type="button" *ngIf="ISeditLedgerMaster === false" (click)="saveLedgerMaster()"
+              class="btn bg-gradient-dark my-2">Save</button>
+            <button type="button" *ngIf="ISeditLedgerMaster === true" (click)="updateLedgermaster()"
+              class="btn bg-gradient-dark my-2">Update</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

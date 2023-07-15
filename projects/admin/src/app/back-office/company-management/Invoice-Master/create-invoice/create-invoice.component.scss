@@ -1,0 +1,32 @@
+.box-input .form-control {
+    background-color: #ffffff !important;
+}
+
+.invoice-text {
+    display: grid;
+    float: right;
+    margin-bottom: 25px;
+}
+
+.text-box {
+    display: flex;
+    float: right;
+    padding: 10px;
+    margin-right: 10px;
+    align-items: end;
+}
+
+.text-box h6 {
+    width: 150px;
+    margin: 0;
+}
+
+.text-box input {
+    /* border-bottom: 1px solid #000000; */
+    padding: 10px;
+    /* text-align: right; */
+    width: 200px;
+    height: 40px;
+    background-color: #fff;
+    /* width: 100px; */
+}

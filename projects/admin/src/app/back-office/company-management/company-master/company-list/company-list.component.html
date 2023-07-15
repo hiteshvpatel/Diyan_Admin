@@ -1,0 +1,106 @@
+<div class="">
+  <div class="container-fluid py-4">
+    <div class="row">
+      <div class="mb-3 d-flex" style="justify-content: space-between;">
+        <span class="icon-position"><i class="fa fa-search"></i></span>
+        <input type="text" style="width:30%" (input)="search($event.target.value)" class="searchTerm form-control"
+          [(ngModel)]="searchTerm" placeholder="Type here...">
+        <div class="right-container" *ngIf="this.isCreated == true">
+          <button class="btn bg-gradient-dark mb-0 add-btn right-container-button"
+            routerLink="/admin/company-management/add-company-details">
+            <span class="long-text">Add New</span>
+            <i class="fas fa-plus" aria-hidden="true"></i></button>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="table-responsive mb-4">
+              <table class="table" matSort matSortActive="companyName" matSortDirection="asc" matSortDisableClear="true"
+                (matSortChange)="sortingList($event)">
+                <thead>
+                  <tr>
+                    <th class="theme-color w-5">No.</th>
+                    <th class="theme-color w-20" mat-sort-header="companyName">Company Name</th>
+                    <th class="theme-color w-20" mat-sort-header="companyEmail">Email ID</th>
+                    <th class="theme-color w-10" mat-sort-header="companyMobile">Mobile</th>
+                    <th class="theme-color w-10" mat-sort-header="companyTelephone">Telephone</th>
+                    <th class="theme-color w-15" mat-sort-header="companyWebsite">Website</th>
+                    <th class="theme-color w-10">Status</th>
+                    <th class="theme-color w-10">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    *ngFor="let employeeCompanyData of employeeCompanyList | filter : searchTerm |  paginate: { itemsPerPage: l, currentPage: p };let employeeCompanyIndex = index">
+                    <td class="text-color">
+                      <!-- <span>{{ employeeCompanyIndex +1 }}</span> -->
+                      <span>{{ l * (p - 1) + employeeCompanyIndex +1 }}</span>
+                    </td>
+                    <td class="text-color doc-master-tbl company-list-table"
+                      title="{{ employeeCompanyData.companyName | titlecase }}">
+                      <span>{{ employeeCompanyData.companyName | titlecase }}</span>
+                    </td>
+                    <td class="text-color doc-master-tbl company-list-table"
+                      title="{{ employeeCompanyData.companyEmail }}" style="text-transform: lowercase;">
+                      <span>{{ employeeCompanyData.companyEmail }}</span>
+                    </td>
+                    <td class="text-color doc-master-tbl">
+                      <span>{{ employeeCompanyData.companyMobile }}</span>
+                    </td>
+                    <td class="text-color doc-master-tbl">
+                      <span>{{ employeeCompanyData.companyTelephone }}</span>
+                    </td>
+                    <td class="text-color doc-master-tbl company-list-table"
+                      title="{{ employeeCompanyData.companyWebsite }}" style="text-transform: lowercase;">
+                      <!-- <a [href]="employeeCompanyData.companyWebsite"> -->
+                      <span>{{ employeeCompanyData.companyWebsite }}</span>
+                      <!-- </a> -->
+                    </td>
+                    <td class="text-color">
+                      <span *ngIf="employeeCompanyData.status == 1" class="badge bg-gradient-success">Active</span>
+                      <span *ngIf="employeeCompanyData.status == 2" class="badge bg-gradient-danger">Deactive</span>
+                    </td>
+                    <td class="text-color">
+                      <ul class="d-flex align-items-center action-list p-0">
+                        <li class="action-list-item me-3" *ngIf="this.isUpdated == true">
+                          <button class="font-20 btn bg-gradient-dark emp-edit-btn" title="Edit Company"
+                            routerLink="/admin/company-management/edit-company-details/{{employeeCompanyData._id}}">
+                            <i class="fa fa-edit"></i></button>
+                        </li>
+                        <li class="action-list-item" *ngIf="this.isDeleted == true">
+                          <button *ngIf="employeeCompanyData.status == 2" class="dtl-btn btn bg-gradient-dark"
+                            title="Active Company"
+                            (confirm-click)="statusCompanymaster({id :employeeCompanyData._id,index:employeeCompanyIndex, status:1})"
+                            appConfirm [confirmTitle]="'Active'"
+                            [confirmContent]="'Are you sure to Active this Company?'">
+                            <i class="fa fa-plus"></i></button>
+                          <button *ngIf="employeeCompanyData.status == 1" class="dtl-btn btn bg-gradient-dark"
+                            title="Deactive Company"
+                            (confirm-click)="statusCompanymaster({id :employeeCompanyData._id,index:employeeCompanyIndex, status:2})"
+                            appConfirm [confirmTitle]="'Deactive'"
+                            [confirmContent]="'Are you sure to Deactive this Company?'">
+                            <i class="fa fa-trash"></i></button>
+                        </li>
+                      </ul>
+                    </td>
+                  </tr>
+                  <tr *ngIf="noData">
+                    <td colspan="8">
+                      <h2 class="text-center mb-0">Data Not Found</h2>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="footer-pagination" *ngIf="employeeCompanyList?.length > l">
+              <pagination-controls (pageChange)="p = $event"></pagination-controls>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,289 @@
+<div class="">
+    <div class="container-fluid py-4">
+        <div class="row mb-3">
+            <!-- <div class="col-lg-8">
+                <span class="icon-position"><i class="fa fa-search"></i></span>
+                <input type="text" style="width:30%" class="searchTerm form-control" placeholder="Type here...">
+            </div>
+            <div class="mb-4 col-lg-4">
+                <div class="right-container">
+                    <button class="btn bg-gradient-dark mb-0 add-btn right-container-button" (click)="addLeave()">
+                        <span class="long-text">Apply Leave</span>
+                        <i class="fas fa-plus" aria-hidden="true"></i></button>
+                </div>
+            </div> -->
+
+            <!-- <div class="mb-3 d-flex" style="justify-content: space-between;">
+                <span class="icon-position"><i class="fa fa-search"></i></span>
+                <input type="text" style="width:30%" class="searchTerm form-control" placeholder="Type here...">
+            </div>
+            <div class="mb-3 d-flex" style="justify-content: space-between;">
+                <span class="icon-position"><i class="fa fa-search"></i></span>
+                <input type="text" style="width:30%" class="searchTerm form-control" placeholder="Type here...">
+            </div>
+            <div class="mb-3 d-flex" style="justify-content: space-between;">
+                <span class="icon-position"><i class="fa fa-search"></i></span>
+                <input type="text" style="width:30%" class="searchTerm form-control" placeholder="Type here...">
+            </div> -->
+            <div class="col-lg-3">
+                <span class="icon-position"><i class="fa fa-search"></i></span>
+                <input type="text" (input)="search($event.target.value,leaveTypeStatus)" style="width:100%"
+                    class="searchTerm form-control" [(ngModel)]="searchTerm" placeholder="Type here...">
+            </div>
+            <div class="col-lg-3">
+                <ng-select [(ngModel)]="month" [items]="monthArray" class="" bindLabel="month" bindValue="value"
+                    placeholder="Select Month" (change)="getLeaveList()" [searchable]="false" [clearable]="false">
+                </ng-select>
+            </div>
+            <div class="col-lg-3">
+                <ng-select [(ngModel)]="year" [items]="yearArray" class="" bindLabel="yearArray" bindValue="yearArray"
+                    placeholder="Select Year" (change)="getLeaveList()" [searchable]="false" [clearable]="false">
+                </ng-select>
+            </div>
+            <div class="col-lg-3">
+                <ng-select [(ngModel)]="leaveTypeStatus" [items]="leaveStatusType" class="" bindLabel="name"
+                    bindValue="value" [clearable]="false" [searchable]="false" placeholder="Select Leave Type"
+                    (change)="getLeaveList()">
+                </ng-select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="">
+                            <table class="table" matSort matSortActive="userName" matSortDirection="asc"
+                                matSortDisableClear="true" (matSortChange)="sortingList($event)">
+                                <thead>
+                                    <tr>
+                                        <th class="theme-color w-5">No.</th>
+                                        <th class="theme-color w-10" mat-sort-header="userName">Username</th>
+                                        <th class="theme-color w-7">From Date</th>
+                                        <th class="theme-color w-7">To Date</th>
+                                        <!-- <th class="theme-color w-30">Reason</th> -->
+                                        <th class="theme-color w-20">Remark</th>
+                                        <th class="theme-color w-7">
+                                            Status</th>
+                                        <th class="theme-color w-4">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr
+                                        *ngFor="let leaveData of leaveList | paginate: { itemsPerPage: l, currentPage: p };let leaveIndex = index">
+                                        <td class="text-color w-5">
+                                            {{ l * (p - 1) + leaveIndex +1 }}
+                                        </td>
+                                        <td class="text-color w-10 ellips-line">
+                                            {{leaveData.userName}}
+                                        </td>
+                                        <td class="text-color w-7">
+                                            {{leaveData.fromDate}}
+                                        </td>
+                                        <td class="text-color w-7">
+                                            {{leaveData.toDate}}
+                                        </td>
+                                        <!-- <td class="text-color w-25 white-space-normal" [innerHTML]="leaveData.reason">
+                                        </td> -->
+                                        <td class="text-color w-25 white-space-normal">
+                                            {{leaveData.remark}}
+                                        </td>
+                                        <td class="text-color w-7">
+                                            <span class="badge" [ngClass]="{'bg-gradient-success' : leaveData.leaveStatus == 2,
+                                        'bg-gradient-danger' : leaveData.leaveStatus == 3 || leaveData.leaveStatus == 4,
+                                        'bg-gradient-warning' : leaveData.leaveStatus == 1
+                                }">
+                                                {{leaveData.leaveStatus == 1 ? 'Pending'
+                                                :leaveData.leaveStatus == 2 ? 'Approved'
+                                                :leaveData.leaveStatus == 4 ? 'Cancle'
+                                                :leaveData.leaveStatus == 3 ? 'Reject' : '' }}
+                                            </span>
+                                        </td>
+                                        <td class="text-color w-4">
+                                            <div class="d-flex">
+                                                <div (click)="getLeaveListByLeaveId({id :leaveData._id,empId : leaveData.employeeId,empNo : leaveData.empNumber,name : leaveData.userName})"
+                                                    title="Details"
+                                                    class="icon icon-shape icon-sm shadow border-radius-md bg-gradient-dark text-center me-2 d-flex align-items-center cursor-pointer justify-content-center">
+                                                    <i class="fa fa-info"></i>
+                                                </div>
+
+                                                <div (click)="openUpdateLeaveStatusModal({id :leaveData._id,status : leaveData.leaveStatus})"
+                                                    title="Update Status"
+                                                    *ngIf="this.isUpdated == true && (leaveData.leaveStatus == 2 || leaveData.leaveStatus == 1)"
+                                                    class="icon icon-shape icon-sm shadow border-radius-md bg-gradient-dark text-center me-2 d-flex align-items-center cursor-pointer justify-content-center">
+                                                    <i class="fa fa-question-circle"></i>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr *ngIf="noData">
+                                        <td colspan="7">
+                                            <h2 class="text-center mb-0">Data Not Found</h2>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="footer-pagination" *ngIf="leaveList?.length > l">
+                                <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- show leave list by leave id  -->
+<div class="modal quick-edit-modal fade" tabindex="-1" id="leave-List-LeaveID-modal" role="dialog">
+    <div class="modal-dialog model-setting-menu-width" role="document">
+        <div class="card modal-content">
+            <div class="modal-header">
+                <h4 class="text-center mb-2 w-100">Date Wise Leave List</h4>
+                <button class="btn bg-gradient-dark cancel-btn popup-close-btn" (click)="cancelLeaveListLeaveIdModal()">
+                    <i class="fa fa-times" style="font-size: 10px;"></i>
+                </button>
+            </div>
+            <div class="card-body model-scroll">
+                <div class="row">
+                    <div class="col-lg-3 mb-2">
+                        <strong>Employee No. :</strong>
+                    </div>
+                    <div class="col-lg-9 mb-2">
+                        {{empNo}}
+                    </div>
+                    <div class="col-lg-3 mb-2">
+                        <strong>Name : </strong>
+                    </div>
+                    <div class="col-lg-9 mb-2">
+                        {{empUserName | titlecase}}
+                    </div>
+                    <div class="col-lg-3 mb-2">
+                        <strong>Reason :</strong>
+                    </div>
+                    <div class="col-lg-9 mb-2">
+                        {{leaveListByLeaveId[0]?.reason}}
+                    </div>
+                    <div class="col-lg-3 mb-2">
+                        <strong>Leave Status : </strong>
+                    </div>
+                    <div class="col-lg-9 mb-2">
+                        <span class="badge" [ngClass]="{'bg-gradient-success' : leaveListByLeaveId[0]?.leaveStatus == 2,
+                'bg-gradient-danger' : leaveListByLeaveId[0]?.leaveStatus == 3 || leaveListByLeaveId[0]?.leaveStatus == 4,
+                'bg-gradient-warning' : leaveListByLeaveId[0]?.leaveStatus == 1
+        }">
+                            {{leaveListByLeaveId[0]?.leaveStatus == 1 ? 'Pending'
+                            :leaveListByLeaveId[0]?.leaveStatus == 2 ? 'Approved'
+                            :leaveListByLeaveId[0]?.leaveStatus == 4 ? 'Cancled'
+                            :leaveListByLeaveId[0]?.leaveStatus == 3 ? 'Rejected' : '' }}
+                        </span>
+                    </div>
+                </div>
+                <hr>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <!-- <th class="theme-color">Leave Status</th> -->
+                                <th class="theme-color">Date</th>
+                                <th class="theme-color">Leave Type</th>
+                                <th class="theme-color">Day Type</th>
+                                <!-- <th class="theme-color">Reason</th> -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let leaveListByLeaveIdData of leaveListByLeaveId;let menuIndex = index">
+                                <!-- <td class="text-color">
+                                    <span class="badge" [ngClass]="{'bg-gradient-success' : leaveListByLeaveIdData.leaveStatus == 2,
+                                        'bg-gradient-danger' : leaveListByLeaveIdData.leaveStatus == 3 || leaveListByLeaveIdData.leaveStatus == 4,
+                                        'bg-gradient-warning' : leaveListByLeaveIdData.leaveStatus == 1
+                                }">
+                                        {{leaveListByLeaveIdData.leaveStatus == 1 ? 'Pending'
+                                        :leaveListByLeaveIdData.leaveStatus == 2 ? 'Approved'
+                                        :leaveListByLeaveIdData.leaveStatus == 4 ? 'Cancle'
+                                        :leaveListByLeaveIdData.leaveStatus == 3 ? 'Reject' : '' }}
+                                    </span>
+                                </td> -->
+                                <td class="text-color">
+                                    {{leaveListByLeaveIdData.date}}
+                                </td>
+                                <td class="text-color">
+                                    {{leaveListByLeaveIdData.leaveTypeName}}
+                                    <span *ngIf="leaveListByLeaveIdData.lossOfPayType">
+                                        {{leaveListByLeaveIdData.lossOfPayType == 1 ? '(Casual)' :
+                                        leaveListByLeaveIdData.lossOfPayType == 2 ?
+                                        '(Sick)' : leaveListByLeaveIdData.lossOfPayType == 3 ? '(Emergency)' : ''}}
+                                    </span>
+                                </td>
+                                <td class="text-color">
+                                    {{leaveListByLeaveIdData.leaveIs}}
+                                </td>
+                                <!-- <td class="text-color">
+                                    {{leaveListByLeaveIdData.reason}}
+                                </td> -->
+                            </tr>
+
+                        </tbody>
+                    </table>
+                    <div class="footer-pagination">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Leave Status Approve Reject and cancle popup  -->
+<div class="modal quick-edit-modal fade" tabindex="-1" id="approve-reject-modal" role="dialog">
+    <div class="modal-dialog model-setting-menu-width" role="document">
+        <div class="card modal-content">
+            <div class="modal-header">
+                <h4 class="text-center mb-2 w-100">Update Leave Status</h4>
+                <button class="btn bg-gradient-dark cancel-btn popup-close-btn" (click)="cancleLeaveStatusModal()">
+                    <i class="fa fa-times" style="font-size: 10px;"></i>
+                </button>
+            </div>
+            <div class="card-body model-scroll">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <label for="role" class="required">Leave Status</label>
+                        <div class="mb-3">
+                            <ng-select [items]="leaveStatus"
+                                [disabled]="leaveUpdateStatusbefore == 3 || leaveUpdateStatusbefore == 4" class=""
+                                bindLabel="name" bindValue="value" placeholder="Select Leave Status" [clearable]="false"
+                                [(ngModel)]="leaveUpdateStatus">
+                            </ng-select>
+                            <div *ngIf="submittedLeaveApproveReject && !leaveUpdateStatus">
+                                <span class="error_msg">Please Select Leave Status</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12" *ngIf="leaveUpdateStatus == 3 || leaveUpdateStatus == 4">
+                        <label for="role" class="required">Remark</label>
+                        <div class="mb-3">
+                            <textarea name="" class="form-control ps-2" id="" [(ngModel)]="remark" placeholder="Remark"
+                                rows="3"></textarea>
+                            <!-- <input type="text" class="form-control ps-2" [(ngModel)]="remark" placeholder="Remark"> -->
+                            <div *ngIf="submittedLeaveApproveRejectRemark && !remark">
+                                <span class="error_msg">Enter Remark</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="w-100">
+                    <div class="text-center">
+                        <button type="button" (confirm-click)="onChangeLeaveStatus()" appConfirm
+                            [confirmTitle]="leaveUpdateStatus == 2 ? 'Approve' : leaveUpdateStatus == 3 ? 'Reject' : leaveUpdateStatus == 4 ? 'Cancle' : 'Pending'"
+                            [confirmContent]="leaveUpdateStatus == 2 ? 'Are you sure want to Approve this leave ?' : leaveUpdateStatus == 3 ? 'Are you sure want to Reject this leave ?' : leaveUpdateStatus == 4 ? 'Are you sure want to Cancle this leave ?' : 'Are you sure want to Pending this leave ?'"
+                            class="btn bg-gradient-dark my-2">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

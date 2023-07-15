@@ -1,0 +1,280 @@
+<div class="container-fluid py-4">
+  <div class="row">
+    <div class="col-lg-12 m-auto">
+      <!-- basic information Card -->
+      <div class="card mb-4">
+        <div class="card-header pb-0">
+          <div>
+            <h4 class="card-title-color" *ngIf="ISEditSupplierPurchase === false">Add Supplier Purchase</h4>
+            <h4 class="card-title-color" *ngIf="ISEditSupplierPurchase === true">Edit Supplier Purchase</h4>
+          </div>
+          <form role="form" class="add-employee-form" [formGroup]="supplierPurchaseForm" autocomplete="off">
+            <div class="basic-information-form">
+              <div class="row">
+                <div class="col-lg-3">
+                  <label class="required">Supplier</label>
+                  <div class="mb-3">
+                    <ng-select [items]="supplierMasterList" class="" bindLabel="contactPersonName" bindValue="_id"
+                      placeholder=" Select Supplier Name" formControlName="supplierId">
+                    </ng-select>
+                    <div *ngIf="submittedSupplierPurchaseData && fSupplierPurchaseMasterData.supplierId.errors">
+                      <div *ngIf="fSupplierPurchaseMasterData.supplierId.errors.required">
+                        <span class="error_msg">Supplier is Required.</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-3">
+                  <label class="required">Purchase Date</label>
+                  <div class="mb-3 position-relative mat-date-picker" (click)="purchaseDate.open()">
+                    <span class="icon-position cursor-pointer"><i class="fa fa-calendar"></i></span>
+                    <input matInput class="form-control" placeholder="Please Select Date" [matDatepicker]="purchaseDate"
+                      formControlName="purchaseDate">
+                    <div class="mat-dat-picker-icon">
+                      <div class="calendar-icon"><i class="bx bxs-calendar"></i></div>
+                      <mat-datepicker-toggle matSuffix [for]="purchaseDate">
+                      </mat-datepicker-toggle>
+                      <mat-datepicker #purchaseDate></mat-datepicker>
+                    </div>
+                    <div *ngIf="submittedSupplierPurchaseData && fSupplierPurchaseMasterData.purchaseDate.errors">
+                      <div *ngIf="fSupplierPurchaseMasterData.purchaseDate.errors.required">
+                        <span class="error_msg">Purchase Date is Required.</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-3">
+                  <label class="required">Invoice No</label>
+                  <div class="mb-3">
+                    <input type="text" class="form-control ps-2" formControlName="InvoiceNumber"
+                      placeholder="Inovice Number">
+                    <div *ngIf="submittedSupplierPurchaseData && fSupplierPurchaseMasterData.InvoiceNumber.errors">
+                      <div *ngIf="fSupplierPurchaseMasterData.InvoiceNumber.errors.required">
+                        <span class="error_msg">Inovice No is Required.</span>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+                <div class="col-lg-3">
+                  <label class="required">Bill Image</label>
+                  <div class="d-flex">
+                    <div class="" style="width: 120px;">
+                      <input #file type="file" accept='image/x-png,image/gif,image/jpeg'
+                        class="category-upload cursor-pointer mt-2" width="100px" (change)="preview(file.files)" />
+                      <button class="btn bg-gradient-dark mt-2 cursor-pointer mr-20">Upload</button>
+                    </div>
+                    <!-- <div class="text-danger">{{signatureMessage}}</div> -->
+                    <div *ngIf="imgURL">
+                      <div class="position-relative">
+                        <div class="mt-2">
+                          <div class="recipe-image">
+                            <img [src]="imgURL" height="50px" width="100px"
+                              onerror="this.src ='assets/img/no-image-available.jpg'" style="border-radius: 5px;">
+                          </div>
+                        </div>
+                        <div class="recipe-image-control">
+                          <button class="border-0 float-right btn btn-delete-icon" (click)="removeuploadFile()">
+                            <i class="fa fa-times"></i>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div *ngIf="imageError === true">
+                    <span class="error_msg">Please Upload Bill Image</span>
+                  </div>
+                </div>
+
+                <hr>
+
+                <span class="col-lg-12" formArrayName="purchaseItem">
+                  <span class="col-lg-12 row" [formGroupName]="i"
+                    *ngFor="let item of supplierPurchaseForm.get('purchaseItem')['controls']; let i = index;">
+                    <div class="right-container" *ngIf="purchaseList?.length > 1" style="text-align: end;">
+                      <button class="btn bg-gradient-dark mb-0 btn-delete-icon" (click)="removeProductItem(i)">
+                        <!-- <span class="long-text">Add New</span> -->
+                        <i class="fas fa-remove" aria-hidden="true"></i>
+                      </button>
+                    </div>
+                    <div class="col-lg-3">
+                      <label class="required">Category</label>
+                      <div class="mb-3">
+                        <ng-select [items]="categoryMasterList" class="" bindLabel="categoryName" bindValue="_id"
+                          placeholder="Select Category Name" formControlName="categoryId">
+                        </ng-select>
+                        <div *ngIf="submittedSupplierPurchaseData && item.controls.categoryId.errors">
+                          <div *ngIf="item.controls.categoryId.errors.required">
+                            <span class="error_msg">Category is Required.</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-lg-3">
+                      <label class="required">Product Name</label>
+                      <div class="mb-3">
+                        <input type="text" class="form-control ps-2" formControlName="productName"
+                          placeholder="Product Name">
+                        <div *ngIf="submittedSupplierPurchaseData && item.controls.productName.errors">
+                          <div *ngIf="item.controls.productName.errors.required">
+                            <span class="error_msg">Product Name is Required.</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-lg-3">
+                      <label class="required">Barcode No</label>
+                      <div class="mb-3">
+                        <input type="text" class="form-control ps-2" appNumbersOnly formControlName="barcode"
+                          placeholder="Barcode No">
+                        <div *ngIf="submittedSupplierPurchaseData && item.controls.barcode.errors">
+                          <div *ngIf="item.controls.barcode.errors.required">
+                            <span class="error_msg">Barcode No is Required.</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-lg-3">
+                      <label class="required">Quantity</label>
+                      <div class="mb-3">
+                        <input type="text" class="form-control ps-2" formControlName="qunatity" placeholder="Quantity">
+                        <div *ngIf="submittedSupplierPurchaseData && item.controls.qunatity.errors">
+                          <div *ngIf="item.controls.qunatity.errors.required">
+                            <span class="error_msg">Quantity is Required.</span>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                    <div class="col-lg-3">
+                      <label class="required">Warranty StartDate</label>
+                      <div class="mb-3 position-relative mat-date-picker" (click)="warrantyStartDate.open()">
+                        <span class="icon-position cursor-pointer"><i class="fa fa-calendar"></i></span>
+                        <input matInput class="form-control" (dateChange)="onWarrentyStartChange(i)"
+                          placeholder="Please Select Date" [matDatepicker]="warrantyStartDate"
+                          formControlName="warrantyStartDate">
+                        <div class="mat-dat-picker-icon">
+                          <div class="calendar-icon"><i class="bx bxs-calendar"></i></div>
+                          <mat-datepicker-toggle matSuffix [for]="warrantyStartDate">
+                          </mat-datepicker-toggle>
+                          <mat-datepicker #warrantyStartDate></mat-datepicker>
+                        </div>
+                        <div *ngIf="submittedSupplierPurchaseData && item.controls.warrantyStartDate.errors">
+                          <div *ngIf="item.controls.warrantyStartDate.errors.required">
+                            <span class="error_msg">Warranty StartDate is Required.</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-lg-3">
+                      <label class="required">Warranty EndDate</label>
+                      <div class="mb-3 position-relative mat-date-picker" (click)="warrantyEndDate.open()">
+                        <span class="icon-position cursor-pointer"><i class="fa fa-calendar"></i></span>
+                        <input matInput class="form-control" [min]="item.controls.warrantyStartDate.value"
+                          placeholder="Please Select Date" [matDatepicker]="warrantyEndDate"
+                          formControlName="warrantyEndDate">
+                        <div class="mat-dat-picker-icon">
+                          <div class="calendar-icon"><i class="bx bxs-calendar"></i></div>
+                          <mat-datepicker-toggle matSuffix [for]="warrantyEndDate">
+                          </mat-datepicker-toggle>
+                          <mat-datepicker #warrantyEndDate></mat-datepicker>
+                        </div>
+                        <div *ngIf="submittedSupplierPurchaseData && item.controls.warrantyEndDate.errors">
+                          <div *ngIf="item.controls.warrantyEndDate.errors.required">
+                            <span class="error_msg">Warranty EndDate is Required.</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-lg-3">
+                      <label class="required">CGST</label>
+                      <div class="mb-3">
+                        <input type="text" class="form-control ps-2" style="text-transform: uppercase"
+                          formControlName="CGST" placeholder="CGST">
+                        <div *ngIf="submittedSupplierPurchaseData && item.controls.CGST.errors">
+                          <div *ngIf="item.controls.CGST.errors.required">
+                            <span class="error_msg">CGST is Required.</span>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                    <div class="col-lg-3">
+                      <label class="required">SGST</label>
+                      <div class="mb-3">
+                        <input type="text" class="form-control ps-2" style="text-transform: uppercase"
+                          formControlName="SGST" placeholder="SGST">
+                        <div *ngIf="submittedSupplierPurchaseData && item.controls.SGST.errors">
+                          <div *ngIf="item.controls.SGST.errors.required">
+                            <span class="error_msg">SGST is Required.</span>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                    <div class="col-lg-3">
+                      <label class="required">IGST</label>
+                      <div class="mb-3">
+                        <input type="text" class="form-control ps-2" style="text-transform: uppercase"
+                          formControlName="IGST" placeholder="IGST">
+                        <div *ngIf="submittedSupplierPurchaseData && item.controls.IGST.errors">
+                          <div *ngIf="item.controls.IGST.errors.required">
+                            <span class="error_msg">IGST is Required.</span>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                    <div class="col-lg-3">
+                      <label class="required">Amount</label>
+                      <div class="mb-3">
+                        <input type="text" class="form-control ps-2" formControlName="amount" placeholder="Amount">
+                        <div *ngIf="submittedSupplierPurchaseData && item.controls.amount.errors">
+                          <div *ngIf="item.controls.amount.errors.required">
+                            <span class="error_msg">Amount is Required.</span>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                    <!-- <div class="col-lg-3"></div>
+                    <div class="col-lg-3">
+
+                    </div> -->
+                    <div class="right-container" *ngIf="i+1 == purchaseList.length" style="text-align: end;">
+                      <button class="btn bg-gradient-dark mb-0 height-40 add-small-btn " (click)="addProductDataItem()">
+                        <!-- <span class="long-text">Add New</span> -->
+                        <div class="edit-add-btn">
+                          <i class="fas fa-plus" aria-hidden="true"></i>
+                        </div>
+                      </button>
+                    </div>
+                  </span>
+                </span>
+
+
+
+
+              </div>
+            </div>
+          </form>
+        </div>
+        <div style="margin-right: 45px;text-align: right;">
+          <button type="button" (click)="saveSupplierPurchase()" *ngIf="ISEditSupplierPurchase === false"
+            class="btn bg-gradient-dark my-4">
+            Save
+          </button>
+          <button type="button" (click)="updateSupplierPurchase()" *ngIf="ISEditSupplierPurchase === true"
+            class="btn bg-gradient-dark my-4">
+            Update
+          </button>
+          <button type="button" routerLink="/admin/assets-management/supplier-purchase-master"
+            class="btn bg-gradient-danger m-3">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

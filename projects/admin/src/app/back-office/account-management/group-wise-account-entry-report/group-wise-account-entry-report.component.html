@@ -1,0 +1,102 @@
+<div class="">
+    <div class="container-fluid py-4">
+        <div class="row">
+            <div class="d-flex">
+                <div class="mb-4 d-flex" style="width: 100%;" [formGroup]="searchForm">
+                    <div class="col-lg-4 mr-20">
+                        <ng-select [items]="activeGroupMasterList" formControlName="groupId" bindLabel="groupName"
+                            bindValue="_id" placeholder="Select Group">
+                        </ng-select>
+                        <div *ngIf="submitedGroupWiseAccountEntry && fGroupWiseAccountEntryReportData.groupId.errors">
+                            <div *ngIf="fGroupWiseAccountEntryReportData.groupId.errors.required">
+                                <span class="error_msg">Group is Required for Searching.</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4" *ngIf="this.isCreated == true">
+                        <a class="btn bg-gradient-dark" (click)="getGroupWiseAccountEntryReportList()">
+                            <i class="fas fa-search" aria-hidden="true"></i>&nbsp;&nbsp;Search
+                        </a>
+                    </div>
+                    <!-- <div class="col-lg-4 mr-20">
+                      <ng-select [items]="activeLedgerMasterList" formControlName="ledgerId" bindLabel="ledger" bindValue="_id"
+                        placeholder="Select Ledger">
+                      </ng-select>
+                      <div *ngIf="submitedGroupWiseAccountEntry && fGroupWiseAccountEntryReportData.ledgerId.errors">
+                        <div *ngIf="fGroupWiseAccountEntryReportData.ledgerId.errors.required">
+                          <span class="error_msg">Ledger is Required for Searching.</span>
+                        </div>
+                      </div>
+                    </div> -->
+                </div>
+                <div style="width: 100%;">
+
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive mb-4">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th class="theme-color">No.</th>
+                                        <th class="theme-color">Ledger</th>
+                                        <th class="theme-color">Debit</th>
+                                        <th class="theme-color">Credit</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr
+                                        *ngFor="let accountEntryReportData of accountEntryReportList;let accountEntryReportIndex = index">
+                                        <td class="text-color">
+                                            <span>{{ accountEntryReportIndex +1 }}</span>
+                                        </td>
+                                        <td class="text-color doc-master-tbl">
+                                            {{ accountEntryReportData.ledgerName }}
+                                        </td>
+                                        <td class="text-color doc-master-tbl">
+                                            <span *ngIf="accountEntryReportData.iscredit === false">{{
+                                                accountEntryReportData.value }}</span>
+                                        </td>
+                                        <td class="text-color doc-master-tbl">
+                                            <span *ngIf="accountEntryReportData.iscredit === true">{{
+                                                accountEntryReportData.value }}</span>
+                                        </td>
+                                    </tr>
+                                    <tr *ngIf="accountEntryReportList.length > 0">
+                                        <td></td>
+                                        <td style="font-weight:700;">Sub Total</td>
+                                        <td style="font-weight:700;">{{debitSubTotal}}</td>
+                                        <td style="font-weight:700;">{{creditSubTotal}}</td>
+                                    </tr>
+                                    <tr *ngIf="accountEntryReportList.length > 0">
+                                        <td></td>
+                                        <td style="font-weight:700;">Closing Balance</td>
+                                        <td style="font-weight:700;"><span
+                                                *ngIf="debitClosingBalance !== 0">{{debitClosingBalance}}</span></td>
+                                        <td style="font-weight:700;"><span
+                                                *ngIf="creditClosingBalance !== 0">{{creditClosingBalance}}</span></td>
+                                    </tr>
+                                    <tr *ngIf="accountEntryReportList.length > 0">
+                                        <td></td>
+                                        <td style="font-weight:700;">Total</td>
+                                        <td style="font-weight:700;">{{debitTotal}}</td>
+                                        <td style="font-weight:700;">{{creditTotal}}</td>
+                                    </tr>
+                                    <tr *ngIf="noData">
+                                        <td colspan="4">
+                                            <h2 class="text-center mb-0">Data Not Found</h2>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

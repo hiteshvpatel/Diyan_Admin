@@ -1,0 +1,348 @@
+<div class="">
+    <div class="container-fluid py-4">
+        <div class="row">
+            <div class="mb-3 d-flex" style="justify-content: space-between;">
+                <span class="icon-position"><i class="fa fa-search"></i></span>
+                <input type="text" style="width:30%" class="searchTerm form-control" [(ngModel)]="searchTerm"
+                    [ngModelOptions]="{standalone: true}" (input)="search($event.target.value)"
+                    placeholder="Type here...">
+                <div class="right-container" *ngIf="this.isCreated == true">
+                    <button class="btn bg-gradient-dark mb-0 add-btn add-main-btn right-container-button"
+                        (click)="addTempatemaster()"><span class="long-text">Add New</span>
+                        <i id="icon-chat" class="fas fa-plus" aria-hidden="true"></i></button>
+                </div>
+            </div>
+            <div class="col-lg-8"></div>
+        </div>
+        <!-- <div class="row">
+            <div class="mb-4">
+                <div class="right-container">
+                    <button class="btn bg-gradient-dark mb-0 add-btn right-container-button"
+                        (click)="addTempatemaster()"><span class="long-text">Add Tamplate</span>
+                        <i id="icon-chat" class="fas fa-plus" aria-hidden="true"></i></button>
+                </div>
+            </div>
+            <div class="col-lg-8"></div>
+        </div> -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table" matSort matSortActive="templateName" matSortDirection="asc"
+                                matSortDisableClear="true" (matSortChange)="sortingList($event)">
+                                <thead>
+                                    <tr>
+                                        <th class="theme-color w-10">No.</th>
+                                        <th class="theme-color w-70" mat-sort-header="templateName">Template Name</th>
+                                        <th class="theme-color w-20">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr
+                                        *ngFor="let templeteMasterData of templeteMasterList | filter : searchTerm |  paginate: { itemsPerPage: l, currentPage: p };let templeteMasterIndex = index">
+                                        <td class="text-color">
+                                            {{ l * (p - 1) + templeteMasterIndex +1 }}
+                                        </td>
+                                        <td class="text-color">
+                                            {{ templeteMasterData.templateName }}
+                                        </td>
+                                        <!-- <td class="text-color">
+                                            <span *ngIf="templeteMasterData.status == 1"
+                                                class="badge bg-gradient-success">Active</span>
+                                            <span *ngIf="templeteMasterData.status == 2"
+                                                class="badge bg-gradient-danger">Deactive</span>
+                                        </td> -->
+                                        <td class="text-color">
+                                            <ul class="d-flex align-items-center action-list p-0">
+                                                <li class="action-list-item me-3" *ngIf="this.isUpdated == true">
+                                                    <button class="font-20 btn bg-gradient-dark emp-edit-btn"
+                                                        title="Edit Template"
+                                                        (click)="getTempleteListByID(templeteMasterData._id)">
+                                                        <i class="fa fa-edit"></i></button>
+                                                </li>
+                                                <!-- <li class="action-list-item">
+                                                    <button *ngIf="templeteMasterData.status == 2"
+                                                        class="dtl-btn btn bg-gradient-dark"
+                                                        (confirm-click)="statusDocumentmaster({id :templeteMasterData._id,index:templeteMasterIndex, status:1})"
+                                                        appConfirm [confirmTitle]="'Active'"
+                                                        [confirmContent]="'Are you sure to Active this Document Master?'">
+                                                        <i class="fa fa-plus"></i></button>
+                                                    <button *ngIf="templeteMasterData.status == 1"
+                                                        class="dtl-btn btn bg-gradient-dark"
+                                                        (confirm-click)="statusDocumentmaster({id :templeteMasterData._id,index:templeteMasterIndex, status:2})"
+                                                        appConfirm [confirmTitle]="'Deactive'"
+                                                        [confirmContent]="'Are you sure to Deactive this Document Master?'">
+                                                        <i class="fa fa-trash"></i></button>
+                                                </li> -->
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                    <tr *ngIf="noData">
+                                        <td colspan="3">
+                                            <h2 class="text-center mb-0">Data Not Found</h2>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="footer-pagination" *ngIf="templeteMasterList?.length > l">
+                                <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- //Document Details Popup start -->
+<div class="modal quick-edit-modal fade" tabindex="-1" id="add-template-modal" role="dialog">
+    <div class="modal-dialog model-setting-menu-width" role="document">
+        <div class="card modal-content">
+            <div class="modal-header">
+                <h4 class="text-center mb-2 w-100" *ngIf="ISeditTemplateMaster === false">Add New Template Master</h4>
+                <h4 class="text-center mb-2 w-100" *ngIf="ISeditTemplateMaster === true">Edit Template Master</h4>
+                <button class="btn bg-gradient-dark cancel-btn popup-close-btn" (click)="cancelTemplatemaster()">
+                    <i class="fa fa-times" style="font-size: 10px;"></i>
+                </button>
+            </div>
+            <div class="card-body model-scroll">
+                <div>
+                    <form role="form" class="add-template-form" autocomplete="off">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <label>Template Name</label>
+                                <div class="mb-3">
+                                    <!-- <span class="icon-position"><i class="fa fa-user"></i></span> -->
+                                    <input type="text" [(ngModel)]="templateName"
+                                        (input)="onTempleteName($event.target.value)"
+                                        [ngModelOptions]="{standalone: true}" class="form-control px-3"
+                                        placeholder="Template Name">
+                                    <div *ngIf="templeteName === true">
+                                        <span class="error_msg">Template Name is Required.</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr
+                            *ngIf="itemName === true || amount === true || discount === true || cgst === true || sgst === true || igst === true || quantity === true || hours === true || rate === true || hsnCode === true || description === true">
+                        <div style="background-color:#f2f2f2; padding:10px;"
+                            *ngIf="itemName === true || amount === true || discount === true || cgst === true || sgst === true || igst === true || quantity === true || hours === true || rate === true || hsnCode === true || description === true">
+                            <div class="row">
+                                <div class="col-lg-8 col-md-2 col-sm-6" [ngClass]="itemName === false ? 'd-none' : '' ">
+                                    <!-- <label class="required">item Name</label> -->
+                                    <div class="mb-3">
+                                        <!-- <span class="icon-position"><i class="fa fa-user"></i></span> -->
+                                        <input type="text" [readonly]="itemName === true" class="form-control px-3"
+                                            placeholder="item Name">
+                                        <!-- <div>
+                                            <div>
+                                                <span class="error_msg">item Name is Required.</span>
+                                            </div>
+                                        </div> -->
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-6 col-sm-12" [ngClass]="hsnCode === false ? 'd-none' : '' ">
+                                    <!-- <label class="required">HSNCode</label> -->
+                                    <div class="mb-3">
+                                        <input type="text" [readonly]="hsnCode === true" class="form-control px-3"
+                                            placeholder="HSNCode">
+                                        <!-- <div>
+                                            <div>
+                                                <span class="error_msg">HSNCode is Required.</span>
+                                            </div>
+                                        </div> -->
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-md-6 col-sm-12"
+                                    [ngClass]="quantity === false ? 'd-none' : '' ">
+                                    <!-- <label class="required">Quantity</label> -->
+                                    <div class="mb-3">
+                                        <!-- <span class="icon-position"><i class="fa fa-user"></i></span> -->
+                                        <input type="number" [readonly]="quantity === true" class="form-control px-3"
+                                            placeholder="Quantity">
+                                        <!-- <div>
+                                        <div>
+                                            <span class="error_msg">Quantity is Required.</span>
+                                        </div>
+                                    </div> -->
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-md-6 col-sm-12" [ngClass]="hours === false ? 'd-none' : '' ">
+                                    <!-- <label class="required">Hours</label> -->
+                                    <div class="mb-3">
+                                        <!-- <span class="icon-position"><i class="fa fa-user"></i></span> -->
+                                        <input type="text" [readonly]="hours === true" class="form-control px-3"
+                                            placeholder="Hours">
+                                        <!-- <div>
+                                        <div>
+                                            <span class="error_msg">Hours is Required.</span>
+                                        </div>
+                                    </div> -->
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-md-6 col-sm-12" [ngClass]="rate === false ? 'd-none' : '' ">
+                                    <!-- <label class="required">Rate</label> -->
+                                    <div class="mb-3">
+                                        <!-- <span class="icon-position"><i class="fa fa-user"></i></span> -->
+                                        <input type="text" [readonly]="rate === true" class="form-control px-3"
+                                            placeholder="Rate">
+                                        <!-- <div>
+                                            <div>
+                                                <span class="error_msg">Rate is Required.</span>
+                                            </div>
+                                        </div> -->
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-md-6 col-sm-12"
+                                    [ngClass]="discount === false ? 'd-none' : '' ">
+                                    <!-- <label class="required">Discount</label> -->
+                                    <div class="mb-3 position-relative">
+                                        <span class="icon-position" style="right:0;"><i
+                                                class="fa fa-percent"></i></span>
+                                        <input type="text" [readonly]="discount === true" class="form-control px-3"
+                                            style="padding-right:40px !important ;" placeholder="Discount">
+
+                                        <!-- <div>
+                                        <div>
+                                            <span class="error_msg">Discount is Required.</span>
+                                        </div>
+                                    </div> -->
+                                    </div>
+                                </div>
+                                <!-- <div class="col-lg-3 col-md-2 col-sm-6" [ngClass]="amount === false ? 'd-none' : '' ">
+                                    <div class="mb-3">
+                                        <input type="text" [readonly]="amount === true" class="form-control px-3"
+                                            placeholder="Amount">
+                                    </div>
+                                </div> -->
+                                <div class="col-lg-4 col-md-6 col-sm-12" [ngClass]="cgst === false ? 'd-none' : '' ">
+                                    <!-- <label class="required">CGST</label> -->
+                                    <div class="mb-3 position-relative form-control p-0">
+                                        <span class="icon-position" style="left:0; top:0;"><i
+                                                class="fa fa-percent"></i></span>
+                                        <input type="text" [readonly]="cgst === true" class="px-3 py-2"
+                                            style="margin-right: 10px; text-align: center; padding-left:30px !important ; width: 90px; border: none !important; border-right: 1px solid #d2d6da !important; border-top-left-radius: 10px; border-bottom-left-radius: 10px;"
+                                            placeholder="CGST">10000/-
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-6 col-sm-12" [ngClass]="sgst === false ? 'd-none' : '' ">
+                                    <!-- <label class="required">SGST</label> -->
+                                    <div class="mb-3 position-relative form-control p-0">
+                                        <span class="icon-position" style="left:0; top:0;"><i
+                                                class="fa fa-percent"></i></span>
+                                        <input type="text" [readonly]="sgst === true" class="px-3 py-2"
+                                            style="margin-right: 10px; text-align: center; padding-left:30px !important ; width: 90px; border: none !important; border-right: 1px solid #d2d6da !important; border-top-left-radius: 10px; border-bottom-left-radius: 10px;"
+                                            placeholder="SGST">
+
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-6 col-sm-12" [ngClass]="igst === false ? 'd-none' : '' ">
+                                    <!-- <label class="required">IGST</label> -->
+                                    <div class="mb-3 position-relative form-control p-0">
+                                        <span class="icon-position" style="left:0; top:0;"><i
+                                                class="fa fa-percent"></i></span>
+                                        <input type="text" [readonly]="igst === true" class="px-3 py-2"
+                                            style="margin-right: 10px; text-align: center; padding-left:30px !important ; width: 90px; border: none !important; border-right: 1px solid #d2d6da !important; border-top-left-radius: 10px; border-bottom-left-radius: 10px;"
+                                            placeholder="IGST">
+
+                                    </div>
+                                </div>
+                                <div class="col-lg-12 col-md-6 col-sm-12"
+                                    [ngClass]="description === false ? 'd-none' : '' ">
+                                    <!-- <label class="required">Description</label> -->
+                                    <div class="mb-3">
+                                        <!-- <span class="icon-position"><i class="fa fa-user"></i></span> -->
+                                        <textarea type="textarea" maxlength="200" [readonly]="description === true"
+                                            class="form-control ps-2" placeholder="Description"></textarea>
+                                        <!-- <div>
+                                            <div>
+                                                <span class="error_msg">Description is Required.</span>
+                                            </div>
+                                        </div> -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <hr
+                    *ngIf="itemName === true || amount === true || discount === true || cgst === true || sgst === true || igst === true || quantity === true || hours === true || rate === true || hsnCode === true || description === true">
+                <div>
+                    <h4> Choose item fields</h4>
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <mat-checkbox (change)="setIsEventName($event,'itemName')" [checked]="itemName">
+                                Item Name
+                            </mat-checkbox>
+                        </div>
+                        <div class="col-lg-4">
+                            <mat-checkbox (change)="setIsEventName($event,'hsnCode')" [checked]="hsnCode">
+                                HSNCode
+                            </mat-checkbox>
+                        </div>
+                        <div class="col-lg-4">
+                            <mat-checkbox (change)="setIsEventName($event,'quantity')" [checked]="quantity">
+                                Quantity
+                            </mat-checkbox>
+                        </div>
+                        <div class="col-lg-4">
+                            <mat-checkbox (change)="setIsEventName($event,'hours')" [checked]="hours">
+                                Hours
+                            </mat-checkbox>
+                        </div>
+                        <div class="col-lg-4">
+                            <mat-checkbox (change)="setIsEventName($event,'rate')" [checked]="rate">
+                                Rate
+                            </mat-checkbox>
+                        </div>
+                        <!-- <div class="col-lg-4">
+                            <mat-checkbox (change)="setIsEventName($event,'amount')" [checked]="amount">
+                                Amount
+                            </mat-checkbox>
+                        </div> -->
+                        <div class="col-lg-4">
+                            <mat-checkbox (change)="setIsEventName($event,'discount')" [checked]="discount">
+                                Discount
+                            </mat-checkbox>
+                        </div>
+                        <div class="col-lg-4">
+                            <mat-checkbox (change)="setIsEventName($event,'cgst')" [checked]="cgst">
+                                CGST
+                            </mat-checkbox>
+                        </div>
+                        <div class="col-lg-4">
+                            <mat-checkbox (change)="setIsEventName($event,'sgst')" [checked]="sgst">
+                                SGST
+                            </mat-checkbox>
+                        </div>
+                        <div class="col-lg-4">
+                            <mat-checkbox (change)="setIsEventName($event,'igst')" [checked]="igst">
+                                IGST
+                            </mat-checkbox>
+                        </div>
+                        <div class="col-lg-4">
+                            <mat-checkbox (change)="setIsEventName($event,'description')" [checked]="description">
+                                Description
+                            </mat-checkbox>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="w-100">
+                    <div class="text-center">
+                        <button type="button" *ngIf="ISeditTemplateMaster === false" (click)="saveTemplatemaster()"
+                            class="btn bg-gradient-dark my-2">Save</button>
+                        <button type="button" *ngIf="ISeditTemplateMaster === true" (click)="updateTemplatemaster()"
+                            class="btn bg-gradient-dark my-2">Update</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

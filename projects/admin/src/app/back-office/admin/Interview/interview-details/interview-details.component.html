@@ -1,0 +1,1362 @@
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-lg-12 m-auto">
+            <!-- basic information Card -->
+            <div class="card mb-4" *ngIf="isInterviewUpdate == false">
+                <div class="card-header pb-0">
+                    <div>
+                        <h4 class="card-title-color">Interview Employee Details</h4>
+                    </div>
+                    <form role="form" class="add-employee-form" [formGroup]="interviewForm" autocomplete="off">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="position-relative">
+                                    <input #file type="file" accept='image/x-png,image/gif,image/jpeg'
+                                        class="z-index-1 change-photo-user" (change)="preview(file.files)" />
+                                    <div class="circle-120 custom-file primary-custom-file" *ngIf="!imgURL">
+                                        <span class="custom-icons icon-picture material-icons">wallpaper</span>
+                                        <div class="upload-icon-file">
+                                            <span class="custom-icons material-icons">file_upload</span>
+                                        </div>
+                                    </div>
+                                    <div class="mb-4" *ngIf="imgURL">
+                                        <img [src]="imgURL" onerror="this.src ='../assets/img/no-image-available.jpg'"
+                                            class="user-pic-add-employye-form">
+                                    </div>
+                                    <div *ngIf="file.length == 0">
+                                        {{message}}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-12">
+                                <label class="required">First Name</label>
+                                <div class="mb-3">
+                                    <span class="icon-position"><i class="fa fa-user"></i></span>
+                                    <input type="text" class="form-control" formControlName="firstName"
+                                        placeholder="First Name" aria-label="Email" aria-describedby="email-addon"
+                                        maxlength="25">
+                                    <div *ngIf="submittedInterviewData && fInterviewData.firstName.errors">
+                                        <div *ngIf="fInterviewData.firstName.errors.required">
+                                            <span class="error_msg">First Name is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-12">
+                                <label>Middle Name</label>
+                                <div class="mb-3">
+                                    <span class="icon-position"><i class="fa fa-user"></i></span>
+                                    <input type="text" class="form-control" formControlName="middleName"
+                                        placeholder="Middle Name" aria-label="Email" aria-describedby="email-addon"
+                                        maxlength="25">
+                                    <!-- <div *ngIf="submittedInterviewData && fInterviewData.middleName.errors">
+                                        <div *ngIf="fInterviewData.middleName.errors.required">
+                                            <span class="error_msg">Middle Name is Required.</span>
+                                        </div>
+                                    </div> -->
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-12">
+                                <label>Last Name</label>
+                                <div class="mb-3">
+                                    <span class="icon-position"><i class="fa fa-user"></i></span>
+                                    <input type="text" class="form-control" formControlName="lastName"
+                                        placeholder="Last Name" aria-label="Email" aria-describedby="email-addon"
+                                        maxlength="25">
+                                    <!-- <div *ngIf="submittedInterviewData && fInterviewData.lastName.errors">
+                                        <div *ngIf="fInterviewData.lastName.errors.required">
+                                            <span class="error_msg">Last Name is Required.</span>
+                                        </div>
+                                    </div> -->
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-12">
+                                <label class="required">Personal Email Id</label>
+                                <div class="mb-3 position-relative">
+                                    <span class="icon-position"><i class="fa fa-envelope"></i></span>
+                                    <input type="email" class="form-control" formControlName="p_Email"
+                                        placeholder="Personal Email Id" aria-label="Password"
+                                        aria-describedby="password-addon">
+                                    <div *ngIf="submittedInterviewData && fInterviewData.p_Email.errors">
+                                        <div *ngIf="fInterviewData.p_Email.errors.required">
+                                            <span class="error_msg">Email ID is Required.</span>
+                                        </div>
+                                        <div
+                                            *ngIf="!fInterviewData.p_Email.errors.valid && !fInterviewData.p_Email.errors.required">
+                                            <span class="error_msg">Please Enter Valid Email ID.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-12">
+                                <label class="required">Personal Contact Number</label>
+                                <div class="mb-3 position-relative">
+                                    <span class="icon-position"><i class="fa fa-phone"
+                                            style="-webkit-transform: scaleX(-1); transform: scaleX(-1);"></i></span>
+                                    <input type="text" class="form-control" formControlName="p_Mobile"
+                                        mask="000-000-0000" placeholder="Personal Contact Number" aria-label="Password"
+                                        aria-describedby="password-addon">
+                                    <div *ngIf="submittedInterviewData && fInterviewData.p_Mobile.errors">
+                                        <div *ngIf="fInterviewData.p_Mobile.errors.required">
+                                            <span class="error_msg">Contact Number is Required.</span>
+                                        </div>
+                                        <div *ngIf="fInterviewData.p_Mobile.errors.pattern">
+                                            <span class="error_msg">Contact Number is less than 10 digit.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-12">
+                                <div class="">
+                                    <label class="required">Gender: </label>
+                                    <div class="d-flex" style="margin-top: 11px;">
+                                        <div class="d-flex">
+                                            <input type="radio" name="gender" value="1" class="radio-btn"
+                                                formControlName="gender">
+                                            <label class="ml-10">Male</label>
+                                        </div>
+
+                                        <div class="d-flex ms-2">
+                                            <input type="radio" name="gender" value="2" class="radio-btn"
+                                                formControlName="gender">
+                                            <label class="ml-10">Female</label>
+                                        </div>
+                                        <div class="d-flex ms-2">
+                                            <input type="radio" name="gender" value="3" class="radio-btn"
+                                                formControlName="gender">
+                                            <label class="ml-10">Other</label>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="submittedInterviewData && fInterviewData.gender.errors">
+                                        <div *ngIf="fInterviewData.gender.errors.required">
+                                            <span class="error_msg">Gender is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-12">
+                                <label>Date of Birth</label>
+                                <div class="mb-3 position-relative mat-date-picker" (click)="picker1.open()">
+                                    <span class="icon-position cursor-pointer"><i class="fa fa-calendar"></i></span>
+                                    <input matInput class="form-control" placeholder="Please Select Date"
+                                        [max]="maxDate" [matDatepicker]="picker1" formControlName="dob">
+                                    <div class="mat-dat-picker-icon">
+                                        <div class="calendar-icon"><i class="bx bxs-calendar"></i></div>
+                                        <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                                        <mat-datepicker #picker1></mat-datepicker>
+                                    </div>
+                                    <mat-datepicker #picker></mat-datepicker>
+                                    <!-- <div *ngIf="submittedInterviewData && fInterviewData.dob.errors">
+                                        <div *ngIf="fInterviewData.dob.errors.required">
+                                            <span class="error_msg">Date of Birth is Required.</span>
+                                        </div>
+                                    </div> -->
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-12">
+                                <label>Permanent Address</label>
+                                <div class="mb-3">
+                                    <span class="icon-position"><i class="fa fa-map-marker"></i></span>
+                                    <textarea type="textarea" maxlength="200" class="form-control textarea-height"
+                                        formControlName="permenentAddress" placeholder="Permanent Address"
+                                        aria-label="Password" aria-describedby="password-addon"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-12">
+                                <label>Current Address</label>
+                                <div class="mb-3">
+                                    <span class="icon-position"><i class="fa fa-map-marker"></i></span>
+                                    <textarea type="textarea" maxlength="200" class="form-control textarea-height"
+                                        formControlName="currentAddress" placeholder="Current Address"
+                                        aria-label="Password" aria-describedby="password-addon"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-12">
+                                <label>Resume</label>
+                                <div class="d-flex">
+                                    <div class="mb-3" style="width: 120px;">
+                                        <input #file1 type="file"
+                                            accept='image/x-png,image/gif,image/jpeg,application/pdf'
+                                            class="signature-upload mt-2" width="100px"
+                                            (change)="previewResumeUpload(file1.files)" />
+                                        <button class="btn bg-gradient-dark mt-2 mr-20 cursor-pointer">Upload</button>
+                                    </div>
+                                    <div *ngIf="resumeUploadFile">
+                                        <div class="position-relative">
+                                            <div class="mt-2">
+                                                <div class="recipe-image">
+                                                    <img src="../../../../../assets/img/file1.png" height="50px"
+                                                        width="100px"
+                                                        onerror="this.src ='assets/img/no-image-available.jpg'"
+                                                        style="border-radius: 5px;">
+                                                </div>
+                                            </div>
+                                            <div class="recipe-image-control">
+                                                <button class="border-0 float-right btn btn-delete-icon"
+                                                    (click)="removeResumeFile()">
+                                                    <i class="fa fa-times"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- <div *ngIf="resumenFile === true">
+                                    <span class="error_msg">Please Upload Resume</span>
+                                </div> -->
+                            </div>
+
+
+
+
+
+                            <!-- <div class="col-lg-4 col-md-6 col-sm-12">
+                                <label>Blood Group</label>
+                                <div class="mb-3 position-relative">
+                                    <ng-select [items]="bloodGroupArray" class="" bindLabel="bloodGroupArray"
+                                        bindValue="bloodGroupArray" placeholder="Select Blood Group"
+                                        formControlName="bloodGroup">
+                                    </ng-select>
+                                </div>
+                            </div>                            
+                            <div class="col-lg-4 col-md-6 col-sm-12">
+                                <label class="required">Designation</label>
+                                <div class="mb-3">
+                                    <ng-select [items]="designationList" class="" bindLabel="name" bindValue="_id"
+                                        placeholder="Designation" formControlName="designationID">
+                                    </ng-select>
+                                    <div *ngIf="submittedInterviewData && fInterviewData.designationID.errors">
+                                        <div *ngIf="fInterviewData.designationID.errors.required">
+                                            <span class="error_msg">Designation is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-12">
+                                <label>Technology</label>
+                                <div class="mb-3">
+                                    <ng-select [items]="technologyList" class="" bindLabel="technologyName"
+                                        bindValue="_id" placeholder="Technology" formControlName="technologyID"
+                                        [multiple]="true" [closeOnSelect]="false">
+                                    </ng-select>
+
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-12">
+                                <label>Expected Salary</label>
+                                <div class="mb-3">
+                                    <span class="icon-position"><i class="fa fa-money"></i></span>
+                                    <input type="text" class="form-control" appNumbersOnly
+                                        formControlName="expectedSalary" placeholder="Enter Expected Salary "
+                                        maxlength="25">
+
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-12">
+                                <label class="required">Current Salary</label>
+                                <div class="mb-3">
+                                    <span class="icon-position"><i class="fa fa-money"></i></span>
+                                    <input type="text" class="form-control" appNumbersOnly
+                                        formControlName="currentSalary" placeholder="Enter Current Salary"
+                                        aria-label="Email" aria-describedby="email-addon" maxlength="25">
+                                    <div *ngIf="submittedInterviewData && fInterviewData.currentSalary.errors">
+                                        <div *ngIf="fInterviewData.currentSalary.errors.required">
+                                            <span class="error_msg">Current Salary is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-12">
+                                <label>Notice Period</label>
+                                <div class="mb-3">
+                                    <span class="icon-position"><i class="fa fa-bell"></i></span>
+                                    <input type="text" class="form-control" formControlName="noticePeriod"
+                                        placeholder="Notice Period" aria-label="Email" aria-describedby="email-addon"
+                                        maxlength="25">
+                                    <div *ngIf="submittedInterviewData && fInterviewData.noticePeriod.errors">
+                                        <div *ngIf="fInterviewData.noticePeriod.errors.required">
+                                            <span class="error_msg">Notice Period is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-12">
+                                <label>Is Telephonic ?</label>
+                                <div class="mb-3">
+                                    <mat-checkbox formControlName="istelephonic">
+                                    </mat-checkbox>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-12">
+                                <label class="required">Interview Date</label>
+                                <div class="mb-3 position-relative mat-date-picker" (click)="picker2.open()">
+                                    <span class="icon-position cursor-pointer"><i class="fa fa-calendar"></i></span>
+                                    <input matInput class="form-control" placeholder="Please Select Interview Date"
+                                        [matDatepicker]="picker2" [min]="todayDate" formControlName="interviewDate">
+                                    <div class="mat-dat-picker-icon">
+                                        <div class="calendar-icon"><i class="bx bxs-calendar"></i></div>
+                                        <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                                        <mat-datepicker #picker2></mat-datepicker>
+                                    </div>
+                                    <mat-datepicker #picker></mat-datepicker>
+                                    <div *ngIf="submittedInterviewData && fInterviewData.interviewDate.errors">
+                                        <div *ngIf="fInterviewData.interviewDate.errors.required">
+                                            <span class="error_msg">Interview Date is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> -->
+
+                            <div class="d-flex justify-content-end">
+                                <div class="text-center">
+                                    <button type="button" *ngIf="isInterviewUpdate == false"
+                                        (click)="SaveInterviewDetails()" class="btn bg-gradient-dark m-3">Save</button>
+                                </div>
+                                <div class="text-center">
+                                    <button type="button" class="btn bg-gradient-danger m-3"
+                                        routerLink="/admin/interview-list">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+
+            <div class="card mb-3" *ngIf="isInterviewUpdate === true">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="d-flex">
+                                <div class="profile-image">
+                                    <div class="position-relative">
+                                        <div class="mb-4" *ngIf="file">
+                                            <img [src]="imgURL"
+                                                onerror="this.src ='../assets/img/no-image-available.jpg'"
+                                                class="user-pic-add-employye-form">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="profile-info mt-1 ml-10">
+                                    <h5 class="mb-3 profile-name">
+                                        {{ interviewDetails?.userName }}
+                                    </h5>
+                                    <div class="d-flex">
+                                        <label class="label-width">Phone :</label>
+                                        <label class="label-value-width">
+                                            {{interviewDetails?.p_Mobile}} </label>
+                                    </div>
+                                    <div class="d-flex">
+                                        <label class="label-width" style="vertical-align: top;">Email :</label>
+                                        <label class="label-value-width">
+                                            {{interviewDetails?.p_Email}} </label>
+                                    </div>
+                                    <!-- <span style="font-size:15px;color: gray;" class="mb-0">
+                                        Designation : {{interviewDetails?.designationName }}</span><br>
+                                    <span style="font-size:15px;color: gray;">Technology :
+                                        {{interviewDetails?.technologyName }}</span> -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <button class="btn bg-gradient-dark edit-small-btn mb-0 height-40"
+                                [ngClass]="isInterviewUpdate === true && (interviewDetails?.isHrfinal != true && interviewDetails?.isRejected != true)  ? 'd-block' : 'd-none'"
+                                style="float: right;" (click)="openInterviewDetailsUpdate()"><i class="fas fa-edit"
+                                    aria-hidden="true"></i></button>
+                            <!-- <div class="d-flex"> -->
+                            <div class="emp-details mt-5 for-label w-100">
+                                <div class="d-flex">
+                                    <label class="label-width" for="">Gender :</label>
+                                    <label class="label-value-width" *ngIf="interviewDetails?.gender == 1">
+                                        Male
+                                    </label>
+                                    <label class="label-value-width" *ngIf="interviewDetails?.gender == 2">
+                                        Female
+                                    </label>
+                                </div>
+
+                                <div class="d-flex">
+                                    <label class="label-width" style="vertical-align: top;">Address :</label>
+                                    <label class="label-value-width">
+                                        {{interviewDetails?.permenentAddress}} </label>
+                                </div>
+
+                                <div class="d-flex" *ngIf="interviewDetails?.resumeUpload">
+                                    <label class="label-width" style="vertical-align: top;">Resume :</label>
+                                    <label class="label-value-width">
+                                        <a [href]="this.commonService.rootData.uploadsUrl + interviewDetails?.resumeUpload"
+                                            target="_blank">
+                                            <i class="fa fa-download"></i>
+                                        </a>
+                                    </label>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4"
+                *ngIf="isInterviewUpdate === true && ( interviewDetails?.isformal == false || !interviewDetails?.isformal )">
+                <div class="card-header pb-0">
+                    <div>
+                        <h4 class="card-title-color">Company Information</h4>
+                    </div>
+                    <form role="form" class="add-employee-form" [formGroup]="interviewFormalRoundForm"
+                        autocomplete="off">
+                        <div class="row">
+
+                            <div class="col-lg-4 col-md-6 col-sm-12">
+                                <label class="required">Designation</label>
+                                <div class="mb-3">
+                                    <ng-select [items]="designationList" class="" bindLabel="name" bindValue="_id"
+                                        placeholder="Designation" formControlName="designationID">
+                                    </ng-select>
+                                    <div
+                                        *ngIf="submittedInterviewCompanyData && fInterviewFormalRoundData.designationID.errors">
+                                        <div *ngIf="fInterviewFormalRoundData.designationID.errors.required">
+                                            <span class="error_msg">Designation is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-12">
+                                <label>Technology</label>
+                                <div class="mb-3">
+                                    <ng-select [items]="technologyList" class="" bindLabel="technologyName"
+                                        bindValue="_id" placeholder="Technology" formControlName="technologyID"
+                                        [multiple]="true" [closeOnSelect]="false">
+                                    </ng-select>
+
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-12">
+                                <label>Current Company</label>
+                                <div class="mb-3">
+                                    <input type="text" class="form-control p-2" formControlName="currentCompany"
+                                        placeholder="Current Company">
+                                    <!-- <div *ngIf="submittedInterviewCompanyData && fInterviewFormalRoundData.noticePeriod.errors">
+                                        <div *ngIf="fInterviewFormalRoundData.noticePeriod.errors.required">
+                                            <span class="error_msg">Notice Period is Required.</span>
+                                        </div>
+                                    </div> -->
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-12">
+                                <label>Total Experience</label>
+                                <div class="mb-3">
+                                    <input type="text" class="form-control p-2" formControlName="totalExperience"
+                                        placeholder="Enter Total Experience">
+                                    <!-- <div *ngIf="submittedInterviewCompanyData && fInterviewFormalRoundData.noticePeriod.errors">
+                                        <div *ngIf="fInterviewFormalRoundData.noticePeriod.errors.required">
+                                            <span class="error_msg">Notice Period is Required.</span>
+                                        </div>
+                                    </div> -->
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-12">
+                                <label class="required">Current Salary</label>
+                                <div class="mb-3">
+                                    <span class="icon-position"><i class="fa fa-money"></i></span>
+                                    <input type="text" class="form-control" appNumbersOnly
+                                        formControlName="currentSalary" placeholder="Enter Current Salary"
+                                        maxlength="25">
+                                    <div
+                                        *ngIf="submittedInterviewCompanyData && fInterviewFormalRoundData.currentSalary.errors">
+                                        <div *ngIf="fInterviewFormalRoundData.currentSalary.errors.required">
+                                            <span class="error_msg">Current Salary is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-12">
+                                <label>Expected Salary</label>
+                                <div class="mb-3">
+                                    <span class="icon-position"><i class="fa fa-money"></i></span>
+                                    <input type="text" class="form-control" appNumbersOnly
+                                        formControlName="expectedSalary" placeholder="Enter Expected Salary "
+                                        maxlength="25">
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-12">
+                                <label>Notice Period</label>
+                                <div class="mb-3">
+                                    <span class="icon-position"><i class="fa fa-bell"></i></span>
+                                    <input type="text" class="form-control" formControlName="noticePeriod"
+                                        placeholder="Notice Period" maxlength="25">
+                                    <div
+                                        *ngIf="submittedInterviewCompanyData && fInterviewFormalRoundData.noticePeriod.errors">
+                                        <div *ngIf="fInterviewFormalRoundData.noticePeriod.errors.required">
+                                            <span class="error_msg">Notice Period is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-12">
+                                <label>Is Telephonic ?</label>
+                                <div class="mb-3">
+                                    <mat-checkbox formControlName="istelephonic">
+                                    </mat-checkbox>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-12">
+                                <label class="required">Interview Date</label>
+                                <div class="mb-3 position-relative mat-date-picker" (click)="picker2.open()">
+                                    <span class="icon-position cursor-pointer"><i class="fa fa-calendar"></i></span>
+                                    <input matInput class="form-control" placeholder="Please Select Interview Date"
+                                        [matDatepicker]="picker2" formControlName="interviewDate">
+                                    <div class="mat-dat-picker-icon">
+                                        <div class="calendar-icon"><i class="bx bxs-calendar"></i></div>
+                                        <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                                        <mat-datepicker #picker2></mat-datepicker>
+                                    </div>
+                                    <mat-datepicker #picker></mat-datepicker>
+                                    <div
+                                        *ngIf="submittedInterviewCompanyData && fInterviewFormalRoundData.interviewDate.errors">
+                                        <div *ngIf="fInterviewFormalRoundData.interviewDate.errors.required">
+                                            <span class="error_msg">Interview Date is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-12">
+                                <label class="required">Assign Employee</label>
+                                <div class="mb-3">
+                                    <ng-select [items]="userMasterList" class="" bindLabel="userName" bindValue="_id"
+                                        placeholder="select assign employee" formControlName="assigndId">
+                                    </ng-select>
+                                    <div
+                                        *ngIf="submittedInterviewCompanyData && fInterviewFormalRoundData.assigndId.errors">
+                                        <div *ngIf="fInterviewFormalRoundData.assigndId.errors.required">
+                                            <span class="error_msg">Assign Employee is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-end">
+                                <div class="text-center">
+                                    <button type="button" *ngIf="isInterviewUpdate == true "
+                                        (click)="SaveInterviewCompanyDetails()"
+                                        class="btn bg-gradient-dark m-3">Save</button>
+                                </div>
+                                <div class="text-center">
+                                    <button type="button" class="btn bg-gradient-danger m-3"
+                                        routerLink="/admin/interview-list">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card mb-4" *ngIf="isInterviewUpdate === true && interviewDetails?.isformal == true ">
+                <div class="card-header pb-0 d-flex justify-content-between">
+                    <div>
+                        <h4 class="card-title-color">Company Information</h4>
+                    </div>
+                    <div
+                        [ngClass]="isInterviewUpdate === true && (interviewDetails?.isHrfinal != true && interviewDetails?.isRejected != true) ? 'd-block' : 'd-none'">
+
+                        <button class="btn bg-gradient-dark ml-10 edit-small-btn mb-0 height-40" style="float: right;"
+                            (click)="openInterviewCompanyDetailsUpdate()"><i class="fas fa-edit"
+                                aria-hidden="true"></i></button>
+                        <!-- <button class="btn bg-gradient-danger edit-small-btn mb-0 height-40" style="float: right;"
+                            (click)="openInterviewCompanyDetailsUpdate()"><i class="fas fa-remove"
+                                aria-hidden="true"></i></button> -->
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="emp-details for-label w-100">
+                                <div class="d-flex">
+                                    <label class="for-company-Label">Designation :</label>
+                                    <label class="for-company-Label-value">
+                                        {{interviewDetails?.designationName}} </label>
+                                </div>
+
+                                <div class="d-flex">
+                                    <label class="for-company-Label" style="vertical-align: top;">Technology :</label>
+                                    <label class="for-company-Label-value">
+                                        {{interviewDetails?.technologyName}} </label>
+                                </div>
+
+                                <div class="d-flex">
+                                    <label class="for-company-Label" for="">Current Company :</label>
+                                    <label class="for-company-Label-value">
+                                        {{interviewDetails?.currentCompany}}
+                                    </label>
+                                </div>
+
+                                <div class="d-flex">
+                                    <label class="for-company-Label" style="vertical-align: top;">Total Experience
+                                        :</label>
+                                    <label class="for-company-Label-value">
+                                        {{interviewDetails?.totalExperience}} </label>
+                                </div>
+
+                                <div class="d-flex">
+                                    <label class="for-company-Label" style="vertical-align: top;">Notice Period
+                                        :</label>
+                                    <label class="for-company-Label-value">
+                                        {{interviewDetails?.noticePeriod}} </label>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <!-- <button class="btn bg-gradient-dark edit-small-btn mb-0 height-40" style="float: right;"
+                                (click)="openInterviewDetailsUpdate()"><i class="fas fa-edit"
+                                    aria-hidden="true"></i></button> -->
+                            <!-- <div class="d-flex"> -->
+                            <div class="emp-details for-label w-100">
+                                <div class="d-flex">
+                                    <label class="for-company-Label">Current Salary :</label>
+                                    <label class="for-company-Label-value">
+                                        {{interviewDetails?.currentSalary}} </label>
+                                </div>
+
+                                <div class="d-flex">
+                                    <label class="for-company-Label" style="vertical-align: top;">Expected Salary
+                                        :</label>
+                                    <label class="for-company-Label-value">
+                                        {{interviewDetails?.expectedSalary}} </label>
+                                </div>
+
+                                <div class="d-flex">
+                                    <label class="for-company-Label" style="vertical-align: top;">Is Telephonic
+                                        :</label>
+                                    <label class="for-company-Label-value">
+                                        {{interviewDetails?.istelephonic}} </label>
+                                </div>
+
+                                <div class="d-flex">
+                                    <label class="for-company-Label" style="vertical-align: top;">Interview Date
+                                        :</label>
+                                    <label class="for-company-Label-value">
+                                        {{interviewDetails?.interviewDate}} </label>
+                                </div>
+
+                                <div class="d-flex">
+                                    <label class="for-company-Label" style="vertical-align: top;">Interviewer Name
+                                        :</label>
+                                    <label class="for-company-Label-value">
+                                        {{interviewDetails?.assignpersonName}} </label>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card mb-4" *ngIf="isInterviewUpdate === true && interviewDetails?.isformal == true">
+                        <div class="card-header pb-0 d-flex justify-content-between">
+                            <div>
+                                <h4 class="card-title-color">Theoretical Round</h4>
+                            </div>
+                        </div>
+                        <div class="card-body"
+                            *ngIf="isInterviewUpdate === true && interviewDetails?.isformal == true && (interviewDetails?.istheoretical == true || interviewDetails?.isRejected == true)">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="emp-details for-label w-100">
+                                        <div class="d-flex"
+                                            *ngIf="(interviewDetails?.istheoretical == true || interviewDetails?.isRejected != true)">
+                                            <label class="for-company-Label" style="width: 70% !important;">Is
+                                                Applicable For
+                                                Practical Round :</label>
+                                            <label class="for-company-Label-value "
+                                                *ngIf="interviewDetails?.attendpractical == 2">
+                                                <span class="badge bg-gradient-success">
+                                                    Yes
+                                                </span>
+                                            </label>
+                                            <label class="for-company-Label-value"
+                                                *ngIf="interviewDetails?.attendpractical == 1">
+                                                <span class="badge bg-gradient-danger">
+                                                    No
+                                                </span>
+                                            </label>
+                                        </div>
+
+                                        <div class="d-flex"
+                                            *ngIf="(interviewDetails?.istheoretical != true && interviewDetails?.isRejected == true)">
+                                            <label class="for-company-Label" style="width: 70% !important;">Is
+                                                Rejected :</label>
+                                            <label class="for-company-Label-value">
+                                                <span class="badge bg-gradient-danger">
+                                                    Yes
+                                                </span>
+                                            </label>
+                                        </div>
+
+
+                                        <div class="d-flex"
+                                            *ngIf="interviewDetails?.attendpractical == 2 && (interviewDetails?.istheoretical == true || interviewDetails?.isRejected != true)">
+                                            <label class="for-company-Label" style="width: 70% !important;">Practical
+                                                Date
+                                                :</label>
+                                            <label class="for-company-Label-value">
+                                                {{interviewDetails?.practicalDate}} </label>
+                                        </div>
+
+                                        <div class="d-flex">
+                                            <label class="for-company-Label" style="width: 70% !important;">Remark
+                                                :</label>
+                                            <label class="for-company-Label-value">
+                                                {{interviewDetails?.theoreticalRemark}} </label>
+                                        </div>
+
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body"
+                            *ngIf="isInterviewUpdate === true && ( interviewDetails?.istheoretical != true && interviewDetails?.isRejected !=  true ) && interviewDetails?.isformal == true">
+                            <h4 class="text-center">In Progress</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card mb-4"
+                        *ngIf="isInterviewUpdate === true && interviewDetails?.istheoretical == true && interviewDetails?.isformal == true">
+                        <div class="card-header pb-0 d-flex justify-content-between">
+                            <div>
+                                <h4 class="card-title-color">Practical Round</h4>
+                            </div>
+                        </div>
+                        <div class="card-body"
+                            *ngIf="isInterviewUpdate === true && interviewDetails?.istheoretical == true && interviewDetails?.isformal == true && (interviewDetails?.ispractical == true || interviewDetails?.isRejected == true)">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="emp-details for-label w-100">
+                                        <div class="d-flex"
+                                            *ngIf="(interviewDetails?.ispractical == true || interviewDetails?.isRejected != true)">
+                                            <label class="practical-round-Label">Is Attended
+                                                Practical :</label>
+                                            <label class="practical-round-Label-value "
+                                                *ngIf="interviewDetails?.attendpractical == 2">
+                                                <span class="badge bg-gradient-success">
+                                                    Attended
+                                                </span>
+                                            </label>
+                                            <label class="practical-round-Label-value "
+                                                *ngIf="interviewDetails?.attendpractical == 1">
+                                                <span class="badge bg-gradient-danger">
+                                                    Not Attended
+                                                </span>
+                                            </label>
+                                        </div>
+
+                                        <div class="d-flex"
+                                            *ngIf="(interviewDetails?.ispractical != true && interviewDetails?.isRejected == true)">
+                                            <label class="practical-round-Label">Is Rejected
+                                                :</label>
+                                            <label class="practical-round-Label-value ">
+                                                <span class="badge bg-gradient-danger">
+                                                    Yes
+                                                </span>
+                                            </label>
+                                        </div>
+
+                                        <div class="d-flex">
+                                            <label class="practical-round-Label">Remark
+                                                :</label>
+                                            <label class="practical-round-Label-value">
+                                                {{interviewDetails?.practicalRemark ? interviewDetails?.practicalRemark
+                                                : '-'}} </label>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body"
+                            *ngIf="isInterviewUpdate === true && interviewDetails?.isformal == true && interviewDetails?.istheoretical == true &&  ( interviewDetails?.ispractical != true &&  interviewDetails?.isRejected != true)">
+                            <h4 class="text-center">In Progress</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4"
+                *ngIf="isInterviewUpdate === true && interviewDetails?.istheoretical == true && interviewDetails?.ispractical == true && interviewDetails?.isformal == true && ( interviewDetails?.isHrfinal == true || interviewDetails?.isRejected == true )">
+                <div class="card-header pb-0 d-flex justify-content-between">
+                    <div>
+                        <h4 class="card-title-color">HR Final Round</h4>
+                    </div>
+                    <div>
+                        <button
+                            [ngClass]="isInterviewUpdate === true && (interviewDetails?.isHrfinal != true && interviewDetails?.isRejected != true) ? 'd-block' : 'd-none'"
+                            class="btn bg-gradient-dark ml-10 edit-small-btn mb-0 height-40" style="float: right;"
+                            (click)="openInterviewFinalRoundUpdate()"><i class="fas fa-edit"
+                                aria-hidden="true"></i></button>
+                        <button class="btn bg-gradient-danger edit-small-btn mb-0 height-40"
+                            [ngClass]="isInterviewUpdate === true && ((interviewDetails?.isHrfinal != true && interviewDetails?.isRejected != true) || (interviewDetails?.isHrfinal != true && interviewDetails?.isRejected == true)) ? 'd-none' : 'd-block'"
+                            style="float: right;" (confirm-click)="openHrFinalRejectModal()" appConfirm
+                            [confirmTitle]="'Reject'"
+                            [confirmContent]="'Are you sure to reject of the final HR Round ?'"><i class="fas fa-remove"
+                                aria-hidden="true"></i></button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="emp-details for-label w-100">
+                        <div class="d-flex" *ngIf="interviewDetails.joiningDate">
+                            <label class="hr-final-round-Label" for="">Joining Date</label>
+                            <label class="hr-final-round-Label-value">
+                                {{interviewDetails?.joiningDate}}
+                            </label>
+                        </div>
+
+                        <div class="d-flex" *ngIf="interviewDetails.finalSalary">
+                            <label class="hr-final-round-Label" style="vertical-align: top;">Final Salary :</label>
+                            <label class="hr-final-round-Label-value">
+                                {{interviewDetails?.finalSalary}} </label>
+                        </div>
+
+                        <div class="d-flex"
+                            *ngIf="(interviewDetails?.isHrfinal != true && interviewDetails?.isRejected == true)">
+                            <label class="hr-final-round-Label">Is
+                                Rejected :</label>
+                            <label class="hr-final-round-Label-value">
+                                <span class="badge bg-gradient-danger">
+                                    Yes
+                                </span>
+                            </label>
+                        </div>
+
+                        <div class="d-flex"
+                            *ngIf="(interviewDetails?.isHrfinal != true && interviewDetails?.isRejected == true)">
+                            <label class="hr-final-round-Label">Remark :</label>
+                            <label class="hr-final-round-Label-value">
+                                {{interviewDetails?.hrFinalRemark}}
+                            </label>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4"
+                *ngIf="isInterviewUpdate === true && interviewDetails?.istheoretical == true && interviewDetails?.ispractical == true && interviewDetails?.isformal == true && ( interviewDetails?.isHrfinal != true && interviewDetails?.isRejected != true )">
+                <div class="card-header pb-0">
+                    <div>
+                        <h4 class="card-title-color">HR Final Round</h4>
+                    </div>
+                    <form role="form" class="add-employee-form" [formGroup]="hrFinalRoundForm" autocomplete="off">
+                        <div class="row">
+
+                            <div class="col-lg-4 col-md-6 col-sm-12">
+                                <label>Joining Date</label>
+                                <div class="mb-3 position-relative mat-date-picker" (click)="joiningDate.open()">
+                                    <span class="icon-position cursor-pointer"><i class="fa fa-calendar"></i></span>
+                                    <input matInput class="form-control" placeholder="Please Select Joining Date"
+                                        [min]="interviewDetailsPracticalDate" [matDatepicker]="joiningDate"
+                                        formControlName="joiningDate">
+                                    <div class="mat-dat-picker-icon">
+                                        <div class="calendar-icon"><i class="bx bxs-calendar"></i></div>
+                                        <mat-datepicker-toggle matSuffix [for]="joiningDate"></mat-datepicker-toggle>
+                                        <mat-datepicker #joiningDate></mat-datepicker>
+                                    </div>
+                                    <mat-datepicker #picker></mat-datepicker>
+                                    <div
+                                        *ngIf="submittedFinalHRInterviewData && fHRFinalInterviewData.joiningDate.errors">
+                                        <div *ngIf="fHRFinalInterviewData.joiningDate.errors.required">
+                                            <span class="error_msg">Joining Date is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-12">
+                                <label>Final Salary</label>
+                                <div class="mb-3">
+                                    <span class="icon-position"><i class="fa fa-money"></i></span>
+                                    <input type="text" class="form-control" appNumbersOnly formControlName="finalSalary"
+                                        placeholder="Enter Final Salary " maxlength="25">
+                                    <div
+                                        *ngIf="submittedFinalHRInterviewData && fHRFinalInterviewData.finalSalary.errors">
+                                        <div *ngIf="fHRFinalInterviewData.finalSalary.errors.required">
+                                            <span class="error_msg">Final Salary is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-end">
+                                <div class="text-center">
+                                    <button type="button" *ngIf="isInterviewUpdate == true"
+                                        (click)="SaveInterviewHRDetails()"
+                                        class="btn bg-gradient-dark m-3">Save</button>
+                                </div>
+                                <div class="text-center">
+                                    <button type="button" class="btn bg-gradient-danger m-3"
+                                        (confirm-click)="openHrFinalRejectModal()" appConfirm [confirmTitle]="'Reject'"
+                                        [confirmContent]="'Are you sure to reject of the final HR Round ?'">Reject</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal quick-edit-modal fade" tabindex="-1" id="update-interview-modal" role="dialog">
+    <div class="modal-dialog model-setting-menu-width" role="document">
+        <div class="card modal-content">
+            <div class="modal-header">
+                <h4 class="text-center mb-2 w-100">Update Interview Details
+                </h4>
+                <button class="btn bg-gradient-dark cancel-btn popup-close-btn" (click)="cancelInterviewDetails()">
+                    <i class="fa fa-times" style="font-size: 10px;"></i>
+                </button>
+            </div>
+            <div class="card-body model-scroll">
+                <form role="form" class="add-employee-form" [formGroup]="interviewForm" autocomplete="off">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="position-relative">
+                                <input #file type="file" accept='image/x-png,image/gif,image/jpeg'
+                                    class="z-index-1 change-photo-user" (change)="preview(file.files)" />
+                                <div class="circle-120 custom-file primary-custom-file" *ngIf="!imgURL">
+                                    <span class="custom-icons icon-picture material-icons">wallpaper</span>
+                                    <div class="upload-icon-file">
+                                        <span class="custom-icons material-icons">file_upload</span>
+                                    </div>
+                                </div>
+                                <div class="mb-4" *ngIf="imgURL">
+                                    <img [src]="imgURL" onerror="this.src ='../assets/img/no-image-available.jpg'"
+                                        class="user-pic-add-employye-form">
+                                </div>
+                                <div *ngIf="file.length == 0">
+                                    {{message}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-sm-12">
+                            <label class="required">First Name</label>
+                            <div class="mb-3">
+                                <span class="icon-position"><i class="fa fa-user"></i></span>
+                                <input type="text" class="form-control" formControlName="firstName"
+                                    placeholder="First Name" aria-label="Email" aria-describedby="email-addon"
+                                    maxlength="25">
+                                <div *ngIf="submittedInterviewData && fInterviewData.firstName.errors">
+                                    <div *ngIf="fInterviewData.firstName.errors.required">
+                                        <span class="error_msg">First Name is Required.</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-sm-12">
+                            <label>Middle Name</label>
+                            <div class="mb-3">
+                                <span class="icon-position"><i class="fa fa-user"></i></span>
+                                <input type="text" class="form-control" formControlName="middleName"
+                                    placeholder="Middle Name" aria-label="Email" aria-describedby="email-addon"
+                                    maxlength="25">
+                                <!-- <div *ngIf="submittedInterviewData && fInterviewData.middleName.errors">
+                                    <div *ngIf="fInterviewData.middleName.errors.required">
+                                        <span class="error_msg">Middle Name is Required.</span>
+                                    </div>
+                                </div> -->
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-sm-12">
+                            <label>Last Name</label>
+                            <div class="mb-3">
+                                <span class="icon-position"><i class="fa fa-user"></i></span>
+                                <input type="text" class="form-control" formControlName="lastName"
+                                    placeholder="Last Name" aria-label="Email" aria-describedby="email-addon"
+                                    maxlength="25">
+                                <!-- <div *ngIf="submittedInterviewData && fInterviewData.lastName.errors">
+                                    <div *ngIf="fInterviewData.lastName.errors.required">
+                                        <span class="error_msg">Last Name is Required.</span>
+                                    </div>
+                                </div> -->
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-sm-12">
+                            <label class="required">Personal Email Id</label>
+                            <div class="mb-3 position-relative">
+                                <span class="icon-position"><i class="fa fa-envelope"></i></span>
+                                <input type="email" class="form-control" formControlName="p_Email"
+                                    placeholder="Personal Email Id" aria-label="Password"
+                                    aria-describedby="password-addon">
+                                <div *ngIf="submittedInterviewData && fInterviewData.p_Email.errors">
+                                    <div *ngIf="fInterviewData.p_Email.errors.required">
+                                        <span class="error_msg">Email ID is Required.</span>
+                                    </div>
+                                    <div
+                                        *ngIf="!fInterviewData.p_Email.errors.valid && !fInterviewData.p_Email.errors.required">
+                                        <span class="error_msg">Please Enter Valid Email ID.</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-sm-12">
+                            <label class="required">Personal Contact Number</label>
+                            <div class="mb-3 position-relative">
+                                <span class="icon-position"><i class="fa fa-phone"
+                                        style="-webkit-transform: scaleX(-1); transform: scaleX(-1);"></i></span>
+                                <input type="text" class="form-control" formControlName="p_Mobile" mask="000-000-0000"
+                                    placeholder="Personal Contact Number" aria-label="Password"
+                                    aria-describedby="password-addon">
+                                <div *ngIf="submittedInterviewData && fInterviewData.p_Mobile.errors">
+                                    <div *ngIf="fInterviewData.p_Mobile.errors.required">
+                                        <span class="error_msg">Contact Number is Required.</span>
+                                    </div>
+                                    <div *ngIf="fInterviewData.p_Mobile.errors.pattern">
+                                        <span class="error_msg">Contact Number is less than 10 digit.</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-sm-12">
+                            <div class="">
+                                <label class="required">Gender: </label>
+                                <div class="d-flex" style="margin-top: 11px;">
+                                    <div class="d-flex">
+                                        <input type="radio" name="gender" value="1" class="radio-btn"
+                                            formControlName="gender">
+                                        <label class="ml-10">Male</label>
+                                    </div>
+
+                                    <div class="d-flex ms-2">
+                                        <input type="radio" name="gender" value="2" class="radio-btn"
+                                            formControlName="gender">
+                                        <label class="ml-10">Female</label>
+                                    </div>
+                                    <div class="d-flex ms-2">
+                                        <input type="radio" name="gender" value="3" class="radio-btn"
+                                            formControlName="gender">
+                                        <label class="ml-10">Other</label>
+                                    </div>
+                                </div>
+                                <div *ngIf="submittedInterviewData && fInterviewData.gender.errors">
+                                    <div *ngIf="fInterviewData.gender.errors.required">
+                                        <span class="error_msg">Gender is Required.</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-sm-12">
+                            <label>Date of Birth</label>
+                            <div class="mb-3 position-relative mat-date-picker" (click)="picker1.open()">
+                                <span class="icon-position cursor-pointer"><i class="fa fa-calendar"></i></span>
+                                <input matInput class="form-control" placeholder="Please Select Date" [max]="maxDate"
+                                    [matDatepicker]="picker1" formControlName="dob">
+                                <div class="mat-dat-picker-icon">
+                                    <div class="calendar-icon"><i class="bx bxs-calendar"></i></div>
+                                    <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                                    <mat-datepicker #picker1></mat-datepicker>
+                                </div>
+                                <mat-datepicker #picker></mat-datepicker>
+                                <!-- <div *ngIf="submittedInterviewData && fInterviewData.dob.errors">
+                                    <div *ngIf="fInterviewData.dob.errors.required">
+                                        <span class="error_msg">Date of Birth is Required.</span>
+                                    </div>
+                                </div> -->
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-sm-12">
+                            <label>Permanent Address</label>
+                            <div class="mb-3">
+                                <span class="icon-position"><i class="fa fa-map-marker"></i></span>
+                                <textarea type="textarea" maxlength="200" class="form-control textarea-height"
+                                    formControlName="permenentAddress" placeholder="Permanent Address"
+                                    aria-label="Password" aria-describedby="password-addon"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-sm-12">
+                            <label>Current Address</label>
+                            <div class="mb-3">
+                                <span class="icon-position"><i class="fa fa-map-marker"></i></span>
+                                <textarea type="textarea" maxlength="200" class="form-control textarea-height"
+                                    formControlName="currentAddress" placeholder="Current Address" aria-label="Password"
+                                    aria-describedby="password-addon"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-sm-12">
+                            <label>Resume</label>
+                            <div class="d-flex">
+                                <div class="mb-3" style="width: 120px;">
+                                    <input #file1 type="file" accept='image/x-png,image/gif,image/jpeg,application/pdf'
+                                        class="signature-upload mt-2" width="100px"
+                                        (change)="previewResumeUpload(file1.files)" />
+                                    <button class="btn bg-gradient-dark mt-2 mr-20 cursor-pointer">Upload</button>
+                                </div>
+                                <div *ngIf="resumeUploadFile">
+                                    <div class="position-relative">
+                                        <div class="mt-2">
+                                            <div class="recipe-image">
+                                                <img src="../../../../../assets/img/file1.png" height="50px"
+                                                    width="100px"
+                                                    onerror="this.src ='assets/img/no-image-available.jpg'"
+                                                    style="border-radius: 5px;">
+                                            </div>
+                                        </div>
+                                        <div class="recipe-image-control">
+                                            <button class="border-0 float-right btn btn-delete-icon"
+                                                (click)="removeResumeFile()">
+                                                <i class="fa fa-times"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- <div *ngIf="resumenFile === true">
+                                <span class="error_msg">Please Upload Resume</span>
+                            </div> -->
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="w-100">
+                    <div class="text-center">
+                        <button type="button" (click)="UpdateInterviewDetails()"
+                            class="btn bg-gradient-dark my-2">Update</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal quick-edit-modal fade" tabindex="-1" id="update-company-modal" role="dialog">
+    <div class="modal-dialog model-setting-menu-width" role="document">
+        <div class="card modal-content">
+            <div class="modal-header">
+                <h4 class="text-center mb-2 w-100">Update Company Details
+                </h4>
+                <button class="btn bg-gradient-dark cancel-btn popup-close-btn"
+                    (click)="cancelInterviewCompanyDetails()">
+                    <i class="fa fa-times" style="font-size: 10px;"></i>
+                </button>
+            </div>
+            <div class="card-body model-scroll">
+                <form role="form" class="add-employee-form" [formGroup]="interviewFormalRoundForm" autocomplete="off">
+                    <div class="row">
+
+                        <div class="col-lg-4 col-md-6 col-sm-12">
+                            <label class="required">Designation</label>
+                            <div class="mb-3">
+                                <ng-select [items]="designationList" class="" bindLabel="name" bindValue="_id"
+                                    placeholder="Designation" formControlName="designationID">
+                                </ng-select>
+                                <div
+                                    *ngIf="submittedInterviewCompanyData && fInterviewFormalRoundData.designationID.errors">
+                                    <div *ngIf="fInterviewFormalRoundData.designationID.errors.required">
+                                        <span class="error_msg">Designation is Required.</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-sm-12">
+                            <label>Technology</label>
+                            <div class="mb-3">
+                                <ng-select [items]="technologyList" class="" bindLabel="technologyName" bindValue="_id"
+                                    placeholder="Technology" formControlName="technologyID" [multiple]="true"
+                                    [closeOnSelect]="false">
+                                </ng-select>
+
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-sm-12">
+                            <label>Current Company</label>
+                            <div class="mb-3">
+                                <input type="text" class="form-control p-2" formControlName="currentCompany"
+                                    placeholder="Current Company">
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-sm-12">
+                            <label>Total Experience</label>
+                            <div class="mb-3">
+                                <input type="text" class="form-control p-2" formControlName="totalExperience"
+                                    placeholder="Enter Total Experience">
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-sm-12">
+                            <label class="required">Current Salary</label>
+                            <div class="mb-3">
+                                <span class="icon-position"><i class="fa fa-money"></i></span>
+                                <input type="text" class="form-control" appNumbersOnly formControlName="currentSalary"
+                                    placeholder="Enter Current Salary" maxlength="25">
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-sm-12">
+                            <label>Expected Salary</label>
+                            <div class="mb-3">
+                                <span class="icon-position"><i class="fa fa-money"></i></span>
+                                <input type="text" class="form-control" appNumbersOnly formControlName="expectedSalary"
+                                    placeholder="Enter Expected Salary " maxlength="25">
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-sm-12">
+                            <label>Notice Period</label>
+                            <div class="mb-3">
+                                <span class="icon-position"><i class="fa fa-bell"></i></span>
+                                <input type="text" class="form-control" formControlName="noticePeriod"
+                                    placeholder="Notice Period" maxlength="25">
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-sm-12">
+                            <label>Is Telephonic ?</label>
+                            <div class="mb-3">
+                                <mat-checkbox formControlName="istelephonic">
+                                </mat-checkbox>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-sm-12">
+                            <label class="required">Interview Date</label>
+                            <div class="mb-3 position-relative mat-date-picker" (click)="picker2.open()">
+                                <span class="icon-position cursor-pointer"><i class="fa fa-calendar"></i></span>
+                                <input matInput class="form-control" placeholder="Please Select Interview Date"
+                                    [matDatepicker]="picker2" formControlName="interviewDate">
+                                <div class="mat-dat-picker-icon">
+                                    <div class="calendar-icon"><i class="bx bxs-calendar"></i></div>
+                                    <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                                    <mat-datepicker #picker2></mat-datepicker>
+                                </div>
+                                <mat-datepicker #picker></mat-datepicker>
+                                <div
+                                    *ngIf="submittedInterviewCompanyData && fInterviewFormalRoundData.interviewDate.errors">
+                                    <div *ngIf="fInterviewFormalRoundData.interviewDate.errors.required">
+                                        <span class="error_msg">Interview Date is Required.</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-sm-12">
+                            <label class="required">Assign Employee</label>
+                            <div class="mb-3">
+                                <ng-select [items]="userMasterList" class="" bindLabel="userName" bindValue="_id"
+                                    placeholder="select assign employee" formControlName="assigndId">
+                                </ng-select>
+                                <div
+                                    *ngIf="submittedInterviewCompanyData && fInterviewFormalRoundData.assigndId.errors">
+                                    <div *ngIf="fInterviewFormalRoundData.assigndId.errors.required">
+                                        <span class="error_msg">Assign Employee is Required.</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="w-100">
+                    <div class="text-center">
+                        <button type="button" (click)="SaveInterviewCompanyDetails()"
+                            class="btn bg-gradient-dark my-2">Update</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal quick-edit-modal fade" tabindex="-1" id="update-hr-final-modal" role="dialog">
+    <div class="modal-dialog model-setting-menu-width" role="document">
+        <div class="card modal-content">
+            <div class="modal-header">
+                <h4 class="text-center mb-2 w-100">Update HR Final Round Details
+                </h4>
+                <button class="btn bg-gradient-dark cancel-btn popup-close-btn" (click)="cancelInterviewHRFinalRound()">
+                    <i class="fa fa-times" style="font-size: 10px;"></i>
+                </button>
+            </div>
+            <div class="card-body model-scroll">
+                <form role="form" class="add-employee-form" [formGroup]="hrFinalRoundForm" autocomplete="off">
+                    <div class="row">
+                        <div class="col-lg-4 col-md-6 col-sm-12">
+                            <label>Joining Date</label>
+                            <div class="mb-3 position-relative mat-date-picker" (click)="joiningDate.open()">
+                                <span class="icon-position cursor-pointer"><i class="fa fa-calendar"></i></span>
+                                <input matInput class="form-control" placeholder="Please Select Joining Date"
+                                    [min]="interviewDetailsPracticalDate" [matDatepicker]="joiningDate"
+                                    formControlName="joiningDate">
+                                <div class="mat-dat-picker-icon">
+                                    <div class="calendar-icon"><i class="bx bxs-calendar"></i></div>
+                                    <mat-datepicker-toggle matSuffix [for]="joiningDate"></mat-datepicker-toggle>
+                                    <mat-datepicker #joiningDate></mat-datepicker>
+                                </div>
+                                <mat-datepicker #picker></mat-datepicker>
+                                <div *ngIf="submittedFinalHRInterviewData && fHRFinalInterviewData.joiningDate.errors">
+                                    <div *ngIf="fHRFinalInterviewData.joiningDate.errors.required">
+                                        <span class="error_msg">Joining Date is Required.</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-sm-12">
+                            <label>Final Salary</label>
+                            <div class="mb-3">
+                                <span class="icon-position"><i class="fa fa-money"></i></span>
+                                <input type="text" class="form-control" appNumbersOnly formControlName="finalSalary"
+                                    placeholder="Enter Final Salary " maxlength="25">
+                                <div *ngIf="submittedFinalHRInterviewData && fHRFinalInterviewData.finalSalary.errors">
+                                    <div *ngIf="fHRFinalInterviewData.finalSalary.errors.required">
+                                        <span class="error_msg">Final Salary is Required.</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="w-100">
+                    <div class="text-center">
+                        <button type="button" (click)="SaveInterviewHRDetails()"
+                            class="btn bg-gradient-dark my-2">Update</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal quick-edit-modal fade" tabindex="-1" id="update-hr-final-reject-modal" role="dialog">
+    <div class="modal-dialog model-setting-menu-width" role="document">
+        <div class="card modal-content">
+            <div class="modal-header">
+                <h4 class="text-center mb-2 w-100">Reject HR Final Round
+                </h4>
+                <button class="btn bg-gradient-dark cancel-btn popup-close-btn" (click)="cancleHrFinalRejectModal()">
+                    <i class="fa fa-times" style="font-size: 10px;"></i>
+                </button>
+            </div>
+            <div class="card-body model-scroll">
+                <div class="row">
+                    <div class="col-lg-12 col-md-6 col-sm-12">
+                        <label class="required">Remark</label>
+                        <div class="mb-3">
+                            <!-- <span class="icon-position"><i class="fa fa-money"></i></span> -->
+                            <textarea name="" [(ngModel)]="hrFinalRemark" id="" rows="3" class="form-control p-2"
+                                placeholder="Remark"></textarea>
+                            <div *ngIf="!hrFinalRemark && hrFinalRemarkCheck">
+                                <span class="error_msg">Remark is Required.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="w-100">
+                    <div class="text-center">
+                        <button type="button" (click)="hrFinalRoundReject()"
+                            class="btn bg-gradient-danger my-2">Reject</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,872 @@
+<div class="container-fluid py-4">
+  <div class="row">
+    <div class="col-lg-12 m-auto">
+      <!-- Company Information Card -->
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="card mb-4">
+            <div class="card-body pb-2">
+              <div class="d-flex mb-2" style="justify-content:space-between;">
+                <h2 class="card-title-color">Company Details</h2>
+                <a class="btn bg-gradient-dark mb-0 height-40 add-small-btn"
+                  *ngIf="!employeeCompanyList && hideDocBankDetails === true" (click)="openCompanyInfoModel()">
+                  <div class="edit-add-btn">
+                    <i class="fas fa-plus" aria-hidden="true">
+                    </i>
+                  </div>
+                </a>
+                <button class="btn bg-gradient-dark mb-0 height-40 edit-small-btn"
+                  *ngIf="employeeCompanyList && hideDocBankDetails === false"
+                  (click)="getCompanyInformationById(employeeCompanyList._id)">
+                  <div class="edit-add-btn">
+                    <i class="fas fa-edit" aria-hidden="true"></i>
+                  </div>
+                </button>
+              </div>
+              <div class="row">
+                <div class="col-lg-4 company-detail-besic-info">
+                  <h5>Basic Information</h5>
+                  <div class="mb-2">
+                    <div class="for-label" style="width: 100%;">
+                      <div class="d-flex">
+                        <label class="for-company-Label">Name :</label>
+                        <label class="for-company-Label-value">
+                          {{employeeCompanyList.companyName}} </label>
+                      </div>
+
+                      <div class="d-flex">
+                        <label class="for-company-Label">Email ID :</label>
+                        <label class="for-company-Label-value">
+                          {{employeeCompanyList.companyEmail}} </label>
+                      </div>
+
+                      <div class="d-flex">
+                        <label class="for-company-Label">Mobile No. :</label>
+                        <label class="for-company-Label-value">
+                          {{employeeCompanyList.companyMobile}} </label>
+
+                      </div>
+                      <div class="d-flex">
+                        <label class="for-company-Label">Telephone :</label>
+                        <label class="for-company-Label-value">
+                          {{employeeCompanyList.companyTelephone}} </label>
+                      </div>
+
+                      <div class="d-flex">
+                        <label class="for-company-Label">Website :</label>
+                        <label class="for-company-Label-value">
+                          {{employeeCompanyList.companyWebsite}} </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-4 company-detail-besic-info">
+                  <h5>Company Address</h5>
+                  <div class="mb-2">
+                    <div class="for-label" style="width: 100%;">
+                      <div class="d-flex">
+                        <label class="for-company-Label"> Country :</label>
+                        <label class="for-company-Label-value">
+                          {{employeeCompanyList.oCountry}} </label>
+                      </div>
+                      <div class="d-flex">
+                        <label class="for-company-Label">State :</label>
+                        <label class="for-company-Label-value">
+                          {{employeeCompanyList.oState}} </label>
+                      </div>
+                      <div class="d-flex">
+                        <label class="for-company-Label">City :</label>
+                        <label class="for-company-Label-value">
+                          {{employeeCompanyList.oCity}} </label>
+                      </div>
+                      <div class="d-flex">
+                        <label class="for-company-Label">Pincode :</label>
+                        <label class="for-company-Label-value">
+                          {{employeeCompanyList.oPincode}} </label>
+                      </div>
+                      <div class="d-flex">
+                        <label class="for-company-Label">Address :</label>
+                        <label class="for-company-Label-value add-ellips-6-lines">
+                          {{employeeCompanyList.oAddress}} </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-4 company-detail-besic-info">
+                  <h5>Register Address</h5>
+                  <div class="mb-2">
+                    <div class="for-label" style="width: 100%;">
+                      <div class="d-flex">
+                        <label class="for-company-Label">Country :</label>
+                        <label class="for-company-Label-value">
+                          {{employeeCompanyList.rCountry}} </label>
+                      </div>
+
+                      <div class="d-flex">
+                        <label class="for-company-Label">State :</label>
+                        <label class="for-company-Label-value">
+                          {{employeeCompanyList.rState}} </label>
+                      </div>
+
+                      <div class="d-flex">
+                        <label class="for-company-Label">City :</label>
+                        <label class="for-company-Label-value">
+                          {{employeeCompanyList.rCity}} </label>
+                      </div>
+
+                      <div class="d-flex">
+                        <label class="for-company-Label">Pincode :</label>
+                        <label class="for-company-Label-value">
+                          {{employeeCompanyList.rPincode}} </label>
+                      </div>
+
+                      <div class="d-flex">
+                        <label class="for-company-Label">Address :</label>
+                        <label class="for-company-Label-value add-ellips-6-lines">
+                          {{employeeCompanyList.rAddress}} </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Emergency Contact & Document card -->
+      <div class="row" *ngIf="hideDocBankDetails === false">
+        <div class="col-lg-6">
+          <div class="card mb-4 card-height">
+            <div class="card-body pb-2">
+              <div class="d-flex mb-2" style="justify-content:space-between;">
+                <h2 class="card-title-color">Document Master</h2>
+                <button class="btn bg-gradient-dark mb-0 height-40 add-small-btn" (click)="openDocumentMasterModal()">
+                  <div class="edit-add-btn">
+                    <i class="fas fa-plus" aria-hidden="true"></i>
+                  </div>
+                </button>
+              </div>
+              <div class="table-responsive p-0">
+                <table class="table align-items-center mb-0">
+                  <thead>
+                    <tr>
+                      <th class="theme-color table-head-word-breck">
+                        Document</th>
+                      <th class="theme-color table-head-word-breck">
+                        Document No.</th>
+
+                      <th class="theme-color table-head-word-breck">
+                        Download</th>
+                      <th class="theme-color table-head-word-breck">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let documentMasterList of documentMasterList ;let userMasterIndex = index">
+                      <td class="doc-mast-table-text-ellips">
+                        <span class="text-secondary text-xs font-weight-bold">{{documentMasterList.documentName
+                          | titlecase}}</span>
+                      </td>
+                      <td class="normal-ellips-css">
+                        <span class="text-secondary text-xs font-weight-bold">{{documentMasterList.documentNo}}</span>
+                      </td>
+
+                      <td class="align-middle">
+                        <a class="mb-0 cursor-pointer btn bg-gradient-dark download-btn"
+                          *ngIf="!!documentMasterList.documents"
+                          [href]="commonService.rootData.uploadsUrl +'documents/'+documentMasterList.documents"
+                          target="_blank"><i class="fa fa-download"></i></a>
+                      </td>
+                      <td class="align-middle">
+                        <div class="d-flex">
+                          <div class="card-header p-0">
+                            <button class="mb-0 cursor-pointer btn bg-gradient-dark emp-edit-btn"
+                              title="Edit Company Document" (click)="getDocumentMasterById(documentMasterList._id)"><i
+                                class="fas fa-edit" aria-hidden="true"></i></button>
+                            <!-- <a class="mb-0 ml-10 cursor-pointer"
+                                            (confirm-click)="deleteDocumentDetailsById(documentMasterList._id)"
+                                            appConfirm [confirmTitle]="'Delete'"
+                                            [confirmContent]="'Are you sure to Delete this Document?'"><i
+                                                class="fas fa-trash icon-color "
+                                                aria-hidden="true"></i></a> -->
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="card mb-4 card-height">
+            <div class="card-body pb-2">
+              <div class="d-flex" style="justify-content:space-between;">
+                <h2 class="card-title-color">Bank Details</h2>
+                <div>
+
+                  <button class="btn bg-gradient-dark mb-0 height-40 add-small-btn" (click)="openBankDetails()">
+                    <div class="edit-add-btn">
+                      <i class="fas fa-plus" aria-hidden="true"></i>
+                    </div>
+                  </button>
+                  <button class="btn bg-gradient-dark mb-0 ms-2 add-btn" style="width: 166px;"
+                    (confirm-click)="generateLedger()" appConfirm [confirmTitle]="'Generate Ledger'"
+                    [confirmContent]="'Are you sure want to generate ledger ?'">
+                    <span class="long-text">
+                      Generate Ledger
+                    </span>
+                    <!-- <i id="icon-chat" class="fas fa-plus" aria-hidden="true"></i> -->
+                  </button>
+                </div>
+              </div>
+
+              <div class="table-responsive p-0">
+                <table class="table align-items-center mb-0">
+                  <thead>
+                    <tr>
+                      <th class="theme-color">
+                        Bank Name</th>
+
+                      <th class="theme-color">
+                        Account No.</th>
+                      <th class="theme-color">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let bankData of bankDetails ;let userMasterIndex = index">
+                      <td class="bank-detail-table-ellips">
+                        <span class="text-secondary text-xs font-weight-bold">{{bankData.cBankName
+                          | titlecase}}</span>
+                      </td>
+
+                      <td class="align-middle bank-detail-table-ellips">
+                        <span class="text-secondary text-xs font-weight-bold">{{bankData.cAccountNo }}</span>
+                      </td>
+                      <td class="align-middle">
+                        <div class="d-flex">
+                          <div class="card-header p-0">
+                            <button class="btn bg-gradient-dark emp-edit-btn mb-0 cursor-pointer"
+                              (click)="getBankDetailsByID(bankData._id)"><i class="fas fa-edit"
+                                aria-hidden="true"></i></button>
+                            <button class="btn bg-gradient-dark emp-edit-btn ml-10 mb-0 cursor-pointer"
+                              title="Delete Bank" (confirm-click)="deleteBankDetailsById(bankData._id)" appConfirm
+                              [confirmTitle]="'Delete Bank Details'"
+                              [confirmContent]="'Are you sure to Delete this Bank Details?'"><i class="fas fa-trash"
+                                aria-hidden="true"></i></button>
+
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- //Company Details Popup start -->
+<div class="modal quick-edit-modal fade" tabindex="-1" id="add-company-details-modal" role="dialog">
+  <div class="modal-dialog model-height" role="document">
+    <div class="card modal-content model-scroll">
+      <div class="card-header card-header-icon">
+      </div>
+      <div class="card-body">
+        <button class="btn bg-gradient-dark cancel-btn popup-close-btn" (click)="closeCompanyInfoModel()">
+          <i class="fa fa-times" style="font-size: 10px;"></i>
+        </button>
+        <h3 class="text-align-center mb-4">Company Details</h3>
+
+        <form role="form" class="add-employee-form basic-information-form" [formGroup]="companyDetailsForm"
+          autocomplete="off">
+          <div class="p-3">
+            <div class="row">
+              <div class="col-lg-4">
+                <label class="required">Name</label>
+                <div class="mb-3">
+                  <span class="icon-position"><i class="fa fa-address-book-o"></i></span>
+                  <input type="text" (keypress)="letterSpaceOnly($event)" class="form-control"
+                    formControlName="companyName" placeholder="Company Name">
+                  <div *ngIf="submittedCompanyInfoData && fCompanyDetailsData.companyName.errors">
+                    <div *ngIf="fCompanyDetailsData.companyName.errors.required">
+                      <span class="error_msg">Name is Required.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <label class="required">Email ID</label>
+                <div class="mb-3">
+                  <span class="icon-position"><i class="fa fa-envelope"></i></span>
+                  <input type="email" class="form-control" formControlName="companyEmail"
+                    placeholder="Email Id (ex. example@outlook.com)">
+                  <div *ngIf="submittedCompanyInfoData && fCompanyDetailsData.companyEmail.errors">
+                    <div *ngIf="fCompanyDetailsData.companyEmail.errors.required">
+                      <span class="error_msg">Email ID is Required.</span>
+                    </div>
+                    <div
+                      *ngIf="!fCompanyDetailsData.companyEmail.errors.valid && !fCompanyDetailsData.companyEmail.errors.required">
+                      <span class="error_msg">Please Enter Valid Email ID.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <label>Mobile No.</label>
+                <div class="mb-3">
+                  <span class="icon-position"><i class="fa fa-mobile"></i></span>
+                  <input type="text" class="form-control" formControlName="companyMobile" placeholder="Mobile No.">
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <label>Telephone</label>
+                <div class="mb-3">
+                  <span class="icon-position"><i class="fa fa-phone"></i></span>
+                  <input type="text" (keypress)="numberOnly($event)" class="form-control"
+                    formControlName="companyTelephone" placeholder="Telephone">
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <label>Website</label>
+                <div class="mb-3">
+                  <span class="icon-position"><i class="fa fa-globe"></i></span>
+                  <input type="text" class="form-control" formControlName="companyWebsite" placeholder="Website">
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <label>Logo</label>
+                <div class="d-flex">
+                  <div class="mb-3 ex-upload" style="width: 80px;">
+                    <input #logo type="file" accept='image/x-png,image/gif,image/jpeg' class="plus-btn"
+                      (change)="previewLogoImage(logo.files)" />
+                    <img src="/assets/img/Add.png" height="40px" alt="Upload Logo">
+                  </div>
+                  <div *ngIf="logoURL">
+                    <div class="position-relative">
+                      <div class="">
+                        <div class="recipe-image-control btn-delete-position">
+                          <button class="border-0 m-0 btn btn-delete-icon bg-gradient-dark"
+                            (click)="removeLogoImageFile()">
+                            <i class="fa fa-times"></i>
+                          </button>
+                        </div>
+                        <div class="recipe-image">
+                          <img [src]="logoURL" height="50px" width="150px"
+                            onerror="this.src ='assets/img/no-image-available.jpg'" style="border-radius: 5px;">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <label>Watermark Logo</label>
+                <div class="d-flex">
+                  <div class="mb-3 ex-upload" style="width: 80px;">
+                    <input #watermarkLogo type="file" accept='image/x-png,image/gif,image/jpeg' class="plus-btn"
+                      (change)="previewWatermarkLogoImage(watermarkLogo.files)" />
+                    <img src="/assets/img/Add.png" height="40px" alt="Upload Logo">
+                  </div>
+                  <div *ngIf="watermarkLogoURL">
+                    <div class="position-relative">
+                      <div class="">
+                        <div class="recipe-image-control btn-delete-position">
+                          <button class="border-0 btn btn-delete-icon m-0 bg-gradient-dark"
+                            (click)="removeWatermarkLogoImageFile()">
+                            <i class="fa fa-times"></i>
+                          </button>
+                        </div>
+                        <div class="recipe-image">
+                          <img [src]="watermarkLogoURL" height="50px" width="150px"
+                            onerror="this.src ='assets/img/no-image-available.jpg'" style="border-radius: 5px;">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <label>Round Seal</label>
+                <div class="d-flex">
+                  <div class="mb-3 ex-upload" style="width: 80px;">
+                    <input #roundSeal type="file" accept='image/x-png,image/gif,image/jpeg' class="plus-btn"
+                      (change)="previewroundSealImage(roundSeal.files)" />
+                    <img src="/assets/img/Add.png" height="40px" alt="Upload Logo">
+                  </div>
+                  <div *ngIf="roundSealURL">
+                    <div class="position-relative">
+                      <div class="">
+                        <div class="recipe-image-control btn-delete-position">
+                          <button class="border-0 m-0 btn btn-delete-icon bg-gradient-dark"
+                            (click)="removeroundSealImageFile()">
+                            <i class="fa fa-times"></i>
+                          </button>
+                        </div>
+                        <div class="recipe-image">
+                          <img [src]="roundSealURL" height="50px" width="150px"
+                            onerror="this.src ='assets/img/no-image-available.jpg'" style="border-radius: 5px;">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <label>Director Seal</label>
+                <div class="d-flex">
+                  <div class="mb-3 ex-upload" style="width: 80px;">
+                    <input #directorSeal type="file" accept='image/x-png,image/gif,image/jpeg' class="plus-btn"
+                      (change)="previewdirectorSealImage(directorSeal.files)" />
+                    <img src="/assets/img/Add.png" height="40px" alt="Upload Logo">
+                  </div>
+                  <div *ngIf="directorSealURL">
+                    <div class="position-relative">
+                      <div class="">
+                        <div class="recipe-image-control btn-delete-position">
+                          <button class="border-0 m-0 btn btn-delete-icon bg-gradient-dark"
+                            (click)="removedirectorSealImageFile()">
+                            <i class="fa fa-times"></i>
+                          </button>
+                        </div>
+                        <div class="recipe-image">
+                          <img [src]="directorSealURL" height="50px" width="150px"
+                            onerror="this.src ='assets/img/no-image-available.jpg'" style="border-radius: 5px;">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <hr>
+            <div class="row">
+              <div class="mb-2">
+                <h6>Office Address</h6>
+              </div>
+              <div class="col-lg-4">
+                <label for="role" class="required">Country</label>
+                <div class="mb-3">
+                  <ng-select [items]="countryList" formControlName="oCountry" (change)="onCountryChange('OAddress')"
+                    class="" bindLabel="name" bindValue="shortName" placeholder="Select Country">
+                  </ng-select>
+                  <!-- <input type="text" class="form-control ps-2" formControlName="country" placeholder="Role Name"> -->
+                  <div *ngIf="submittedCompanyInfoData && fCompanyDetailsData.oCountry.errors">
+                    <div *ngIf="fCompanyDetailsData.oCountry.errors.required">
+                      <span class="error_msg">Country is Required.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <label for="role" class="required">State</label>
+                <div class="mb-3">
+                  <ng-select [items]="stateList" formControlName="oState" (change)="onStateChange('OAddress')"
+                    bindLabel="stateList" bindValue="stateList" placeholder="Select State">
+                  </ng-select>
+                  <div *ngIf="submittedCompanyInfoData && fCompanyDetailsData.oState.errors">
+                    <div *ngIf="fCompanyDetailsData.oState.errors.required">
+                      <span class="error_msg">State is Required.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <label for="role" class="required">City</label>
+                <div class="mb-3">
+                  <ng-select [items]="cityList" formControlName="oCity" bindLabel="cityList" bindValue="cityList"
+                    placeholder="Select City">
+                  </ng-select>
+                  <div *ngIf="submittedCompanyInfoData && fCompanyDetailsData.oCity.errors">
+                    <div *ngIf="fCompanyDetailsData.oCity.errors.required">
+                      <span class="error_msg">City is Required.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <label for="role" class="required">Pincode</label>
+                <div class="mb-3">
+                  <input type="text" (keypress)="numberOnly($event)" class="form-control ps-2" maxlength="6"
+                    formControlName="oPincode" placeholder="Pincode">
+                  <div *ngIf="submittedCompanyInfoData && fCompanyDetailsData.oPincode.errors">
+                    <div *ngIf="fCompanyDetailsData.oPincode.errors.required">
+                      <span class="error_msg">Pincode is Required.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <label for="role" class="required">Address</label>
+                <div class="mb-3">
+                  <textarea class="form-control ps-2" maxlength="200" formControlName="oAddress" placeholder="Address"
+                    rows="3"></textarea>
+                  <div *ngIf="submittedCompanyInfoData && fCompanyDetailsData.oAddress.errors">
+                    <div *ngIf="fCompanyDetailsData.oAddress.errors.required">
+                      <span class="error_msg">Address is Required.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <hr>
+            <div class="mb-3">
+              <h5>Same As Above :
+                <input type="checkbox" class="keep-originals ml-60" (change)="setIsSameAsAbove($event)">
+              </h5>
+            </div>
+            <div class="row">
+              <div class="mb-2">
+                <h6>Register Address</h6>
+              </div>
+              <div class="col-lg-4">
+                <label for="role" class="required">Country</label>
+                <div class="mb-3">
+                  <ng-select [items]="countryList" formControlName="rCountry" (change)="onCountryChange('RAddress')"
+                    class="" bindLabel="name" bindValue="shortName" placeholder="Select Country">
+                  </ng-select>
+                  <!-- <input type="text" class="form-control ps-2" formControlName="country" placeholder="Role Name"> -->
+                  <div *ngIf="submittedCompanyInfoData && fCompanyDetailsData.rCountry.errors">
+                    <div *ngIf="fCompanyDetailsData.rCountry.errors.required">
+                      <span class="error_msg">Country is Required.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <label for="role" class="required">State</label>
+                <div class="mb-3">
+                  <ng-select [items]="stateList" formControlName="rState" (change)="onStateChange('RAddress')"
+                    bindLabel="stateList" bindValue="stateList" placeholder="Select State">
+                  </ng-select>
+                  <div *ngIf="submittedCompanyInfoData && fCompanyDetailsData.rState.errors">
+                    <div *ngIf="fCompanyDetailsData.rState.errors.required">
+                      <span class="error_msg">State is Required.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <label for="role" class="required">City</label>
+                <div class="mb-3">
+                  <ng-select [items]="cityList" formControlName="rCity" bindLabel="cityList" bindValue="cityList"
+                    placeholder="Select City">
+                  </ng-select>
+                  <div *ngIf="submittedCompanyInfoData && fCompanyDetailsData.rCity.errors">
+                    <div *ngIf="fCompanyDetailsData.rCity.errors.required">
+                      <span class="error_msg">City is Required.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <label for="role" class="required">Pincode</label>
+                <div class="mb-3">
+                  <input type="text" (keypress)="numberOnly($event)" class="form-control ps-2" maxlength="6"
+                    formControlName="rPincode" placeholder="Pincode">
+                  <div *ngIf="submittedCompanyInfoData && fCompanyDetailsData.rPincode.errors">
+                    <div *ngIf="fCompanyDetailsData.rPincode.errors.required">
+                      <span class="error_msg">Pincode is Required.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <label for="role" class="required">Address</label>
+                <div class="mb-3">
+                  <textarea class="form-control ps-2" maxlength="200" formControlName="rAddress" placeholder="Address"
+                    rows="3"></textarea>
+                  <div *ngIf="submittedCompanyInfoData && fCompanyDetailsData.rAddress.errors">
+                    <div *ngIf="fCompanyDetailsData.rAddress.errors.required">
+                      <span class="error_msg">Address is Required.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+        <div class="d-flex justify-content-between">
+          <div class="text-center">
+            <button type="button" *ngIf="!employeeCompanyList" (click)="saveCompanyDetailsData()"
+              class="btn bg-gradient-dark my-4">Save</button>
+            <button type="button" *ngIf="employeeCompanyList" (click)="updateCompanyDetailsData()"
+              class="btn bg-gradient-dark my-4">Update</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- //Document Master Popup start -->
+<div class="modal quick-edit-modal fade" tabindex="-1" id="add-document-master-modal" role="dialog">
+  <div class="modal-dialog model-height" role="document" style="max-width: 700px;">
+    <div class="card modal-content model-scroll">
+      <div class="card-header card-header-icon">
+      </div>
+      <div class="card-body">
+        <button class="btn bg-gradient-dark cancel-btn popup-close-btn" (click)="closeDocumentMasterModal()">
+          <i class="fa fa-times" style="font-size: 10px;"></i>
+        </button>
+        <h3 class="text-align-center mb-4" *ngIf="IsEditCompanyDocument === false">Add New Company Document</h3>
+        <h3 class="text-align-center mb-4" *ngIf="IsEditCompanyDocument === true">Edit Company Document</h3>
+
+        <form role="form" class="add-employee-form basic-information-form" [formGroup]="documentMasterForm"
+          autocomplete="off">
+          <div class="p-3">
+            <div class="row">
+              <div class="col-lg-6">
+                <label class="required">Document</label>
+                <div class="mb-3">
+                  <ng-select [items]="documentMasterActiveList" formControlName="documentMasterId"
+                    bindLabel="documentName" bindValue="_id" placeholder="Select Document">
+                  </ng-select>
+                  <div *ngIf="submittedDocumentMasterData && fDocumentMasterData.documentMasterId.errors">
+                    <div *ngIf="fDocumentMasterData.documentMasterId.errors.required">
+                      <span class="error_msg">Document is Required.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <label>Document No.</label>
+                <div class="mb-3">
+                  <!-- <span class="icon-position"><i class="fa fa-envelope"></i></span> -->
+                  <input type="email" (keypress)="numberOnly($event)" class="form-control ps-2"
+                    formControlName="documentNo" placeholder="Document Number">
+                  <!-- <div *ngIf="submittedDocumentMasterData && fDocumentMasterData.documentNo.errors">
+                    <div *ngIf="fDocumentMasterData.documentNo.errors.required">
+                      <span class="error_msg">Document No. is Required.</span>
+                    </div>
+                  </div> -->
+                </div>
+              </div>
+              <div class="col-lg-12">
+                <label for="role">Document Upload</label>
+                <div class="mb-3 d-flex">
+                  <span class="ex-upload">
+                    <input #fileDoc type="file" class="plus-btn" accept='.pdf, application/pdf'
+                      (change)="onDocumentChange($event)" />
+                    <img src="/assets/img/Add.png" height="40px" alt="Upload Experience Certificate">
+                  </span>
+                  <div *ngIf="!!resultofShowDocument">
+                    <div>
+                      <div class="document-file-main">
+                        <div class="p-1 ml-10 position-relative">
+                          <button
+                            class="border-0 float-delete-button r-0 btn-delete-icon btn m-0 btn-primary doc-dlt-btn"
+                            (click)="removeDocument()">
+                            <i class="fa fa-times font-14"></i>
+                          </button>
+                          <p class="color-black mb-0 result-of-Exp-document">
+                            {{resultofShowDocument.name}}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- <div *ngIf="docError === true">
+                  <span class="error_msg">Please Add Document</span>
+                </div> -->
+              </div>
+            </div>
+          </div>
+        </form>
+        <div class="d-flex justify-content-between">
+          <div class="text-center">
+            <button type="button" *ngIf="IsEditCompanyDocument === false" (click)="saveDocumentMasterData()"
+              class="btn bg-gradient-dark my-4">Save</button>
+            <button type="button" *ngIf="IsEditCompanyDocument === true" (click)="updateDocumentMasterData()"
+              class="btn bg-gradient-dark my-4">Update</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- bank details  -->
+<div class="modal quick-edit-modal fade" tabindex="-1" id="add-bank-details-modal" role="dialog">
+  <div class="modal-dialog model-height" role="document">
+    <div class="card modal-content model-scroll">
+      <div class="card-body">
+        <button class="btn bg-gradient-dark cancel-btn popup-close-btn" (click)="cancelBankDetails()">
+          <i class="fa fa-times" style="font-size: 10px;"></i>
+        </button>
+        <h3 class="text-align-center mb-4" *ngIf="IsEditBankDetails === false">Add Bank Details</h3>
+        <h3 class="text-align-center mb-4" *ngIf="IsEditBankDetails === true">Edit Bank Details</h3>
+
+        <form role="form" class="add-employee-form" [formGroup]="bankDetailsForm" autocomplete="off">
+          <div class="p-3 basic-information-form">
+            <div class="row">
+              <h5>Current Account</h5>
+              <div class="col-lg-4">
+                <label for="role" class="required">Bank Name</label>
+                <div class="mb-3">
+                  <!-- <span class="icon-position"><i class="fa fa-bank"></i></span> -->
+                  <input type="text" (keypress)="letterSpaceOnly($event)" class="form-control ps-2"
+                    formControlName="cBankName" placeholder="Bank Name">
+                  <div *ngIf="submittedBankDetailsData && fBankData.cBankName.errors">
+                    <div *ngIf="fBankData.cBankName.errors.required">
+                      <span class="error_msg">Bank Name is Required.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <label for="role" class="required">Account No.</label>
+                <div class="mb-3">
+                  <!-- <span class="icon-position"><i class="fa fa-home"></i></span> -->
+                  <input type="text" maxlength="20" (keypress)="numberOnly($event)" class="form-control ps-2"
+                    formControlName="cAccountNo" placeholder="Account No">
+                  <div *ngIf="submittedBankDetailsData && fBankData.cAccountNo.errors">
+                    <div *ngIf="fBankData.cAccountNo.errors.required">
+                      <span class="error_msg">Account No is Required.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <label for="role" class="required">IFSC Code</label>
+                <div class="mb-3">
+                  <!-- <span class="icon-position"><i class="fa fa-code-branch"></i></span> -->
+                  <input type="text" maxlength="11" class="form-control ps-2" (keypress)="numberAndletterOnly($event)"
+                    formControlName="cIfscCode" placeholder="IFSC Code">
+                  <div *ngIf="submittedBankDetailsData && fBankData.cIfscCode.errors">
+                    <div *ngIf="fBankData.cIfscCode.errors.required">
+                      <span class="error_msg">IFSC Code is Required.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <label for="role" class="required">Branch Name</label>
+                <div class="mb-3">
+                  <!-- <span class="icon-position"><i class="fa fa-code-branch"></i></span> -->
+                  <input type="text" (keypress)="letterSpaceOnly($event)" class="form-control ps-2"
+                    formControlName="cBranchName" placeholder="Branch Name">
+                  <div *ngIf="submittedBankDetailsData && fBankData.cBranchName.errors">
+                    <div *ngIf="fBankData.cBranchName.errors.required">
+                      <span class="error_msg">Branch Name is Required.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <label for="role" class="required">Account Name</label>
+                <div class="mb-3">
+                  <!-- <span class="icon-position"><i class="fa fa-building"></i></span> -->
+                  <input type="text" class="form-control ps-2" (keypress)="letterSpaceOnly($event)"
+                    formControlName="cCompanyName" placeholder="Company Name">
+                  <div *ngIf="submittedBankDetailsData && fBankData.cCompanyName.errors">
+                    <div *ngIf="fBankData.cCompanyName.errors.required">
+                      <span class="error_msg">Company Name is Required.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <label for="role">Bank Branch Address</label>
+                <div class="mb-3">
+                  <!-- <span class="icon-position"><i class="fa fa-map-marker"></i></span> -->
+                  <textarea class="form-control ps-2" maxlength="200" placeholder="Company Name"
+                    formControlName="cBankBranchAddress" rows="2"></textarea>
+                </div>
+              </div>
+            </div>
+            <hr>
+            <div class="row">
+              <h5>EFFC Account</h5>
+              <div class="col-lg-4">
+                <label for="role">Bank Name</label>
+                <div class="mb-3">
+                  <!-- <span class="icon-position"><i class="fa fa-bank"></i></span> -->
+                  <input type="text" class="form-control ps-2" (keypress)="letterSpaceOnly($event)"
+                    formControlName="eBankName" placeholder="Bank Name">
+                  <div *ngIf="submittedBankDetailsData && fBankData.eBankName.errors">
+                    <div *ngIf="fBankData.eBankName.errors.required">
+                      <span class="error_msg">Bank Name is Required.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <label for="role">Account Name</label>
+                <div class="mb-3">
+                  <!-- <span class="icon-position"><i class="fa fa-code-branch"></i></span> -->
+                  <input type="text" class="form-control ps-2" (keypress)="letterSpaceOnly($event)"
+                    formControlName="eBranchName" placeholder="Branch Name">
+                  <div *ngIf="submittedBankDetailsData && fBankData.eBranchName.errors">
+                    <div *ngIf="fBankData.eBranchName.errors.required">
+                      <span class="error_msg">Branch Name is Required.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <label for="role">Account No.</label>
+                <div class="mb-3">
+                  <!-- <span class="icon-position"><i class="fa fa-home"></i></span> -->
+                  <input type="text" maxlength="20" class="form-control ps-2" (keypress)="numberOnly($event)"
+                    formControlName="eAccountNo" placeholder="Account No">
+                  <div *ngIf="submittedBankDetailsData && fBankData.eAccountNo.errors">
+                    <div *ngIf="fBankData.eAccountNo.errors.required">
+                      <span class="error_msg">Account No is Required.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <label for="role">Swift Code</label>
+                <div class="mb-3">
+                  <!-- <span class="icon-position"><i class="fa fa-code-branch"></i></span> -->
+                  <input type="text" class="form-control ps-2" formControlName="eShiftCode" placeholder="IFSC Code">
+                  <div *ngIf="submittedBankDetailsData && fBankData.eShiftCode.errors">
+                    <div *ngIf="fBankData.eShiftCode.errors.required">
+                      <span class="error_msg">Shift Code is Required.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-lg-4">
+                <label for="role">Micr Code</label>
+                <div class="mb-3">
+                  <!-- <span class="icon-position"><i class="fa fa-building"></i></span> -->
+                  <input type="text" class="form-control ps-2" formControlName="eMicrCode" placeholder="Company Name">
+                  <div *ngIf="submittedBankDetailsData && fBankData.eMicrCode.errors">
+                    <div *ngIf="fBankData.eMicrCode.errors.required">
+                      <span class="error_msg">Micr Code is Required.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+        <div class="d-flex justify-content-between">
+          <div class="text-center">
+            <button type="button" *ngIf="IsEditBankDetails === false" class="btn bg-gradient-dark my-4"
+              (click)="saveBankDetails()">Save</button>
+            <button type="button" *ngIf="IsEditBankDetails === true" (click)="updateBankDetails()"
+              class="btn bg-gradient-dark my-4">Update</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

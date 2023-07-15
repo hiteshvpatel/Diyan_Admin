@@ -1,0 +1,228 @@
+<div class="">
+  <div class="container-fluid py-4">
+    <div class="row">
+      <div class="mb-3 d-flex" style="justify-content: space-between;">
+        <span class="icon-position"><i class="fa fa-search"></i></span>
+        <input type="text" style="width:30%" class="searchTerm form-control" (input)="search($event.target.value)"
+          [(ngModel)]="searchTerm" placeholder="Type here...">
+        <!-- </div>
+      <div class="mb-4"> -->
+        <div class="right-container" *ngIf="this.isCreated == true">
+          <button class="btn bg-gradient-dark mb-0 add-btn right-container-button" (click)="addCategoryMaster()">
+            <span class="long-text">Add New</span>
+            <i class="fas fa-plus" aria-hidden="true"></i></button>
+        </div>
+      </div>
+      <div class="col-lg-8"></div>
+    </div>
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <!-- <div class="card-header align-items-center">
+                      <div class="row">
+                          <div class="col-lg-6">
+                              <label class="form-group text-white">
+                                  Show &nbsp;
+                                  <select class="custom-select custom-select-sm form-control form-control-sm" [(ngModel)]="mySelect" (change)="itemsPerPage()">
+                                      <option value="5">5</option>
+                                      <option value="10" selected>10</option>
+                                      <option value="25">25</option>
+                                      <option value="50">50</option>
+                                  </select>&nbsp; entries
+                              </label>
+                          </div>
+                          <div class="col-lg-6">
+                              <div class="float-right text-white text-end">
+
+                                  <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                              </div>
+                          </div>
+                      </div>
+                  </div> -->
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table" matSort matSortActive="categoryName" matSortDirection="asc"
+                matSortDisableClear="true" (matSortChange)="sortingList($event)">
+                <thead>
+                  <tr>
+                    <th class="theme-color w-20">Action</th>
+                    <th class="theme-color w-5">No.</th>
+                    <th class="theme-color w-55" mat-sort-header="categoryName">Category</th>
+                    <th class="theme-color w-20">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    *ngFor="let categoryMasterData of categorymasterList | filter: searchTerm | paginate: { itemsPerPage: l, currentPage: p };let categoryIndex = index">
+                    <td class="text-color">
+                      <ul class="d-flex action-list p-0">
+                        <li class="action-list-item me-3" *ngIf="this.isUpdated == true">
+                          <button class="font-20  btn bg-gradient-dark emp-edit-btn" title="Edit Category Master"
+                            (click)="editCategorymaster({id :categoryMasterData._id,index:categoryIndex})">
+                            <i class="fa fa-edit "></i></button>
+                        </li>
+                        <li class="action-list-item" *ngIf="this.isDeleted == true">
+                          <button *ngIf="  categoryMasterData.status == 2" class="dtl-btn btn bg-gradient-dark"
+                            title="Active Category Master"
+                            (confirm-click)="statusCategorymaster({id :  categoryMasterData._id,index:categoryIndex, status:1})"
+                            appConfirm [confirmTitle]="'Active'"
+                            [confirmContent]="'Are you sure to Active this Category?'">
+                            <i class="fa fa-plus"></i></button>
+                          <button *ngIf="  categoryMasterData.status == 1" class="dtl-btn btn bg-gradient-dark"
+                            title="Deactive Category Master"
+                            (confirm-click)="statusCategorymaster({id :  categoryMasterData._id,index:categoryIndex, status:2})"
+                            appConfirm [confirmTitle]="'Deactive'"
+                            [confirmContent]="'Are you sure to Deactive this Category?'">
+                            <i class="fa fa-trash"></i></button>
+                        </li>
+                      </ul>
+                    </td>
+                    <td class="text-color">
+                      {{ l * (p - 1) + categoryIndex +1 }}
+                    </td>
+                    <td class="text-color category-master-table-fix-width">
+                      {{ categoryMasterData.categoryName }}
+                    </td>
+                    <td class="text-color">
+                      <span *ngIf="categoryMasterData.status == 1" class="badge bg-gradient-success">Active</span>
+                      <span *ngIf="categoryMasterData.status == 2" class="badge bg-gradient-danger">Deactive</span>
+                    </td>
+
+                  </tr>
+                  <tr *ngIf="noData">
+                    <td colspan="6">
+                      <h2 class="text-center mb-0">Data Not Found</h2>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="footer-pagination" *ngIf="categoryMasterList?.length > l">
+                <pagination-controls (pageChange)="p = $event"></pagination-controls>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal quick-edit-modal fade" tabindex="-1" id="add-category-modal" role="dialog">
+  <div class="modal-dialog model-setting-menu-width" role="document">
+    <div class="card modal-content">
+      <div class="modal-header">
+        <h4 class="text-center mb-2 w-100" *ngIf="  ISeditCategoryMaster === false">Add New Category</h4>
+        <h4 class="text-center mb-2 w-100" *ngIf="  ISeditCategoryMaster === true">Edit Category</h4>
+        <button class="btn bg-gradient-dark cancel-btn popup-close-btn" (click)="cancelCategorymaster()">
+          <i class="fa fa-times" style="font-size: 10px;"></i>
+        </button>
+      </div>
+      <div class="card-body model-scroll">
+        <form role="form" class="add-employee-form" [formGroup]="categorymasterForm" autocomplete="off">
+          <div class="p-3 basic-information-form">
+            <div class="row">
+              <div class="col-lg-12">
+                <label for="role" class="required">Category</label>
+                <div class="mb-3">
+                  <span class="icon-position"><i class="fa fa-user"></i></span>
+                  <input type="text" class="form-control" formControlName="categoryName" placeholder="Category Name">
+                  <div *ngIf="submittedCategoryMasterData && fCategorynameData.categoryName.errors">
+                    <div *ngIf="fCategorynameData.categoryName.errors.required">
+                      <span class="error_msg">Category is Required.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-12">
+                <label>Category Image</label>
+                <div class="d-flex">
+                  <div class="" style="width: 120px;">
+                    <input #file type="file" accept='image/x-png,image/gif,image/jpeg' class="category-upload mt-2"
+                      width="100px" (change)="preview(file.files)" />
+                    <button class="btn bg-gradient-dark mt-2 mr-20" style="cursor: pointer;">Upload</button>
+                  </div>
+                  <!-- <div class="text-danger">{{signatureMessage}}</div> -->
+                  <div *ngIf="imgURL">
+                    <div class="position-relative">
+                      <div class="mt-2">
+                        <div class="recipe-image">
+                          <img [src]="imgURL" height="50px" width="150px"
+                            onerror="this.src ='assets/img/no-image-available.jpg'" style="border-radius: 5px;">
+                        </div>
+                      </div>
+                      <div class="recipe-image-control">
+                        <button class="float-right btn bg-gradient-dark btn-delete-icon cancel-btn"
+                          style="border-radius:50%; padding:6px 10px;" (click)="removeuploadFile()">
+                          <i class="fa fa-times"></i>
+                        </button>
+                      </div>
+                    </div>
+                    category_Image
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <div class="w-100">
+          <div class="text-center">
+            <button type="button" *ngIf="  ISeditCategoryMaster === false" (click)="saveCategorymaster()"
+              class="btn bg-gradient-dark my-2">Save</button>
+            <button type="button" *ngIf="  ISeditCategoryMaster === true" (click)="updateCategorymaster()"
+              class="btn bg-gradient-dark my-2">Update</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- <div class="modal quick-edit-modal fade" tabindex="-1" id="add-category-modal" role="dialog">
+  <div class="modal-dialog" role="document">
+      <div class="card modal-content">
+          <div class="card-header card-header-icon">
+              <div class="card-icon">
+                  <i class="material-icons">create</i>
+              </div>
+              <h4 class="card-title" *ngIf="  ISeditCategoryMaster 
+ === false">Add New Designation</h4>
+              <h4 class="card-title" *ngIf="  ISeditCategoryMaster 
+ === true">Edit Designation</h4>
+          </div>
+          <div class="card-body">
+              <form [formGroup]="categorymasterForm">
+                  <input type="hidden" name="Id" formControlName="_id">
+                  <div class="row">
+                      <div class="col-lg-12">
+                          <div>
+                              <label for="role">Designation</label>
+                          </div>
+                          <div class="form-group">
+                              <span class="icon-position"><i class="fa fa-user"></i></span>
+                              <input type="text" class="form-control" formControlName="name"
+                                  placeholder="Designation">
+                          </div>
+                      </div>
+                  </div>
+              </form>
+              <div class="d-flex justify-content-end">
+                  <div class="text-center">
+                      <button type="button" *ngIf="  ISeditCategoryMaster 
+ === false"
+                          (click)="saveDesignationmaster()" class="btn bg-gradient-dark my-4">Save</button>
+                      <button type="button" *ngIf="  ISeditCategoryMaster 
+ === true"
+                          (click)="updateDesignationmaster()" class="btn bg-gradient-dark my-4">Update</button>
+                  </div>
+                  <div class="text-center ms-3">
+                      <button type="button" (click)="cancelDesignationmaster()"
+                          class="btn bg-gradient-danger my-4">Cancel</button>
+                  </div>
+              </div>
+
+          </div>
+      </div>
+  </div>
+</div> -->

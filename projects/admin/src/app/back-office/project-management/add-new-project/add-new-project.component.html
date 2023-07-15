@@ -1,0 +1,1004 @@
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-lg-12 m-auto">
+            <!-- basic information Card -->
+            <div class="card mb-4" *ngIf="ISeditProject === false">
+                <div class="card-header pb-0">
+                    <div>
+                        <h2 class="card-title-color">Project Basic Information</h2>
+                    </div>
+                    <form role="form" [formGroup]="ProjectmasterForm" autocomplete="off">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <label class="required">Project Name</label>
+                                <div class="mb-3">
+                                    <span class="icon-position"><i class="fa fa-tasks"></i></span>
+                                    <input type="text" class="form-control" formControlName="projectName"
+                                        placeholder="Project Name">
+                                    <div *ngIf="submittedProjectData && fProjectmasterForm.projectName.errors">
+                                        <div *ngIf="fProjectmasterForm.projectName.errors.required">
+                                            <span class="error_msg">Project Name is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <label class="required">Client Name</label>
+                                <div class="mb-3">
+                                    <ng-select [items]="clientMasterList" bindValue="_id" bindLabel="clientName"
+                                        placeholder="Select Client" formControlName="clientId" [multiple]="false">
+                                    </ng-select>
+                                    <div *ngIf="submittedProjectData && fProjectmasterForm.clientId.errors">
+                                        <div *ngIf="fProjectmasterForm.clientId.errors.required">
+                                            <span class="error_msg">Client Selection is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <label class="required">Technology</label>
+                                <div class="mb-3">
+                                    <span class="icon-position"><i class="fa fa-city"></i></span>
+                                    <ng-select [items]="technologyMasterList" bindValue="_id" bindLabel="technologyName"
+                                        placeholder="Select technology" formControlName="technology" [multiple]="true">
+                                    </ng-select>
+                                    <div *ngIf="submittedProjectData && fProjectmasterForm.technology.errors">
+                                        <div *ngIf="fProjectmasterForm.technology.errors.required">
+                                            <span class="error_msg">Technology is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <label>Description</label>
+                                <div class="mb-3">
+                                    <span class="icon-position"><i class="fa fa-file-text"></i></span>
+                                    <textarea maxlength="200" class="form-control" formControlName="description"
+                                        placeholder="Description"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <label>remark</label>
+                                <div class="mb-3">
+                                    <span class="icon-position"><i class="fa fa-comment"></i></span>
+                                    <textarea class="form-control" maxlength="200" formControlName="remark"
+                                        placeholder="Remark"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <label class="required">Project Type</label>
+                                <div class="mb-3">
+                                    <mat-radio-group aria-label="Select an option" formControlName="projectType">
+                                        <mat-radio-button *ngFor="let type of projectTypes" value="{{type.id}}"
+                                            (change)="onProjectTypeChange(type.id)">
+                                            {{type.value}}</mat-radio-button>
+                                    </mat-radio-group>
+                                </div>
+                            </div>
+                            <div class="col-lg-6"
+                                *ngIf="fProjectmasterForm.projectType.value==1 ||fProjectmasterForm.projectType.value==2">
+                                <label [ngClass]="fProjectmasterForm.projectType.value == 2 ? 'required' :''"
+                                    class="">Project Hours</label>
+                                <div class="mb-3">
+                                    <span class="icon-position"><i class="fa fa-city"></i></span>
+                                    <input type="text" class="form-control" formControlName="projectHour"
+                                        placeholder="Project Hours" (keypress)="numberOnly($event)">
+                                    <div *ngIf="submittedProjectData && fProjectmasterForm.projectHour.errors">
+                                        <div *ngIf="fProjectmasterForm.projectHour.errors.required">
+                                            <span class="error_msg">Project Hours Cost is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6"
+                                *ngIf="fProjectmasterForm.projectType.value==1 || fProjectmasterForm.projectType.value==2">
+                                <label class="required">Hour Cost</label>
+                                <div class="mb-3">
+                                    <span class="icon-position"><i class="fa fa-city"></i></span>
+                                    <input type="text" class="form-control" formControlName="hourCost"
+                                        placeholder="Hour Cost" (keypress)="numberOnly($event)">
+                                    <div *ngIf="submittedProjectData && fProjectmasterForm.hourCost.errors">
+                                        <div *ngIf="fProjectmasterForm.hourCost.errors.required">
+                                            <span class="error_msg">Hours Cost is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6" *ngIf="fProjectmasterForm.projectType.value==3">
+                                <label class="required">Project Cost</label>
+                                <div class="mb-3">
+                                    <span class="icon-position"><i class="fa fa-city"></i></span>
+                                    <input type="text" (keypress)="numberOnly($event)" class="form-control"
+                                        formControlName="projectCost" placeholder="Project Cost">
+                                    <div *ngIf="submittedProjectData && fProjectmasterForm.projectCost.errors">
+                                        <div *ngIf="fProjectmasterForm.projectCost.errors.required">
+                                            <span class="error_msg">Project cost is required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <label class="required">Currency</label>
+                                <div class="mb-3">
+                                    <span class="icon-position"><i class="fa fa-city"></i></span>
+                                    <ng-select [items]="CurrencyName" bindValue="code" bindLabel="code"
+                                        placeholder="Select Currency" formControlName="currency" [multiple]="false">
+                                    </ng-select>
+                                    <div *ngIf="submittedProjectData && fProjectmasterForm.currency.errors">
+                                        <div *ngIf="fProjectmasterForm.currency.errors.required">
+                                            <span class="error_msg">Currency is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-end">
+                            <div class="text-center">
+                                <button type="button" (click)="saveProjectmaster('save')"
+                                    *ngIf="ISeditProject === false" class="btn bg-gradient-dark m-3">Save</button>
+                                <button type="button" (click)="saveProjectmaster('continue')"
+                                    *ngIf="ISeditProject === false" class="btn bg-gradient-dark m-3">Save &
+                                    Continue</button>
+                                <button type="button" (click)="UpdateUser()" class="btn bg-gradient-dark m-3"
+                                    *ngIf="ISeditProject === true">Update</button>
+                            </div>
+                            <div class="text-center">
+                                <button type="button" (click)="cancelProject()"
+                                    class="btn bg-gradient-danger m-3">Cancel</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- for edit -->
+            <div class="card mb-4" *ngIf="ISeditProject === true">
+                <div class="card-body">
+                    <div class="d-flex mb-2" style="justify-content:space-between;">
+                        <h4 class="card-title-color">Basic Information</h4>
+
+                        <span>
+
+                            <button class="btn bg-gradient-dark mb-0 height-40 edit-small-btn" style="float: right;"
+                                (click)="openBasicInfoModel()">
+                                <i class="fas fa-edit" aria-hidden="true"></i>
+                            </button>
+                            <button class="btn bg-gradient-dark mb-0 me-2" style="float: right;"
+                                (click)="openScreenshotModal()">
+                                <i class="fas fa-plus" aria-hidden="true"></i> Add Screenshot
+                            </button>
+                        </span>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-12">
+                            <!-- <div class="right-container">
+                                <button class="btn bg-gradient-dark mb-0 right-container-button" style="float: right;"
+                                    (click)="openBasicInfoModel()">
+                                    <span class="long-text">Edit</span>
+                                    <i class="fas fa-edit" aria-hidden="true"></i></button>
+                            </div> -->
+
+
+                            <div class="for-label w-100">
+                                <div class="d-flex">
+                                    <label class="w-20">Project Name:</label>
+                                    <label class="color-gray client-info-add-fix">
+                                        {{projectDetail?.projectName}} </label>
+                                </div>
+
+                                <div class="d-flex">
+                                    <label class="w-20" for="">Client:</label>
+                                    <label class="color-gray client-info-add-fix">
+                                        {{projectDetail?.clientName}} </label>
+                                </div>
+
+                                <div class="d-flex">
+                                    <label class="w-20" style="vertical-align: top;">Technology:</label>
+                                    <label class="color-gray client-info-add-fix">
+                                        <span *ngFor="let tech of projectDetail?.technologyData; let i = index">
+                                            {{tech.technologyName}}{{ (i+1== projectDetail?.technologyData.length) ? ''
+                                            : ',
+                                            '}}
+                                        </span>
+                                    </label>
+                                </div>
+
+                                <div class="d-flex">
+                                    <label class="w-20" style="vertical-align: top;">Description:</label>
+                                    <label class="color-gray client-info-add-fix">
+                                        {{projectDetail?.description}} </label>
+                                </div>
+
+
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-12">
+                            <div class="for-label w-100">
+                                <div class="d-flex">
+                                    <label class="w-20" style="vertical-align: top;">Remark:</label>
+                                    <label class="color-gray client-info-add-fix">
+                                        {{projectDetail?.remark}} </label>
+                                </div>
+
+                                <div class="d-flex">
+                                    <label class="w-20" style="vertical-align: top;">Project Type:</label>
+                                    <label class="color-gray client-info-add-fix">
+                                        {{projectTypes[projectDetail?.projectType - 1]?.value}} </label>
+                                </div>
+
+                                <ng-container
+                                    *ngIf="projectDetail?.projectType == 1 || projectDetail?.projectType == 2">
+                                    <div class="d-flex">
+                                        <label class="w-20" style="vertical-align: top;">Project Hours:</label>
+                                        <label class="color-gray client-info-add-fix">
+                                            {{projectDetail?.projectHour}} </label>
+                                    </div>
+                                    <div class="d-flex">
+                                        <label class="w-20" style="vertical-align: top;">Hour Cost:</label>
+                                        <label class="color-gray client-info-add-fix">
+                                            {{projectDetail?.hourCost}}
+                                            {{AllCurrencyLists[projectDetail?.currency]?.symbol}} </label><br>
+                                    </div>
+                                </ng-container>
+                                <ng-container *ngIf="projectDetail?.projectType == 3">
+                                    <div class="d-flex">
+                                        <label class="w-20" style="vertical-align: top;">Project
+                                            Cost:</label>
+                                        <label class="color-gray">
+                                            {{projectDetail?.projectCost}}
+                                            {{AllCurrencyLists[projectDetail?.currency]?.symbol}}</label><br>
+                                    </div>
+                                </ng-container>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" *ngIf="ISeditProject === true">
+                <div class="col-lg-6">
+                    <div class="card mb-4 card-height">
+                        <div class="card-body pb-2">
+                            <div class="d-flex" style="justify-content:space-between;">
+                                <h4 class="card-title-color">Private Documents</h4>
+                                <button class="btn bg-gradient-dark mb-0 height-40 add-small-btn"
+                                    (click)="addDocument(1)">
+                                    <div class="edit-add-btn">
+                                        <i class="fas fa-plus" aria-hidden="true"></i>
+                                    </div>
+                                </button>
+                            </div>
+
+                            <div class="table-responsive p-0">
+                                <table class="table align-items-center mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th class="theme-color">
+                                                Name</th>
+                                            <th class="theme-color">
+                                                Download</th>
+                                            <th class="theme-color">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr
+                                            *ngFor="let uplodedPrivateDocumentdata of uplodedPrivateDocumentList | paginate: { itemsPerPage: 4, currentPage: p, id: 'p' } ;let uplodedPrivateDocumentIndex = index">
+                                            <td class="private-doc-table">
+                                                <span
+                                                    class="text-secondary text-xs font-weight-bold">{{uplodedPrivateDocumentdata.projectDocument
+                                                    | titlecase}}</span>
+                                            </td>
+
+                                            <td class="align-middle">
+                                                <a class="mb-0 cursor-pointer btn bg-gradient-dark download-btn"
+                                                    [href]="commonService.rootData.uploadsUrl +'documents/'+uplodedPrivateDocumentdata.projectDocument"
+                                                    target="_blank"><i class="fa fa-download"></i></a>
+                                            </td>
+                                            <td class="align-middle">
+                                                <div class="d-flex"
+                                                    *ngIf="uplodedPrivateDocumentdata.isDeleted == false">
+                                                    <div class="card-header p-0">
+                                                        <button
+                                                            class="mb-0 cursor-pointer btn bg-gradient-dark emp-edit-btn"
+                                                            (click)="getDocumentUploadById(uplodedPrivateDocumentdata._id)"><i
+                                                                class="fas fa-edit" aria-hidden="true"></i></button>
+                                                        <button
+                                                            class="mb-0 ml-10 cursor-pointer btn bg-gradient-dark dtl-btn"
+                                                            (confirm-click)="deleteDocumentDetailsById(uplodedPrivateDocumentdata._id)"
+                                                            appConfirm [confirmTitle]="'Delete'"
+                                                            [confirmContent]="'Are you sure to Delete this Document?'"><i
+                                                                class="fas fa-trash" aria-hidden="true"></i></button>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr *ngIf="uplodedPrivateDocumentList.length == 0" class="text-center">
+                                            <td colspan="3">No any document uploded.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div class="footer-pagination" *ngIf="uplodedPrivateDocumentList.length > 0">
+                                    <pagination-controls (pageChange)="p = $event" id='p'></pagination-controls>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card mb-4 card-height">
+                        <div class="card-body pb-2">
+                            <div class="d-flex" style="justify-content:space-between;">
+                                <h4 class="card-title-color">General Documents</h4>
+                                <button class="btn bg-gradient-dark mb-0 height-40 add-small-btn" style="float: right;"
+                                    (click)="addDocument(2)">
+                                    <div class="edit-add-btn">
+                                        <i class="fas fa-plus" aria-hidden="true"></i>
+                                    </div>
+                                </button>
+                            </div>
+
+                            <div class="table-responsive p-0">
+                                <table class="table align-items-center mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th class="theme-color">
+                                                Name</th>
+                                            <th class="theme-color">
+                                                Download</th>
+                                            <th class="theme-color">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr
+                                            *ngFor="let uplodedGeneralDocumentData of uplodedGeneralDocumentList | paginate: { itemsPerPage: 4, currentPage: g, id: 'g' } ;let uplodedGeneralDocumentIndex = index">
+                                            <td class="private-doc-table">
+                                                <span
+                                                    class="text-secondary text-xs font-weight-bold">{{uplodedGeneralDocumentData.projectDocument
+                                                    | titlecase}}</span>
+                                            </td>
+
+                                            <td class="align-middle">
+                                                <a class="mb-0 cursor-pointer btn bg-gradient-dark download-btn"
+                                                    [href]="commonService.rootData.uploadsUrl +'documents/'+uplodedGeneralDocumentData.projectDocument"
+                                                    target="_blank"><i class="fa fa-download"></i></a>
+                                            </td>
+                                            <td class="align-middle">
+                                                <div class="d-flex"
+                                                    *ngIf="uplodedGeneralDocumentData.isDeleted == false">
+                                                    <div class="card-header p-0">
+                                                        <button
+                                                            class="mb-0 cursor-pointer btn bg-gradient-dark emp-edit-btn"
+                                                            (click)="getDocumentUploadById(uplodedGeneralDocumentData._id)"><i
+                                                                class="fas fa-edit" aria-hidden="true"></i></button>
+                                                        <button
+                                                            class="mb-0 ml-10 cursor-pointer btn bg-gradient-dark dtl-btn"
+                                                            (confirm-click)="deleteDocumentDetailsById(uplodedGeneralDocumentData._id)"
+                                                            appConfirm [confirmTitle]="'Delete'"
+                                                            [confirmContent]="'Are you sure to Delete this Document?'"><i
+                                                                class="fas fa-trash" aria-hidden="true"></i></button>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr *ngIf="uplodedGeneralDocumentList.length == 0">
+                                            <td colspan="3" class="text-center">No any document uploded.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="footer-pagination" *ngIf="uplodedGeneralDocumentList.length > 0">
+                                <pagination-controls (pageChange)="g = $event" id='g'></pagination-controls>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" *ngIf="ISeditProject === true">
+                <div class="col-lg-12">
+                    <div class="card mb-4 card-height">
+                        <div class="card-body pb-2">
+                            <div class="d-flex" style="justify-content:space-between;">
+                                <h4 class="card-title-color">Team Assign</h4>
+                                <div>
+                                    <button class="btn bg-gradient-dark mb-0 ml-10 height-40 add-small-btn"
+                                        style="float: right;" (click)="addTeam()">
+                                        <div class="edit-add-btn">
+                                            <i class="fas fa-plus" aria-hidden="true"></i>
+                                        </div>
+                                    </button>
+                                    <button class="btn bg-gradient-dark mb-0 height-40" style="float: right;"
+                                        (click)="addAllTeamAssign()">
+                                        <div class="edit-add-btn">
+                                            <i class="fas fa-plus" aria-hidden="true"></i> &nbsp;All Assign
+                                        </div>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="table-responsive p-0">
+                                <table class="table align-items-center mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th class="theme-color">
+                                                Employee</th>
+                                            <th class="theme-color">
+                                                Department</th>
+                                            <th class="theme-color">
+                                                isPoc</th>
+                                            <th class="theme-color">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr
+                                            *ngFor="let teamAssignData of teamAssignList | paginate: { itemsPerPage: 4, currentPage: team, id: 'team' } ;let teamAssignIndex = index">
+                                            <td class="private-doc-table">
+                                                <span
+                                                    class="text-secondary text-xs font-weight-bold">{{teamAssignData.firstName
+                                                    | titlecase}} {{teamAssignData.lastName}}</span>
+                                            </td>
+
+                                            <td class="align-middle private-doc-table">
+                                                <span
+                                                    class="text-secondary text-xs font-weight-bold">{{teamAssignData.technologyName
+                                                    | titlecase}}</span>
+
+                                            </td>
+                                            <td class="align-middle">
+                                                <span
+                                                    class="text-secondary text-xs font-weight-bold">{{teamAssignData.isPoc?
+                                                    "Yes" : "No"}}</span>
+
+                                            </td>
+                                            <td class="align-middle">
+                                                <div class="d-flex">
+                                                    <div class="card-header p-0">
+                                                        <button
+                                                            class="mb-0 cursor-pointer btn bg-gradient-dark emp-edit-btn"
+                                                            (click)="editTeamById(teamAssignData._id)"><i
+                                                                class="fas fa-edit" aria-hidden="true"></i></button>
+                                                        <button
+                                                            class="mb-0 ml-10 cursor-pointer btn bg-gradient-dark dtl-btn"
+                                                            (confirm-click)="removeTeamMemberPopup(teamAssignData._id, teamAssignData.employeeId)"
+                                                            appConfirm [confirmTitle]="'Remove'"
+                                                            [confirmContent]="'Are you sure to remove this team member from this project?'"><i
+                                                                class="fas fa-trash" aria-hidden="true"></i></button>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr *ngIf="teamAssignList?.length == 0" class="text-center">
+                                            <td colspan="3">No any team assign yet for this project.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div class="footer-pagination" *ngIf="teamAssignList.length > 0">
+                                    <pagination-controls (pageChange)="team = $event" id='team'></pagination-controls>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <div class="card mb-4 card-height">
+                        <div class="card-body pb-2">
+                            <div class="d-flex" style="justify-content:space-between;">
+                                <h4 class="card-title-color">Recived Payment Details</h4>
+                                <!-- <button class="btn bg-gradient-dark mb-0 height-40 add-small-btn" style="float: right;"
+                                    (click)="addTeam()">
+                                    <div class="edit-add-btn">
+                                        <i class="fas fa-plus" aria-hidden="true"></i>
+                                    </div>
+                                </button> -->
+                            </div>
+
+                            <div class="table-responsive p-0">
+                                <table class="table align-items-center mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th class="theme-color">Bill No.</th>
+                                            <th class="theme-color">Financial Year</th>
+                                            <th class="theme-color">Bill Date</th>
+                                            <th class="theme-color">Final Amount</th>
+                                            <th class="theme-color">Download</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr
+                                            *ngFor="let invoiceData of invoiceList | filter : searchTerm |  paginate: {itemsPerPage: l, currentPage: bill, id: 'bill' };let invoiceIndex = index">
+                                            <td class="text-color doc-master-tbl">
+                                                <span>{{ invoiceData.billNo }}</span>
+                                            </td>
+                                            <td class="text-color doc-master-tbl">
+                                                <span>{{ invoiceData.finacialYear }}</span>
+                                            </td>
+                                            <td class="text-color doc-master-tbl">
+                                                <span>{{ invoiceData.billDate }}</span>
+                                            </td>
+                                            <td class="text-color doc-master-tbl">
+                                                <span>{{ invoiceData.finalAmount }}</span>
+                                            </td>
+                                            <td class="text-color">
+                                                <i class="fa fa-download"></i>
+                                            </td>
+                                        </tr>
+                                        <tr *ngIf="invoiceList?.length == 0" class="text-center">
+                                            <td colspan="5">No any bill available for this project.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div class="footer-pagination" *ngIf="invoiceList.length > 0">
+                                    <pagination-controls (pageChange)="bill = $event" id='bill'></pagination-controls>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- project edit popup -->
+<div class="modal quick-edit-modal fade" tabindex="-1" id="add-project-basic-details-modal" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="card modal-content">
+            <div class="modal-header">
+                <h3 class="text-center mb-2 w-100">Project Basic Information</h3>
+                <button class="btn bg-gradient-dark cancel-btn" (click)="closeProjectEdit()"
+                    style="float: right;margin-right: 0;border-radius: 50%;padding: 7px 12px;">
+                    <i class="fa fa-times" style="font-size: 10px;"></i>
+                </button>
+            </div>
+            <div class="card-body model-scroll">
+                <form role="form" class="add-employee-form basic-information-form" [formGroup]="ProjectmasterForm"
+                    autocomplete="off">
+                    <div class="p-3">
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <label class="required">Project Name</label>
+                                <div class="mb-3">
+                                    <span class="icon-position">
+                                        <i class="fa fa-code-fork"></i>
+                                    </span>
+                                    <input type="text" class="form-control" formControlName="projectName"
+                                        placeholder="Project Name">
+                                    <div *ngIf="submittedProjectData && fProjectmasterForm.projectName.errors">
+                                        <div *ngIf="fProjectmasterForm.projectName.errors.required">
+                                            <span class="error_msg">Project Name is Required.</span>
+                                        </div>
+                                        <div *ngIf="fProjectmasterForm.projectName.errors.maxlength">
+                                            <span class="error_msg">Project name must be less than 30 characters.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <label class="required">Client Name</label>
+                                <div class="mb-3">
+                                    <span class="icon-position"><i class="fa fa-user"></i></span>
+                                    <ng-select [items]="clientMasterList" bindValue="_id" bindLabel="clientName"
+                                        placeholder="Select Client" formControlName="clientId">
+                                    </ng-select>
+                                    <div *ngIf="submittedProjectData && fProjectmasterForm.clientId.errors">
+                                        <div *ngIf="fProjectmasterForm.clientId.errors.required">
+                                            <span class="error_msg">Client selection is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <label class="required">Technology</label>
+                                <div class="mb-3">
+                                    <span class="icon-position"><i class="fa fa-city"></i></span>
+                                    <ng-select [items]="technologyMasterList" bindValue="_id" bindLabel="technologyName"
+                                        placeholder="Select technology" formControlName="technology" [multiple]="true">
+                                    </ng-select>
+                                    <div *ngIf="submittedProjectData && fProjectmasterForm.technology.errors">
+                                        <div *ngIf="fProjectmasterForm.technology.errors.required">
+                                            <span class="error_msg">Technology is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <label>Description</label>
+                                <div class="mb-3">
+                                    <span class="icon-position"><i class="fa fa-file-text"></i></span>
+                                    <textarea class="form-control" maxlength="200" formControlName="description"
+                                        placeholder="Description"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <label>remark</label>
+                                <div class="mb-3">
+                                    <span class="icon-position"><i class="fa fa-comment"></i></span>
+                                    <textarea class="form-control" maxlength="200" formControlName="remark"
+                                        placeholder="Remark"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <label class="required">Project Type</label>
+                                <div class="mb-3">
+                                    <mat-radio-group aria-label="Select an option" formControlName="projectType">
+                                        <mat-radio-button *ngFor="let type of projectTypes" value="{{type.id}}"
+                                            (change)="onProjectTypeChange(type.id)">
+                                            {{type.value}}</mat-radio-button>
+                                    </mat-radio-group>
+                                </div>
+                            </div>
+                            <div class="col-lg-4"
+                                *ngIf="fProjectmasterForm.projectType.value==1 ||fProjectmasterForm.projectType.value==2">
+                                <label class="required">Project Hours</label>
+                                <div class="mb-3">
+                                    <span class="icon-position"><i class="fa fa-clock-o"></i></span>
+                                    <input type="text" class="form-control" formControlName="projectHour"
+                                        placeholder="Project Hours" (keypress)="numberOnly($event)">
+                                    <div *ngIf="submittedProjectData && fProjectmasterForm.projectHour.errors">
+                                        <div *ngIf="fProjectmasterForm.projectHour.errors.required">
+                                            <span class="error_msg">Project hours cost is required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4"
+                                *ngIf="fProjectmasterForm.projectType.value==1 || fProjectmasterForm.projectType.value==2">
+                                <label class="required">Hour Cost</label>
+                                <div class="mb-3">
+                                    <span class="icon-position"><i class="fa fa-money"></i></span>
+                                    <input type="text" class="form-control" formControlName="hourCost"
+                                        placeholder="Hour Cost" (keypress)="numberOnly($event)">
+                                    <div *ngIf="submittedProjectData && fProjectmasterForm.hourCost.errors">
+                                        <div *ngIf="fProjectmasterForm.hourCost.errors.required">
+                                            <span class="error_msg">Hours cost is required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4" *ngIf="fProjectmasterForm.projectType.value==3">
+                                <label class="required">Project Cost</label>
+                                <div class="mb-3">
+                                    <span class="icon-position"><i class="fa fa-money"></i></span>
+                                    <input type="text" class="form-control" formControlName="projectCost"
+                                        placeholder="Project Cost" (keypress)="numberOnly($event)">
+                                    <div *ngIf="submittedProjectData && fProjectmasterForm.projectCost.errors">
+                                        <div *ngIf="fProjectmasterForm.projectCost.errors.required">
+                                            <span class="error_msg">Project cost is required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4">
+                                <label class="required">Currency</label>
+                                <div class="mb-3">
+                                    <span class="icon-position"><i class="fa fa-city"></i></span>
+                                    <ng-select [items]="CurrencyName" bindValue="code" bindLabel="code"
+                                        placeholder="Select Currency" formControlName="currency">
+                                    </ng-select>
+                                    <div *ngIf="submittedProjectData && fProjectmasterForm.currency.errors">
+                                        <div *ngIf="fProjectmasterForm.currency.errors.required">
+                                            <span class="error_msg">Currency is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <div class="w-100">
+                    <div class="text-center">
+                        <button type="button" (click)="UpdateProject()" class="btn bg-gradient-dark my-2"
+                            *ngIf="ISeditProject === true">Update</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal quick-edit-modal fade" tabindex="-1" id="add-document-upload-modal" role="dialog">
+    <div class="modal-dialog model-height" role="document">
+        <div class="card modal-content">
+            <div class="modal-header">
+                <h3 class="text-center mb-2 w-100">Document Details</h3>
+                <button class="btn bg-gradient-dark cancel-btn" (click)="cancelDocument()"
+                    style="float: right;margin-right: 0;border-radius: 50%;padding: 7px 13px;">
+                    <i class="fa fa-times" style="font-size: 10px;"></i>
+                </button>
+            </div>
+            <div class="card-body modal-scroll">
+                <form role="form" class="add-employee-form basic-information-form" autocomplete="off">
+                    <div class="p-3">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <h3 class="mb-4">{{IsDocumentUpload ? 'Edit' : 'Add'}} {{documentType
+                                    == 1 ? 'Private'
+                                    : 'General'}} Document Details</h3>
+                            </div>
+                            <div class="col-lg-12">
+                                <label for="role" class="required">Document</label>
+                                <div class="mb-3 d-flex">
+                                    <span class="ex-upload">
+                                        <input #fileDoc type="file" class="plus-btn"
+                                            accept='image/x-png,image/gif,image/jpeg,.pdf, application/pdf'
+                                            (change)="onDocumentChange($event)" />
+                                        <img src="/assets/img/Add.png" height="40px"
+                                            alt="Upload Experience Certificate">
+                                    </span>
+                                    <div *ngIf="!!resultofShowDocument">
+                                        <div>
+                                            <div class="document-file-main">
+                                                <div class="p-1 ml-10">
+                                                    <button
+                                                        class="border-0 float-delete-button r-0 bg-gradient-dark btn-delete-icon btn m-0"
+                                                        (click)="removeDocument()">
+                                                        <i class="fa fa-times font-14"></i>
+                                                    </button>
+                                                    <p class="color-black mb-0 result-of-Exp-document">
+                                                        {{resultofShowDocument.name}}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <div *ngIf="docError === true">
+                                    <span class="error_msg">Please Add Document</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="w-100">
+                    <div class="text-center">
+                        <button type="button" *ngIf="IsDocumentUpload == false" (click)="saveDocumentUpload()"
+                            class="btn bg-gradient-dark my-2">Save</button>
+                        <button type="button" *ngIf="IsDocumentUpload == true" (click)="updateDocumentUpload()"
+                            class="btn bg-gradient-dark my-2">Update</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- For team assign popup -->
+
+<div class="modal quick-edit-modal fade" tabindex="-1" id="assign-team-modal" role="dialog">
+    <div class="modal-dialog model-height" role="document">
+        <div class="card modal-content">
+            <div class="modal-header">
+                <h3 class="text-center mb-2 w-100">{{ISeditTeam ? 'Edit' : '' }} Assign Team</h3>
+                <button class="btn bg-gradient-dark cancel-btn" (click)="closeAssignEdit()"
+                    style="float: right;margin-right: 0;border-radius: 50%;padding: 7px 12px;">
+                    <i class="fa fa-times" style="font-size: 10px;"></i>
+                </button>
+            </div>
+            <div class="card-body model-scroll">
+                <form role="form" class="add-employee-form basic-information-form" [formGroup]="teamAssignForm"
+                    autocomplete="off">
+                    <div class="p-3">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <label class="required">Technology</label>
+                                <div class="mb-3">
+                                    <span class="icon-position"><i class="fa fa-city"></i></span>
+                                    <ng-select [items]="technologyMasterList" bindValue="_id" bindLabel="technologyName"
+                                        (change)="ChangeDepartment(teamAssignForm.controls.technologyId.value)"
+                                        placeholder="Select Technology" formControlName="technologyId">
+                                    </ng-select>
+                                    <div *ngIf="submitAssign && teamAssignForm.controls.technologyId.errors">
+                                        <div *ngIf="teamAssignForm.controls.technologyId.errors.required">
+                                            <span class="error_msg">Technology selection is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <label class="required">Employee</label>
+                                <div class="mb-3">
+                                    <span class="icon-position"><i class="fa fa-user"></i></span>
+                                    <ng-select [items]="employeeList" bindValue="employeeId" bindLabel="employeeName"
+                                        placeholder="Select Employee" [multiple]="true" formControlName="employeeId">
+                                    </ng-select>
+                                    <div *ngIf="submitAssign && teamAssignForm.controls.employeeId.errors">
+                                        <div *ngIf="teamAssignForm.controls.employeeId.errors.required">
+                                            <span class="error_msg">Employee selection is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <label>Remarks</label>
+                                <div class="mb-3">
+                                    <span class="icon-position"><i class="fa fa-file-text"></i></span>
+                                    <textarea class="form-control" maxlength="200" formControlName="remark"
+                                        placeholder="Remarks"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <label for="role">isPoc ?</label>
+                                <input type="checkbox" class="keep-originals ml-60" formControlName="isPoc">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="w-100">
+                    <div class="text-center">
+                        <button type="button" (click)="saveTeamAssign()" class="btn bg-gradient-dark my-2"
+                            *ngIf="ISeditTeam === false">Save</button>
+                        <button type="button" (click)="updateTeamAssign()" class="btn bg-gradient-dark my-2"
+                            *ngIf="ISeditTeam === true">update</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- For team Remove popup -->
+
+<div class="modal quick-edit-modal fade" tabindex="-1" id="removeTeamAssign" role="dialog">
+    <div class="modal-dialog model-height" role="document">
+        <div class="card modal-content">
+            <div class="modal-header">
+                <h3 class="text-center mb-2 w-100">Remove Team Member</h3>
+                <button class="btn bg-gradient-dark" (click)="closeRemoveTeamPopup()"
+                    style="float: right;margin-right: 0;border-radius: 50%;padding: 7px 12px;">
+                    <i class="fa fa-times" style="font-size: 10px;"></i>
+                </button>
+            </div>
+            <div class="card-body model-scroll">
+                <form role="form" class="add-employee-form basic-information-form" [formGroup]="removeTeamAssignForm"
+                    autocomplete="off">
+                    <div class="p-3">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <label>Remarks</label>
+                                <div class="mb-3">
+                                    <span class="icon-position"><i class="fa fa-file-text"></i></span>
+                                    <textarea class="form-control" maxlength="200" formControlName="remark"
+                                        placeholder="Remarks for remove this team member."></textarea>
+                                    <div *ngIf="submitRemove && removeTeamAssignForm.controls.remark.errors">
+                                        <div *ngIf="removeTeamAssignForm.controls.remark.errors.required">
+                                            <span class="error_msg">Remark is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="w-100">
+                    <div class="text-center">
+                        <button type="button" (click)="removeTeamMember()" class="btn bg-gradient-dark my-2">Remove
+                            Member</button>
+                        <button type="button" (click)="closeRemoveTeamPopup()" class="btn bg-gradient-dark my-2">Do Not
+                            Remove</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- for all team assign popup -->
+<div class="modal quick-edit-modal fade" tabindex="-1" id="assign-all-team-modal" role="dialog">
+    <div class="modal-dialog model-height" role="document">
+        <div class="card modal-content">
+            <div class="modal-header">
+                <h3 class="text-center mb-2 w-100">Assign Team</h3>
+                <button class="btn bg-gradient-dark cancel-btn" (click)="closeAllAssignEdit()"
+                    style="float: right;margin-right: 0;border-radius: 50%;padding: 7px 12px;">
+                    <i class="fa fa-times" style="font-size: 10px;"></i>
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="p-3">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <label class="required">Designation</label>
+                            <div class="mb-3">
+                                <span class="icon-position"><i class="fa fa-city"></i></span>
+                                <ng-select [items]="designationList" bindValue="_id" bindLabel="name"
+                                    placeholder="Select Designation" [closeOnSelect]="false" [multiple]="true"
+                                    [(ngModel)]="designationId">
+                                </ng-select>
+                                <div *ngIf="submitAssignAll && designationId.length == 0">
+                                    <span class="error_msg">Designation is Required.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="w-100">
+                    <div class="text-center">
+                        <button type="button" (click)="allTeamAssignData()"
+                            class="btn bg-gradient-dark my-2">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal quick-edit-modal fade" tabindex="-1" id="screenshot-modal" role="dialog">
+    <div class="modal-dialog model-height" role="document">
+        <div class="card modal-content">
+            <div class="modal-header">
+                <h3 class="text-center mb-2 w-100">Screenshots</h3>
+                <button class="btn bg-gradient-dark cancel-btn" (click)="closeScreenshotModal()"
+                    style="float: right;margin-right: 0;border-radius: 50%;padding: 7px 12px;">
+                    <i class="fa fa-times" style="font-size: 10px;"></i>
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="nav">
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item">
+                            <a class="nav-link" aria-current="page" [ngClass]="screenshotTab == 1 ? 'active':''"
+                                (click)="screenshotTab = 1">File Upload</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" [ngClass]="screenshotTab == 2 ? 'active':''"
+                                (click)="tabClick(2)">Screenshots</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="mb-4 position-relative" *ngIf="screenshotTab == 1">
+                    <div class="qq-upload-button overflow-hidden d-flex" aria-hidden="true" style=" direction: ltr;">
+                        <div style="margin-left:20px;">
+                            <span>Upload a File</span>
+                            <div class="jfUpload-heading forDesktop">Drag and drop files here
+                            </div>
+                            <div class="jfUpload-heading forMobile">Choose a file</div>
+                        </div>
+                    </div>
+                    <div class="inputContainer" role="button" aria-label="Upload a File
+                        Drag and drop files here" tabindex="0">
+                        <input multiple="multiple" #screeshotDoc class="fileupload-input"
+                            (change)="onScreenshotDocumentChange($event)" id="input_7" type="file"
+                            accept='image/x-png,image/gif,image/jpeg,.pdf, application/pdf' name="file"
+                            aria-labelledby="label_7" aria-hidden="true" tabindex="-1">
+                    </div>
+                </div>
+                <div class="row" *ngIf="screenshotTab == 2">
+                    <div class="col-lg-3 mt-3 mb-2" *ngFor="let screenshotData of screenshotList">
+                        <div class="document-file-main" [title]="screenshotData.originalName">
+                            <div class="p-1">
+                                <button class="border-0 float-right btn-delete-icon btn m-0 btn-primary"
+                                    (click)="removeScreenshots(screenshotData._id)">
+                                    <i class="fa fa-times font-14"></i>
+                                </button>
+                                <div class="document-file-image">
+                                    <img [src]="this.commonService.rootData.uploadsUrl + 'projectScreenShot/' + screenshotData.projectScreenShot"
+                                        width="100%" />
+                                </div>
+                                <h6 class="px-10px color-black mb-0 filename">
+                                    {{screenshotData.originalName}}
+                                </h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

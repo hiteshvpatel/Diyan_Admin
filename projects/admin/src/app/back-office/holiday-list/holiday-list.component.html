@@ -1,0 +1,229 @@
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="">
+                <a class="btn bg-gradient-dark mr-10" *ngIf=" tableViewFlag === true"
+                    (click)="tapView('calenderView')">&nbsp;&nbsp;Calander view</a>
+                <a class="btn bg-gradient-dark" *ngIf=" calenderViewFlag === true"
+                    (click)="tapView('tableView')">&nbsp;&nbsp;Table view</a>
+            </div>
+        </div>
+        <div class="col-lg-6" *ngIf="this.isCreated == true">
+            <div class="right-container">
+                <button class="btn bg-gradient-dark add-btn right-container-button" (click)="addEmployee()">
+                    <span class="long-text">Excel Upload</span>
+                    <i class="fas fa-plus" aria-hidden="true"></i></button>
+            </div>
+        </div>
+        <div class="col-lg-12">
+            <div class="card" *ngIf="calenderViewFlag === true">
+                <div class="card-body">
+                    <div class="recipe-list-page">
+                        <div id="calendar"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12">
+            <div class="card" *ngIf="tableViewFlag === true">
+                <div class="right-container text-end">
+                    <button class="btn bg-gradient-dark add-holiday" (click)="addHolidayData()">
+                        <span class="long-text">Add &nbsp;</span>
+                        <i class="fas fa-plus" aria-hidden="true"></i></button>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table" matSort matSortActive="date" matSortDirection="asc"
+                            matSortDisableClear="true" (matSortChange)="sortingList($event)">
+                            <thead>
+                                <tr>
+                                    <th class="theme-color">No.</th>
+                                    <th class="theme-color" mat-sort-header="date">Holiday Date</th>
+                                    <th class="theme-color" mat-sort-header="Holiday">Holiday Name</th>
+                                    <th class="theme-color" mat-sort-header="Day">Day</th>
+                                    <th class="theme-color">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    *ngFor="let holidayData of holidayTableWiseData | paginate: { itemsPerPage: l, currentPage: p };let holidayIndex = index">
+                                    <td class="text-color">
+                                        {{ l * (p - 1) + holidayIndex +1 }}
+                                    </td>
+                                    <td class="text-color">
+                                        {{holidayData.holidayDate}}
+                                    </td>
+                                    <td class="text-color">
+                                        {{holidayData.Holiday}}
+                                    </td>
+                                    <td class="text-color">
+                                        {{holidayData.Day}}
+                                    </td>
+                                    <td class="text-color">
+                                        <ul class="d-flex align-items-center action-list p-0">
+                                            <li class="action-list-item me-3" *ngIf="this.isDeleted === true">
+                                                <button class="font-20 btn bg-gradient-dark emp-edit-btn"
+                                                    (confirm-click)="deleteHolidayData(holidayData._id)" appConfirm
+                                                    [confirmTitle]="'Delete Holiday'"
+                                                    [confirmContent]="'Are you sure to Delete this Holiday Data?'"
+                                                    title="Delete Holiday">
+                                                    <i class="fa fa-trash"></i></button>
+                                            </li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                                <tr *ngIf="noData">
+                                    <td colspan="6">
+                                        <h2 class="text-center mb-0">Data Not Found</h2>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="footer-pagination" *ngIf="holidayTableWiseData?.length > l">
+                            <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal quick-edit-modal fade" tabindex="-1" id="add-excel-upload-modal" role="dialog">
+    <div class="modal-dialog model-setting-menu-width" role="document">
+        <div class="card modal-content">
+            <div class="modal-header">
+                <h4 class="mb-2 w-100 text-center">Excel Upload</h4>
+                <button class="btn bg-gradient-dark cancel-btn popup-close-btn" (click)="cancelEmployee()">
+                    <i class="fa fa-times" style="font-size: 10px;"></i>
+                </button>
+            </div>
+            <div class="card-body model-scroll">
+                <form>
+                    <div class="p-3 model-popup-border">
+                        <div class="row">
+                            <div class="col-lg-12 d-flex">
+                                <div>
+                                    <label for="role">Excel File </label>
+                                </div>
+                                <div class="form-group ms-6">
+                                    <div class="">
+                                        <input #file type="file" class="holiday-Excel-upload"
+                                            accept='.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel'
+                                            (change)="onDocumentChange($event)" />
+                                        <button class="btn bg-gradient-dark">Upload Excel</button>
+                                    </div>
+                                    <div class="row" *ngIf="!!resultofDocument">
+                                        <div>
+                                            <div class="document-file-main">
+                                                <div class="p-1">
+                                                    <button
+                                                        class="float-delete-button m-0 btn bg-gradient-dark cancel-btn"
+                                                        style="border-radius:50%; padding:8px 12px;"
+                                                        (click)="removeDocument()">
+                                                        <i class="fa fa-times"></i>
+                                                    </button>
+                                                    <div class="document-file-image">
+                                                        <img src="../../../assets/img/file.png" height="100%"
+                                                            width="40%" />
+                                                    </div>
+                                                    <h6 class="color-black mb-0 ">
+                                                        {{resultofDocument.name}}
+                                                    </h6>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="w-100">
+                    <div class="text-center">
+                        <button type="button" (click)="saveExcelFile()" class="btn bg-gradient-dark my-2">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal quick-edit-modal fade" tabindex="-1" id="add-holiday-data-modal" role="dialog">
+    <div class="modal-dialog model-setting-menu-width" role="document">
+        <div class="card modal-content">
+            <div class="modal-header">
+                <h4 class="mb-2 w-100 text-center">Holiday</h4>
+                <button class="btn bg-gradient-dark cancel-btn popup-close-btn" (click)="cancelHolidayModal()">
+                    <i class="fa fa-times" style="font-size: 10px;"></i>
+                </button>
+            </div>
+            <div class="card-body model-scroll">
+                <form role="form" class="add-employee-form" [formGroup]="holidayDataForm" autocomplete="off">
+                    <div class="p-3 basic-information-form">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <label for="role" class="required">Holiday Type</label>
+                                <div class="mb-3">
+                                    <!-- <input type="text" class="form-control ps-2" formControlName="HolidayType"
+                                        placeholder="Please select holiday Type"> -->
+                                    <ng-select formControlName="HolidayType" [items]="holidayTypeArray" class=""
+                                        bindLabel="name" bindValue="value" placeholder="Please select holiday Type">
+                                    </ng-select>
+                                    <div *ngIf="submittedHolidayData && fHolidayData.HolidayType.errors">
+                                        <div *ngIf="fHolidayData.HolidayType.errors.required">
+                                            <span class="error_msg">Holiday Type is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <label for="role" class="required">Holiday</label>
+                                <div class="mb-3">
+                                    <input type="text" class="form-control ps-2" formControlName="Holiday"
+                                        placeholder="Holiday Name">
+                                    <div *ngIf="submittedHolidayData && fHolidayData.Holiday.errors">
+                                        <div *ngIf="fHolidayData.Holiday.errors.required">
+                                            <span class="error_msg">Holiday is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <label for="role" class="required">Date</label>
+                                <div class="position-relative mat-date-picker" (click)="pickerForSearch.open()">
+                                    <span class="icon-position cursor-pointer"><i class="fa fa-calendar"></i></span>
+                                    <input matInput class="form-control" placeholder="Please Select Date"
+                                        [matDatepicker]="pickerForSearch" readonly (dateChange)="getDayByDate()"
+                                        formControlName="date">
+                                    <div class="mat-dat-picker-icon">
+                                        <div class="calendar-icon"><i class="bx bxs-calendar"></i></div>
+                                        <mat-datepicker-toggle matSuffix [for]="pickerForSearch">
+                                        </mat-datepicker-toggle>
+                                        <mat-datepicker #pickerForSearch></mat-datepicker>
+                                    </div>
+                                    <div *ngIf="submittedHolidayData && fHolidayData.date.errors">
+                                        <div *ngIf="fHolidayData.date.errors.required">
+                                            <span class="error_msg">Date is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="w-100">
+                    <div class="text-center">
+                        <button type="button" (click)="saveHolidayData()"
+                            class="btn bg-gradient-dark my-2">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

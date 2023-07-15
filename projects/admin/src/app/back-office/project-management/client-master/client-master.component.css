@@ -1,0 +1,11 @@
+.client-div {
+    text-align: left !important;
+}
+.right-container .right-container-button:hover {
+    width: 145px !important;
+}
+
+.profile-Image {
+    height: 95px !important;
+    width: 95px !important;
+}

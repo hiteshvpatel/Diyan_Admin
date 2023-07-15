@@ -1,0 +1,133 @@
+<div class="">
+    <div class="container-fluid py-4">
+        <div class="row">
+            <div class="mb-3 d-flex" style="justify-content: space-between;">
+                <span class="icon-position"><i class="fa fa-search"></i></span>
+                <input type="text" style="width:30%" (input)="search($event.target.value)"
+                    class="searchTerm form-control" [(ngModel)]="searchDocument" placeholder="Type here...">
+                <div class="right-container" *ngIf="this.isCreated == true">
+                    <button class="btn bg-gradient-dark mb-0 add-btn right-container-button"
+                        (click)="addDocumentmaster()">
+                        <span class="long-text">Add New</span>
+                        <i class="fas fa-plus" aria-hidden="true"></i></button>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive mb-4">
+                            <table class="table" matSort matSortActive="documentName" matSortDirection="asc"
+                                matSortDisableClear="true" (matSortChange)="sortingList($event)">
+                                <thead>
+                                    <tr>
+                                        <th class="theme-color w-5">No.</th>
+                                        <th class="theme-color w-55" mat-sort-header="documentName">Document Name</th>
+                                        <th class="theme-color w-20">Status</th>
+                                        <th class="theme-color w-20">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr
+                                        *ngFor="let documentmasterData of documentmasterList | filter : searchTerm |  paginate: { itemsPerPage: l, currentPage: p };let documentMasterIndex = index">
+                                        <td class="text-color">
+                                            <span>{{ l * (p - 1) + documentMasterIndex +1 }}</span>
+                                        </td>
+                                        <td class="text-color doc-master-tbl">
+                                            {{ documentmasterData.documentName }}
+                                        </td>
+                                        <td class="text-color">
+                                            <span *ngIf="documentmasterData.status == 1"
+                                                class="badge bg-gradient-success">Active</span>
+                                            <span *ngIf="documentmasterData.status == 2"
+                                                class="badge bg-gradient-danger">Deactive</span>
+                                        </td>
+                                        <td class="text-color">
+                                            <ul class="d-flex align-items-center action-list p-0">
+                                                <li class="action-list-item me-3" *ngIf="this.isUpdated == true">
+                                                    <button class="font-20 btn bg-gradient-dark emp-edit-btn"
+                                                        title="Edit Document"
+                                                        (click)="editDocumentmaster({id :documentmasterData._id,index:documentMasterIndex})">
+                                                        <i class="fa fa-edit"></i></button>
+                                                </li>
+                                                <li class="action-list-item" *ngIf="this.isDeleted == true">
+                                                    <button *ngIf="documentmasterData.status == 2"
+                                                        class="dtl-btn btn bg-gradient-dark" title="Active Document"
+                                                        (confirm-click)="statusDocumentmaster({id :documentmasterData._id,index:documentMasterIndex, status:1})"
+                                                        appConfirm [confirmTitle]="'Active'"
+                                                        [confirmContent]="'Are you sure to Active this Document Master?'">
+                                                        <i class="fa fa-plus"></i></button>
+                                                    <button *ngIf="documentmasterData.status == 1"
+                                                        class="dtl-btn btn bg-gradient-dark" title="Deactive Document"
+                                                        (confirm-click)="statusDocumentmaster({id :documentmasterData._id,index:documentMasterIndex, status:2})"
+                                                        appConfirm [confirmTitle]="'Deactive'"
+                                                        [confirmContent]="'Are you sure to Deactive this Document Master?'">
+                                                        <i class="fa fa-trash"></i></button>
+                                                </li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                    <tr *ngIf="noData">
+                                        <td colspan="6">
+                                            <h2 class="text-center mb-0">Data Not Found</h2>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="footer-pagination" *ngIf="documentmasterList?.length > l">
+                            <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- //Document Details Popup start -->
+<div class="modal quick-edit-modal fade" tabindex="-1" id="add-document-modal" role="dialog">
+    <div class="modal-dialog model-setting-menu-width" role="document">
+        <div class="card modal-content">
+            <div class="modal-header">
+                <h4 class="text-center mb-2 w-100" *ngIf="ISeditDocumentMaster === false">Add New Company Document</h4>
+                <h4 class="text-center mb-2 w-100" *ngIf="ISeditDocumentMaster === true">Edit Company Document</h4>
+                <button class="btn bg-gradient-dark cancel-btn popup-close-btn" (click)="cancelDocumentmaster()">
+                    <i class="fa fa-times" style="font-size: 10px;"></i>
+                </button>
+            </div>
+            <div class="card-body model-scroll">
+                <form role="form" class="add-employee-form" [formGroup]="documentmasterForm" autocomplete="off">
+                    <div class="p-3 basic-information-form">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <label for="document" class="required">Document Name</label>
+                                <div class="mb-3">
+                                    <!-- <span class="icon-position"><i class="fa fa-tasks"></i></span> -->
+                                    <input type="text" class="form-control ps-2" formControlName="documentName"
+                                        placeholder="Document Name">
+                                    <div *ngIf="submitteddocumentMasterData && fDocumentnameData.documentName.errors">
+                                        <div *ngIf="fDocumentnameData.documentName.errors.required">
+                                            <span class="error_msg">Document Name is Required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="w-100">
+                    <div class="text-center">
+                        <button type="button" *ngIf="ISeditDocumentMaster === false" (click)="saveDocumentmaster()"
+                            class="btn bg-gradient-dark my-2">Save</button>
+                        <button type="button" *ngIf="ISeditDocumentMaster === true" (click)="updateDocumentmaster()"
+                            class="btn bg-gradient-dark my-2">Update</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,229 @@
+<div class="my-4">
+    <div class="container-fluid py-4">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div>
+                            <h4 class="mb-4">User Wise MenuList</h4>
+                        </div>
+                        <div class="">
+                            <div class="row">
+                                <div class="col-lg-1">
+                                    <label class="form-group color-black">
+                                        Role
+                                    </label>
+                                </div>
+                                <div class="col-lg-5">
+                                    <div class="form-group">
+                                        <!--<label class="color-808080">Parent Name</label>-->
+                                        <ng-select [(ngModel)]="selectedRole" [items]="activeroleList"
+                                            (change)="onRoleChange($event.value);" class="" bindLabel="roleName"
+                                            bindValue="_id" placeholder="Select Role">
+                                        </ng-select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" *ngIf="selectedRole != null">
+                                <div class="col-lg-1">
+                                    <label class="form-group color-black">
+                                        User
+                                    </label>
+                                </div>
+                                <div class="col-lg-5">
+                                    <div class="form-group">
+                                        <!--<label class="color-808080">Parent Name</label>-->
+                                        <!-- <mat-form-field>
+                                            <mat-select [(ngModel)]="selectedUser" #user
+                                                (ngModelChange)="onUserChange($event);">
+                                                <mat-option selected value="">
+                                                    Select User
+                                                </mat-option>
+                                                <mat-option [value]="userData._id" *ngFor="let userData of activeuserList">
+                                                    {{userData.fullName}}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field> -->
+                                        <ng-select [(ngModel)]="selectedUser" [items]="activeuserList"
+                                            (ngModelChange)="onUserChange($event.value);" class="" bindLabel="userName"
+                                            bindValue="employeeId" placeholder="Select User">
+                                        </ng-select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row" *ngIf="selectedUser != null && selectedRole != null">
+                                <div class="col-lg-1">
+                                    <label class="form-group color-black">
+                                        Menu List
+                                    </label>
+                                </div>
+                                <div class="col-lg-10">
+                                    <div class="table-responsive table-overflow-y">
+                                        <form [formGroup]="userwisemenuForm">
+                                            <table class="table" formArrayName="menuList">
+                                                <thead [ngClass]="{'text-primary': storageService.getValue('colour') === '1',
+                                 'text-info': storageService.getValue('colour') === '2',
+                                 'text-success': storageService.getValue('colour') === '3',
+                                 'text-warning': storageService.getValue('colour') === '4',
+                                 'text-danger': storageService.getValue('colour') === '5',
+                                 'text-rose': storageService.getValue('colour') === '6' }">
+                                                    <tr>
+                                                        <th class="width-5 theme-color"></th>
+                                                        <!-- <th class="width-5 theme-color"></th> -->
+                                                        <th class="width-20 theme-color">Menu Name</th>
+                                                        <th class="width-15 theme-color">
+                                                            <mat-checkbox [(ngModel)]="isCreatedAllSelect"
+                                                                [ngModelOptions]="{standalone: true}"
+                                                                (change)="isCreatedAllSelectchildrenData($event.checked)">
+                                                            </mat-checkbox>
+                                                            Create
+                                                        </th>
+                                                        <th class="width-15 theme-color">
+                                                            <mat-checkbox [(ngModel)]="isUpdatedAllSelect"
+                                                                [ngModelOptions]="{standalone: true}"
+                                                                (change)="isUpdatedAllSelectchildrenData($event.checked)">
+                                                            </mat-checkbox>
+                                                            Edit
+                                                        </th>
+                                                        <th class="width-15 theme-color">
+                                                            <mat-checkbox [(ngModel)]="isViewAllSelect"
+                                                                [ngModelOptions]="{standalone: true}"
+                                                                (change)="isViewAllSelectchildrenData($event.checked)">
+                                                            </mat-checkbox>
+                                                            View
+                                                        </th>
+                                                        <th class="width-15 theme-color">
+                                                            <mat-checkbox [(ngModel)]="isDeletedAllSelect"
+                                                                [ngModelOptions]="{standalone: true}"
+                                                                (change)="isDeletedAllSelectchildrenData($event.checked)">
+                                                            </mat-checkbox>
+                                                            Delete
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody [formGroupName]="i"
+                                                    *ngFor="let item of userwisemenuForm.get('menuList').controls; let i = index;">
+                                                    <tr>
+                                                        <td class="width-5">
+                                                            <a *ngIf="!!item.controls.childrenData && item.controls.childrenData.length > 0"
+                                                                class="cursor-pointer"
+                                                                (click)="showHideMenuList({index : i})">
+                                                                <i class="material-icons"
+                                                                    *ngIf="item.controls.isShowChildrenList.value === false">add</i>
+                                                                <i class="material-icons"
+                                                                    *ngIf="item.controls.isShowChildrenList.value === true">remove</i>
+                                                            </a>
+                                                        </td>
+                                                        <!-- <td class="width-5">
+                                                            <mat-checkbox formControlName="isSelectedMainData"
+                                                                (change)="isSelectedAllData({checked :$event.checked,index: i})">
+                                                            </mat-checkbox>
+                                                        </td> -->
+                                                        <td>
+                                                            <input type="hidden" formControlName="menuId" />
+                                                            <input type="hidden" class="form-control-disabled" disabled
+                                                                formControlName="title" />
+                                                            <h4 class="mb-0 heading-font-style">
+                                                                {{item.controls.title.value}}</h4>
+                                                        </td>
+                                                        <td>
+                                                            <mat-checkbox formControlName="isCreated"
+                                                                (change)="isCreatedAllchildrenData({checked :$event.checked,index: i})">
+                                                            </mat-checkbox>
+                                                        </td>
+                                                        <td>
+                                                            <mat-checkbox formControlName="isUpdated"
+                                                                (change)="isUpdatedchildrenData({checked :$event.checked,index: i})">
+                                                            </mat-checkbox>
+                                                        </td>
+                                                        <td>
+                                                            <mat-checkbox formControlName="isView"
+                                                                (change)="isViewAllchildrenData({checked :$event.checked,index: i})">
+                                                            </mat-checkbox>
+                                                        </td>
+                                                        <td>
+                                                            <mat-checkbox formControlName="isDeleted"
+                                                                (change)="isDeletedchildrenData({checked :$event.checked,index: i})">
+                                                            </mat-checkbox>
+                                                        </td>
+                                                    </tr>
+                                                    <tr formArrayName="childrenData"
+                                                        *ngIf="item.controls.isShowChildrenList.value === true">
+                                                        <td colspan="6" class="p-0">
+                                                            <table class="table m-0">
+                                                                <tbody>
+                                                                    <tr [formGroupName]="x"
+                                                                        *ngFor="let item1 of item.controls.childrenData.controls; let x = index;">
+                                                                        <td class="width-5"></td>
+                                                                        <!-- <td class="width-5">
+                                                                            <mat-checkbox
+                                                                                formControlName="isMainMenuSelected"
+                                                                                (change)="isSelectedMainChildrenData({checked: $event.checked, menuIndex: i,index : x})">
+                                                                            </mat-checkbox>
+                                                                        </td> -->
+                                                                        <td class="width-20">
+                                                                            <input type="hidden"
+                                                                                formControlName="menuId" />
+                                                                            <input type="hidden"
+                                                                                class="form-control-disabled" disabled
+                                                                                formControlName="title" />
+                                                                            <h4 class="mb-0 heading-font-style">
+                                                                                {{item.controls.title.value}}
+                                                                                >> {{item1.controls.title.value}}</h4>
+                                                                        </td>
+                                                                        <td class="width-15">
+                                                                            <mat-checkbox formControlName="isCreated"
+                                                                                (change)="isCreatedmenuData({checked :$event.checked,menuIndex: i})">
+                                                                            </mat-checkbox>
+                                                                        </td>
+                                                                        <td class="width-15">
+                                                                            <mat-checkbox formControlName="isUpdated"
+                                                                                (change)="isUpdatedmenuData({checked :$event.checked,menuIndex: i})">
+                                                                            </mat-checkbox>
+                                                                        </td>
+                                                                        <td class="width-15">
+                                                                            <mat-checkbox formControlName="isView"
+                                                                                (change)="isViewmenuData({checked :$event.checked,menuIndex: i})">
+                                                                            </mat-checkbox>
+                                                                        </td>
+                                                                        <td class="width-15">
+                                                                            <mat-checkbox formControlName="isDeleted"
+                                                                                (change)="isDeletedmenuData({checked :$event.checked,menuIndex: i})">
+                                                                            </mat-checkbox>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+
+                                                <tbody>
+                                                    <tr *ngIf="noData">
+                                                        <td colspan="6">
+                                                            <h2 class="text-center mb-0">Data Not Found</h2>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="this.isUpdated == true">
+                        <div class="card-footer" *ngIf="!!selectedUser && !!selectedRole">
+                            <button mat-raised-button class="text-white btn bg-gradient-dark"
+                                (click)="saveUserwisemenu()">
+                                Save
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

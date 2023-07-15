@@ -1,0 +1,29 @@
+tr {
+    vertical-align: middle;
+}
+
+table {
+    table-layout: fixed;
+}
+
+table thead th {
+    position: sticky;
+}
+
+table tbody th {
+    position: relative;
+}
+
+.attendance-list-main-table table thead th:first-child,
+.attendance-list-main-table table td:first-child {
+    min-width: 350px !important;
+    position: sticky;
+    background-color: #fff;
+    left: 0;
+    z-index: 999;
+    text-align: left !important;
+}
+
+.attendance-list-main-table table tbody td {
+    text-align: center;
+}

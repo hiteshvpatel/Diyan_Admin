@@ -1,0 +1,129 @@
+<div class="">
+  <div class="container-fluid py-4">
+    <div class="row">
+      <div class="mb-3 d-flex" style="justify-content: space-between;">
+        <span class="icon-position"><i class="fa fa-search"></i></span>
+        <input type="text" style="width:30%" (input)="search($event.target.value)" class="searchTerm form-control"
+          [(ngModel)]="searchTerm" placeholder="Type here...">
+        <div class="right-container" *ngIf="this.isCreated == true">
+          <button class="btn bg-gradient-dark mb-0 add-btn right-container-button" (click)="addUnitMaster()">
+            <span class="long-text">Add New</span>
+            <i class="fas fa-plus" aria-hidden="true"></i></button>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="table-responsive mb-4">
+              <table class="table" matSort matSortActive="unit" matSortDirection="asc" matSortDisableClear="true"
+                (matSortChange)="sortingList($event)">
+                <thead>
+                  <tr>
+                    <th class="theme-color">No.</th>
+                    <th class="theme-color" mat-sort-header="unit">Unit</th>
+                    <th class="theme-color">Status</th>
+                    <th class="theme-color">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    *ngFor="let unitmasterData of unitmasterList | filter : searchTerm |  paginate: { itemsPerPage: l, currentPage: p };let unitmasterIndex = index">
+                    <td class="text-color">
+                      <span>{{ l * (p - 1) + unitmasterIndex +1 }}</span>
+                    </td>
+                    <td class="text-color doc-master-tbl">
+                      {{ unitmasterData.unit }}
+                    </td>
+                    <td class="text-color">
+                      <span *ngIf="unitmasterData.status == 1" class="badge bg-gradient-success">Active</span>
+                      <span *ngIf="unitmasterData.status == 2" class="badge bg-gradient-danger">Deactive</span>
+                    </td>
+                    <td class="text-color">
+                      <ul class="d-flex align-items-center action-list p-0">
+                        <li class="action-list-item me-3" *ngIf="this.isUpdated == true">
+                          <button class="font-20 btn bg-gradient-dark emp-edit-btn" title="Edit Unit"
+                            (click)="editUnitMaster({id :unitmasterData._id,index:unitmasterIndex})">
+                            <i class="fa fa-edit"></i></button>
+                        </li>
+                        <li class="action-list-item" *ngIf="this.isDeleted == true">
+                          <button *ngIf="unitmasterData.status == 2" class="dtl-btn btn bg-gradient-dark"
+                            title="Active Unit"
+                            (confirm-click)="statusUnitMaster({id :unitmasterData._id,index:unitmasterIndex, status:1})"
+                            appConfirm [confirmTitle]="'Active'"
+                            [confirmContent]="'Are you sure to Active this Unit Master?'">
+                            <i class="fa fa-plus"></i></button>
+                          <button *ngIf="unitmasterData.status == 1" class="dtl-btn btn bg-gradient-dark"
+                            title="Deactive Unit"
+                            (confirm-click)="statusUnitMaster({id :unitmasterData._id,index:unitmasterIndex, status:2})"
+                            appConfirm [confirmTitle]="'Deactive'"
+                            [confirmContent]="'Are you sure to Deactive this Unit Master?'">
+                            <i class="fa fa-trash"></i></button>
+                        </li>
+                      </ul>
+                    </td>
+                  </tr>
+                  <tr *ngIf="noData">
+                    <td colspan="5">
+                      <h2 class="text-center mb-0">Data Not Found</h2>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="footer-pagination" *ngIf="unitmasterList?.length > l">
+              <pagination-controls (pageChange)="p = $event"></pagination-controls>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- //Document Details Popup start -->
+<div class="modal quick-edit-modal fade" tabindex="-1" id="add-unit-modal" role="dialog">
+  <div class="modal-dialog model-setting-menu-width" role="document">
+    <div class="card modal-content">
+      <div class="modal-header">
+        <h4 class="text-center mb-2 w-100" *ngIf="ISeditUnitMaster === false">Add New Unit</h4>
+        <h4 class="text-center mb-2 w-100" *ngIf="ISeditUnitMaster === true">Edit Unit</h4>
+        <button class="btn bg-gradient-dark cancel-btn" (click)="cancelUnitMaster()"
+          style="float: right;margin-right: 0;border-radius: 50%;padding: 6px 12px;">
+          <i class="fa fa-times" style="font-size: 10px;"></i>
+        </button>
+      </div>
+      <div class="card-body model-scroll">
+        <form role="form" class="add-employee-form" [formGroup]="unitMasterForm" autocomplete="off">
+          <div class="p-3 basic-information-form">
+            <div class="row">
+              <div class="col-lg-12">
+                <label for="group" class="required">Unit</label>
+                <div class="mb-3">
+                  <!-- <span class="icon-position"><i class="fa fa-tasks"></i></span> -->
+                  <input type="text" class="form-control ps-2" formControlName="unit" placeholder="Unit">
+                  <div *ngIf="submittedUnitMaster && fUnitData.unit.errors">
+                    <div *ngIf="fUnitData.unit.errors.required">
+                      <span class="error_msg">Unit is Required.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <div class="w-100">
+          <div class="text-center">
+            <button type="button" *ngIf="ISeditUnitMaster === false" (click)="saveUnitMaster()"
+              class="btn bg-gradient-dark my-2">Save</button>
+            <button type="button" *ngIf="ISeditUnitMaster === true" (click)="updateUnitmaster()"
+              class="btn bg-gradient-dark my-2">Update</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
